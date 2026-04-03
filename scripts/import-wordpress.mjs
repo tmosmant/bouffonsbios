@@ -1,9 +1,23 @@
 /**
  * Importe les billets WordPress (WXR) vers src/content/articles/*.md
- * Usage: node scripts/import-wordpress.mjs [chemin/vers/export.xml]
+ *
+ * - Développe les shortcodes [gallery ids="…"] grâce aux pièces jointes (wp:post_type=attachment) du même export.
+ * - Optionnel : télécharge les images WordPress vers public/uploads/wp-import/ et réécrit les liens en /uploads/…
+ *
+ * Usage:
+ *   node scripts/import-wordpress.mjs [export.xml]
+ *   node scripts/import-wordpress.mjs [export.xml] --skip-download
  */
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, unlinkSync } from 'node:fs';
-import { dirname, join } from 'node:path';
+import {
+	readFileSync,
+	writeFileSync,
+	mkdirSync,
+	readdirSync,
+	unlinkSync,
+	existsSync,
+} from 'node:fs';
+import { dirname, join, basename } from 'node:path';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { XMLParser } from 'fast-xml-parser';
 import TurndownService from 'turndown';
@@ -11,9 +25,12 @@ import TurndownService from 'turndown';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const OUT_DIR = join(ROOT, 'src/content/articles');
+const UPLOADS_DIR = join(ROOT, 'public/uploads/wp-import');
 const DEFAULT_XML = join(process.env.HOME, 'Downloads/bouffonsbios.WordPress.2026-04-03.xml');
 
-const xmlPath = process.argv[2] || DEFAULT_XML;
+const args = process.argv.slice(2).filter((a) => !a.startsWith('--'));
+const SKIP_DOWNLOAD = process.argv.includes('--skip-download');
+const xmlPath = args[0] || DEFAULT_XML;
 
 /** nicename WordPress (taxonomie category) → libellé Astro / Decap */
 const NICENAME_TO_CATEGORY = {
@@ -74,8 +91,61 @@ function parseDateGmt(gmt, local) {
 	return '1970-01-01';
 }
 
-function htmlToMarkdown(html) {
-	const cleaned = rewriteUrls(stripWpBlocks(html.trim()));
+/**
+ * Pièces jointes du WXR : wp:post_id → URL fichier (pour [gallery ids="…"]).
+ * @param {unknown[]} items
+ * @returns {Map<string, string>}
+ */
+function collectAttachmentsById(items) {
+	/** @type {Map<string, string>} */
+	const map = new Map();
+	for (const item of items) {
+		if (str(item['wp:post_type']) !== 'attachment') continue;
+		const id = str(item['wp:post_id']).trim();
+		if (!id) continue;
+		let url = str(item['wp:attachment_url']).trim();
+		if (!url) url = str(item.guid).trim();
+		if (!url) url = str(item.link).trim();
+		url = rewriteUrls(url);
+		if (url && /\.(jpe?g|png|gif|webp|svg)(\?|$)/i.test(url)) {
+			map.set(id, url);
+		}
+	}
+	return map;
+}
+
+/**
+ * Remplace [gallery … ids="1,2,3" …] par des <img> (avant Turndown).
+ * @param {string} html
+ * @param {Map<string, string>} attachmentById
+ */
+function expandGalleryShortcodes(html, attachmentById) {
+	return html.replace(/\[gallery\b[^\]]*ids=["']([^"']+)["'][^\]]*\]/gi, (_, idsRaw) => {
+		const ids = idsRaw.split(/,\s*/).map((s) => s.trim()).filter(Boolean);
+		const blocks = [];
+		const missing = [];
+		for (const id of ids) {
+			const url = attachmentById.get(id);
+			if (url) {
+				const safe = url.replace(/"/g, '&quot;');
+				blocks.push(`<p><img src="${safe}" alt="Affiche" /></p>`);
+			} else {
+				missing.push(id);
+			}
+		}
+		if (missing.length) {
+			console.warn(`  [gallery] IDs sans fichier dans l’export : ${missing.join(', ')}`);
+		}
+		if (!blocks.length) {
+			return '<p><em>(Galerie : aucune image trouvée dans l’export WXR pour ces IDs.)</em></p>';
+		}
+		return `\n${blocks.join('\n')}\n`;
+	});
+}
+
+function htmlToMarkdown(html, attachmentById) {
+	let cleaned = expandGalleryShortcodes(html, attachmentById);
+	cleaned = rewriteUrls(stripWpBlocks(cleaned.trim()));
 	if (!cleaned) return '';
 	let md = turndown.turndown(cleaned).trim();
 	md = md.replace(/\n{3,}/g, '\n\n');
@@ -106,6 +176,107 @@ function categoryFromWpItem(item) {
 	return 'Non classé';
 }
 
+const WP_IMG_MD_RE =
+	/!\[([^\]]*)\]\((https:\/\/bouffonsbios\.(?:files\.wordpress\.com[^)\s]+|wordpress\.com\/wp-content\/uploads[^)\s]+))\)/gi;
+
+function stripQueryForFetch(url) {
+	try {
+		const u = new URL(url);
+		u.search = '';
+		return u.href;
+	} catch {
+		return url.split('?')[0];
+	}
+}
+
+function extFromContentType(contentType) {
+	if (!contentType) return '';
+	if (contentType.includes('png')) return '.png';
+	if (contentType.includes('gif')) return '.gif';
+	if (contentType.includes('webp')) return '.webp';
+	if (contentType.includes('svg')) return '.svg';
+	if (contentType.includes('jpeg') || contentType.includes('jpg')) return '.jpg';
+	return '';
+}
+
+/**
+ * Télécharge les médias référencés dans le markdown et remplace par /uploads/wp-import/…
+ * @param {string} md
+ * @returns {Promise<string>}
+ */
+async function localizeWordPressImages(md) {
+	/** @type {Set<string>} */
+	const urls = new Set();
+	let m;
+	const scan = new RegExp(WP_IMG_MD_RE.source, 'gi');
+	while ((m = scan.exec(md)) !== null) {
+		urls.add(m[2]);
+	}
+	if (urls.size === 0) return md;
+
+	mkdirSync(UPLOADS_DIR, { recursive: true });
+	const usedNames = new Set(existsSync(UPLOADS_DIR) ? readdirSync(UPLOADS_DIR) : []);
+
+	/** @type {Map<string, string>} */
+	const remoteToPublic = new Map();
+
+	for (const remoteUrl of urls) {
+		const fetchUrl = stripQueryForFetch(remoteUrl);
+		try {
+			const res = await fetch(fetchUrl, {
+				redirect: 'follow',
+				headers: { 'User-Agent': 'bouffonsbios-wp-import/1.0' },
+			});
+			if (!res.ok) {
+				console.warn(`  Téléchargement ${res.status} : ${fetchUrl}`);
+				continue;
+			}
+			const buf = Buffer.from(await res.arrayBuffer());
+			const ct = res.headers.get('content-type') || '';
+
+			let pathPart = '';
+			try {
+				pathPart = decodeURIComponent(new URL(fetchUrl).pathname);
+			} catch {
+				pathPart = '';
+			}
+			let base = basename(pathPart) || '';
+			base = base.replace(/[^a-zA-Z0-9._-]+/g, '-').replace(/^-|-$/g, '');
+			if (!base || base === '-') {
+				base = `img-${createHash('sha256').update(fetchUrl).digest('hex').slice(0, 12)}`;
+			}
+			if (!/\.[a-z0-9]{2,4}$/i.test(base)) {
+				base += extFromContentType(ct) || '.jpg';
+			}
+
+			let localName = base;
+			let n = 0;
+			while (usedNames.has(localName)) {
+				n += 1;
+				const dot = base.lastIndexOf('.');
+				const stem = dot > 0 ? base.slice(0, dot) : base;
+				const ext = dot > 0 ? base.slice(dot) : '';
+				localName = `${stem}-${n}${ext}`;
+			}
+
+			writeFileSync(join(UPLOADS_DIR, localName), buf);
+			usedNames.add(localName);
+			const publicPath = `/uploads/wp-import/${localName}`;
+			remoteToPublic.set(remoteUrl, publicPath);
+			console.log(`  → ${publicPath}`);
+		} catch (e) {
+			console.warn(`  Erreur ${fetchUrl}:`, /** @type {Error} */ (e).message);
+		}
+	}
+
+	let out = md;
+	const pairs = [...remoteToPublic.entries()].sort((a, b) => b[0].length - a[0].length);
+	for (const [remote, pub] of pairs) {
+		out = out.split(remote).join(pub);
+	}
+	return out;
+}
+
 const xml = readFileSync(xmlPath, 'utf8');
 const parser = new XMLParser({
 	ignoreAttributes: false,
@@ -115,6 +286,9 @@ const parser = new XMLParser({
 const data = parser.parse(xml);
 const rawItems = data?.rss?.channel?.item;
 const items = Array.isArray(rawItems) ? rawItems : rawItems ? [rawItems] : [];
+
+const attachmentById = collectAttachmentsById(items);
+console.log(`Pièces jointes indexées : ${attachmentById.size}`);
 
 /** @type {{ slug: string; title: string; date: string; category: string; excerpt?: string; body: string }[]} */
 const posts = [];
@@ -136,7 +310,7 @@ for (const item of items) {
 	const excerptHtml = str(item['excerpt:encoded']);
 	const contentHtml = str(item['content:encoded']);
 	const excerpt = plainExcerpt(excerptHtml) || undefined;
-	const body = htmlToMarkdown(contentHtml);
+	const body = htmlToMarkdown(contentHtml, attachmentById);
 	const category = categoryFromWpItem(item);
 
 	posts.push({ slug, title, date, category, excerpt, body });
@@ -157,6 +331,19 @@ function uniqueSlug(s, used) {
 const used = new Set();
 for (const p of posts) {
 	p.slug = uniqueSlug(p.slug, used);
+}
+
+if (!SKIP_DOWNLOAD) {
+	console.log('Téléchargement des images vers public/uploads/wp-import/ …');
+	for (const p of posts) {
+		const before = p.body;
+		p.body = await localizeWordPressImages(p.body);
+		if (p.body !== before) {
+			console.log(`  (${p.slug})`);
+		}
+	}
+} else {
+	console.log('(--skip-download : URLs WordPress conservées dans le markdown)');
 }
 
 mkdirSync(OUT_DIR, { recursive: true });

@@ -22,24 +22,33 @@ collections:
     extension: md
     format: frontmatter
     fields:
-      - {
-          label: "Slug (fichier URL)",
-          name: slug,
-          widget: string,
-          pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Minuscules et tirets uniquement'],
-        }
-      - { label: Titre, name: title, widget: string }
-      - { label: Date, name: date, widget: datetime }
-      - {
-          label: Catégorie,
-          name: category,
-          widget: select,
-          default: "Non classé",
-          options:
-            - { label: Affiches, value: Affiches }
-            - { label: "Communiqués de presse", value: "Communiqués de presse" }
-            - { label: "Non classé", value: "Non classé" }
-            - { label: Vignerons, value: Vignerons }
-        }
-      - { label: Résumé, name: excerpt, widget: text, required: false }
-      - { label: Corps, name: body, widget: markdown }
+      - label: "Slug (fichier URL)"
+        name: slug
+        widget: string
+        pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Minuscules et tirets uniquement"]
+      - label: Titre
+        name: title
+        widget: string
+      - label: Date
+        name: date
+        widget: datetime
+      - label: Catégorie
+        name: category
+        widget: select
+        default: "Non classé"
+        options:
+          - label: Affiches
+            value: Affiches
+          - label: "Communiqués de presse"
+            value: "Communiqués de presse"
+          - label: "Non classé"
+            value: "Non classé"
+          - label: Vignerons
+            value: Vignerons
+      - label: Résumé
+        name: excerpt
+        widget: text
+        required: false
+      - label: Corps
+        name: body
+        widget: markdown
