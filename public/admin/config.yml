@@ -141,6 +141,42 @@ collections:
                 name: signature
                 widget: text
 
+  - name: presse
+    label: Accueil — Ils parlent de nous
+    files:
+      - label: Bloc presse
+        name: presse
+        file: src/content/presse.json
+        format: json
+        fields:
+          - label: Contenu
+            name: block
+            widget: object
+            collapsed: false
+            fields:
+              - label: Titre du bloc
+                name: heading
+                widget: string
+                default: Ils parlent de nous !
+              - label: Texte d'introduction
+                name: intro
+                widget: text
+              - label: Liens presse
+                name: items
+                widget: list
+                summary: "{{fields.source}} — {{fields.title}}"
+                fields:
+                  - label: Média / site
+                    name: source
+                    widget: string
+                  - label: Titre affiché
+                    name: title
+                    widget: string
+                  - label: URL
+                    hint: "Lien complet https://…"
+                    name: href
+                    widget: string
+
   - name: articles
     label: Articles
     label_singular: Article

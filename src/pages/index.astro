@@ -1,6 +1,12 @@
 ---
+import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import { PRESSE_ITEMS } from '../data/presse';
+
+const presseEntry = await getEntry('presse', 'block');
+if (!presseEntry) {
+	throw new Error('Fichier src/content/presse.json introuvable ou clé "block" manquante.');
+}
+const presse = presseEntry.data;
 ---
 
 <Layout title="Bouffons Bios" current="highlight" mainClass="site-main--home">
@@ -83,22 +89,22 @@ import { PRESSE_ITEMS } from '../data/presse';
 	</div>
 
 	<aside class="presse presse-aside" aria-labelledby="presse-title">
-		<h2 id="presse-title">Ils parlent de nous&nbsp;!</h2>
-		<p class="presse-intro">
-			Articles, blogs et agendas qui ont relayé le marché ou l’association — merci à elles et eux.
-		</p>
-		<ul class="presse-list">
-			{
-				PRESSE_ITEMS.map((item) => (
-					<li>
-						<a href={item.href} target="_blank" rel="noopener noreferrer">
-							<span class="presse-source">{item.source}</span>
-							<span class="presse-title">{item.title}</span>
-						</a>
-					</li>
-				))
-			}
-		</ul>
+		<h2 id="presse-title">{presse.heading}</h2>
+		<p class="presse-intro">{presse.intro}</p>
+		{
+			presse.items.length > 0 && (
+				<ul class="presse-list">
+					{presse.items.map((item) => (
+						<li>
+							<a href={item.href} target="_blank" rel="noopener noreferrer">
+								<span class="presse-source">{item.source}</span>
+								<span class="presse-title">{item.title}</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			)
+		}
 	</aside>
 </Layout>
 

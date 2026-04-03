@@ -118,6 +118,43 @@
 		},
 	});
 
+	var PressePreview = createClass({
+		render: function () {
+			var entry = this.props.entry;
+			var b = entry.getIn(['data', 'block']);
+			if (!b || b.size === 0) {
+				return h(
+					'div',
+					{ className: 'decap-presse-preview' },
+					h('p', { className: 'dcp-empty' }, 'Remplissez le bloc « Contenu » pour voir l’aperçu.'),
+				);
+			}
+			var items = b.get('items');
+			var lis = [];
+			if (items && items.size) {
+				items.forEach(function (it, i) {
+					lis.push(
+						h(
+							'li',
+							{ key: i },
+							h('span', { className: 'dcp-presse-source' }, it.get('source') || ''),
+							' — ',
+							h('span', { className: 'dcp-presse-title' }, it.get('title') || ''),
+							h('div', { className: 'dcp-presse-href' }, it.get('href') || ''),
+						),
+					);
+				});
+			}
+			return h(
+				'aside',
+				{ className: 'decap-presse-preview' },
+				h('h2', {}, b.get('heading') || ''),
+				h('p', { className: 'dcp-presse-intro' }, b.get('intro') || ''),
+				lis.length ? h('ul', { className: 'dcp-presse-ul' }, lis) : null,
+			);
+		},
+	});
+
 	var ArticlePreview = createClass({
 		render: function () {
 			var entry = this.props.entry;
@@ -153,5 +190,6 @@
 	/* Fichier unique « contact » dans la collection files : le nom du fichier est la clé Decap. */
 	CMS.registerPreviewTemplate('contact', ContactPreview);
 	CMS.registerPreviewTemplate('manifeste', ManifestePreview);
+	CMS.registerPreviewTemplate('presse', PressePreview);
 	CMS.registerPreviewTemplate('articles', ArticlePreview);
 })();

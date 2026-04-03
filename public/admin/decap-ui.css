@@ -53,8 +53,29 @@ body {
 	color: var(--bb-ui-fg) !important;
 }
 
+/*
+ * Centrage vertical du login : la section Decap est en 100vh ; on la réduit au contenu
+ * et on centre le tout dans #nc-root (le logo header n’est pas dans une section).
+ */
+#nc-root:has(section:has(img[src*='cms-logo'])) {
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+	justify-content: center !important;
+	min-height: 100vh !important;
+	box-sizing: border-box !important;
+	padding: 1.25rem !important;
+}
+
 /* ——— Page de login (section qui affiche notre logo) ——— */
 #nc-root section:has(img[src*='cms-logo']) {
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+	justify-content: center !important;
+	height: auto !important;
+	min-height: 0 !important;
+	flex: 0 0 auto !important;
 	gap: 1.75rem !important;
 	padding: 2.35rem 2.5rem 2.6rem !important;
 	max-width: min(22rem, calc(100vw - 2rem)) !important;

@@ -33,6 +33,23 @@ const manifeste = defineCollection({
 	}),
 });
 
+const presse = defineCollection({
+	loader: file('src/content/presse.json'),
+	schema: z.object({
+		heading: z.string(),
+		intro: z.string(),
+		items: z
+			.array(
+				z.object({
+					source: z.string(),
+					title: z.string(),
+					href: z.string(),
+				}),
+			)
+			.default([]),
+	}),
+});
+
 const contact = defineCollection({
 	loader: file('src/content/contact.json'),
 	schema: z.object({
@@ -62,4 +79,4 @@ const contact = defineCollection({
 	}),
 });
 
-export const collections = { articles, contact, manifeste };
+export const collections = { articles, contact, manifeste, presse };
