@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { PRESSE_ITEMS } from '../data/presse';
 ---
 
 <Layout title="Bouffons Bios" current="highlight">
@@ -46,6 +47,25 @@ import Layout from '../layouts/Layout.astro';
 			<a class="btn" href="/articles/">Tous les articles</a>
 			<a class="btn btn-secondary" href="/plan-dacces/">Plan d’accès</a>
 		</p>
+	</section>
+
+	<section class="presse" aria-labelledby="presse-title">
+		<h2 id="presse-title">Ils parlent de nous&nbsp;!</h2>
+		<p class="presse-intro">
+			Articles, blogs et agendas qui ont relayé le marché ou l’association — merci à elles et eux.
+		</p>
+		<ul class="presse-list">
+			{
+				PRESSE_ITEMS.map((item) => (
+					<li>
+						<a href={item.href} target="_blank" rel="noopener noreferrer">
+							<span class="presse-source">{item.source}</span>
+							<span class="presse-title">{item.title}</span>
+						</a>
+					</li>
+				))
+			}
+		</ul>
 	</section>
 </Layout>
 
@@ -123,5 +143,58 @@ import Layout from '../layouts/Layout.astro';
 			color: var(--accent, #d4a574);
 			border-color: var(--accent, #d4a574);
 		}
+	}
+
+	.presse {
+		margin-top: 2.75rem;
+		padding-top: 2rem;
+		border-top: 1px solid var(--border, #e0dbd4);
+	}
+	.presse h2 {
+		margin: 0 0 0.5rem;
+		font-size: 1.25rem;
+		font-weight: 700;
+	}
+	.presse-intro {
+		margin: 0 0 1.25rem;
+		font-size: 0.92rem;
+		color: var(--muted, #5c5850);
+	}
+	.presse-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.65rem;
+	}
+	.presse-list li a {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		padding: 0.65rem 0.75rem;
+		border-radius: 8px;
+		border: 1px solid var(--border, #e0dbd4);
+		text-decoration: none;
+		color: inherit;
+		transition:
+			background 0.15s ease,
+			border-color 0.15s ease;
+	}
+	.presse-list li a:hover {
+		background: color-mix(in srgb, var(--accent) 8%, transparent);
+		border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+	}
+	.presse-source {
+		font-size: 0.72rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--accent, #6b3d2e);
+	}
+	.presse-title {
+		font-size: 0.95rem;
+		line-height: 1.35;
+		color: var(--fg, #1a1814);
 	}
 </style>
