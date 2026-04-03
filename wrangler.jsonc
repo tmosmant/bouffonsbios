@@ -9,8 +9,8 @@
 		"binding": "ASSETS"
 	},
 	"routes": [
-		{ "pattern": "bouffonsbio.org", "custom_domain": true },
-		{ "pattern": "www.bouffonsbio.org", "custom_domain": true }
+		{ "pattern": "bouffonsbios.org", "custom_domain": true },
+		{ "pattern": "www.bouffonsbios.org", "custom_domain": true }
 	],
 	"observability": {
 		"enabled": true

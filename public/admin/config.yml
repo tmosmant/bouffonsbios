@@ -1,4 +1,5 @@
 # OAuth : voir README (GitHub App + secrets Wrangler sur bouffonsbio-oauth).
+# Site public : https://bouffonsbios.org
 backend:
   name: github
   repo: tmosmant/bouffonsbio

@@ -2,13 +2,15 @@
 
 Site [Astro](https://astro.build) + [Decap CMS](https://decapcms.org), déployé sur **Cloudflare Workers** (assets statiques + worker Astro).
 
+**Domaine de prod** : [bouffonsbios.org](https://bouffonsbios.org) (**Bios** avec un **s** — pas `bouffonsbio.org`).
+
 ## URLs
 
 | Ressource | URL |
 |-----------|-----|
-| Site (prod) | <https://bouffonsbio.org> · <https://www.bouffonsbio.org> |
+| Site (prod) | <https://bouffonsbios.org> · <https://www.bouffonsbios.org> |
 | Alias Workers | <https://bouffonsbio.thomas-mosmant.workers.dev> |
-| Admin Decap | <https://bouffonsbio.org/admin/> |
+| Admin Decap | <https://bouffonsbios.org/admin/> |
 | OAuth GitHub (proxy) | <https://bouffonsbio-oauth.thomas-mosmant.workers.dev> |
 
 ## Développement
@@ -36,7 +38,7 @@ npm run deploy:oauth
 ## Decap + GitHub en production
 
 1. **GitHub** → *Settings* → *Developer settings* → *OAuth Apps* → *New OAuth App*  
-   - **Homepage URL** : `https://bouffonsbio.org`  
+   - **Homepage URL** : `https://bouffonsbios.org`  
    - **Authorization callback URL** :  
      `https://bouffonsbio-oauth.thomas-mosmant.workers.dev/callback?provider=github`
 
