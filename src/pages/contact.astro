@@ -2,42 +2,322 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Contact — Bouffons Bios" description="Contacter l’association Bouffons Bios" current="contact">
-	<article class="prose">
-		<h1>Contact</h1>
-		<p>
-			Pour toute question sur le marché des vins bio, les participations ou l’association, vous pouvez écrire ou
-			appeler&nbsp;:
-		</p>
-		<ul class="contacts">
-			<li>
-				<strong>E-mail</strong> — <a href="mailto:bouffonsbios@gmail.com">bouffonsbios@gmail.com</a>
-			</li>
-			<li>
-				<strong>Daniel Mosmant</strong> — <a href="tel:+33676692598">+33&nbsp;6&nbsp;76&nbsp;69&nbsp;25&nbsp;98</a>
-			</li>
-		</ul>
-		<p class="note">
-			Un formulaire de contact sur le site pourra être ajouté plus tard ; en attendant, merci d’utiliser l’e-mail
-			ou le téléphone.
+<Layout
+	title="Contact — Bouffons Bios"
+	description="Contacter l’association Bouffons Bios — marché des vins bio à Montreuil"
+	current="contact"
+	mainClass="site-main--contact"
+>
+	<article class="contact-page prose">
+		<header class="contact-hero">
+			<p class="contact-eyebrow" aria-hidden="true">Association</p>
+			<h1>Contact</h1>
+			<p class="contact-lead">
+				Questions sur le <strong>marché des vins bio</strong>, les participations vignerons ou l’organisation&nbsp;?
+				Écrivez-nous ou appelez — nous répondons avec plaisir.
+			</p>
+		</header>
+
+		<div class="contact-cards" role="list">
+			<a class="contact-card" href="mailto:bouffonsbios@gmail.com" role="listitem">
+				<span class="contact-card-icon" aria-hidden="true">
+					<svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="M4 6h16v12H4V6z"
+							stroke="currentColor"
+							stroke-width="1.75"
+							stroke-linejoin="round"
+							fill="none"
+						/>
+						<path
+							d="M4 7l8 6 8-6"
+							stroke="currentColor"
+							stroke-width="1.75"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							fill="none"
+						/>
+					</svg>
+				</span>
+				<span class="contact-card-label">E-mail</span>
+				<span class="contact-card-value">bouffonsbios@gmail.com</span>
+				<span class="contact-card-hint">Ouvre votre messagerie</span>
+			</a>
+
+			<a class="contact-card contact-card--tel" href="tel:+33676692598" role="listitem">
+				<span class="contact-card-icon contact-card-icon--tel" aria-hidden="true">
+					<svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="M6.5 4h3l1.5 4.5-2 1.5c1.2 2.4 3.1 4.3 5.5 5.5l1.5-2L20 15v3a1.5 1.5 0 01-1.3 1.5c-3.8.5-12-7.2-11.5-11A1.5 1.5 0 016.5 4z"
+							stroke="currentColor"
+							stroke-width="1.75"
+							stroke-linejoin="round"
+							fill="none"
+						/>
+					</svg>
+				</span>
+				<span class="contact-card-label">Téléphone</span>
+				<span class="contact-card-value">Daniel Mosmant</span>
+				<span class="contact-card-hint">+33&nbsp;6&nbsp;76&nbsp;69&nbsp;25&nbsp;98</span>
+			</a>
+		</div>
+
+		<section class="contact-aside" aria-labelledby="contact-liens">
+			<h2 id="contact-liens">À voir aussi</h2>
+			<ul class="contact-links">
+				<li>
+					<a href="/plan-dacces/">Plan d’accès</a>
+					<span class="contact-links-desc">Croix de Chavaux, métro &amp; bus</span>
+				</li>
+				<li>
+					<a href="/">Accueil</a>
+					<span class="contact-links-desc">Dates &amp; infos du marché</span>
+				</li>
+				<li>
+					<a href="/articles/">Articles</a>
+					<span class="contact-links-desc">Communiqués &amp; listes de vignerons</span>
+				</li>
+			</ul>
+		</section>
+
+		<p class="contact-note">
+			Pas de formulaire sur le site pour l’instant — l’e-mail ou l’appel restent les moyens les plus simples pour
+			nous joindre.
 		</p>
 	</article>
 </Layout>
 
 <style>
-	h1 {
+	/* Colonne un peu plus aérée que l’article type blog */
+	:global(.site-main--contact) {
+		max-width: 40rem;
+	}
+
+	.contact-page {
+		--contact-radius: 0.9rem;
+	}
+
+	.contact-hero {
+		margin-bottom: 1.75rem;
+	}
+
+	.contact-page h1 {
 		margin-top: 0;
-	}
-	.contacts {
-		margin: 1.25rem 0;
-		padding-left: 1.25rem;
-	}
-	.contacts li {
 		margin-bottom: 0.65rem;
 	}
-	.note {
-		font-size: 0.92rem;
-		color: var(--muted, #5c5850);
-		margin-top: 2rem;
+
+	.contact-eyebrow {
+		margin: 0 0 0.35rem;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--accent-nature, #35624a);
+	}
+
+	.contact-lead {
+		margin: 0;
+		font-size: 1.08rem;
+		line-height: 1.55;
+		color: var(--muted, #5a5c52);
+		max-width: 38ch;
+	}
+
+	.contact-lead strong {
+		color: var(--accent, #8f2d4a);
+		font-weight: 600;
+	}
+
+	.contact-cards {
+		display: grid;
+		gap: 1rem;
+		margin: 0 0 2rem;
+		list-style: none;
+		padding: 0;
+	}
+
+	@media (min-width: 32rem) {
+		.contact-cards {
+			grid-template-columns: 1fr 1fr;
+			gap: 1.15rem;
+		}
+	}
+
+	.contact-card {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.35rem;
+		padding: 1.35rem 1.4rem 1.4rem;
+		text-decoration: none;
+		color: inherit;
+		border-radius: var(--contact-radius);
+		border: 1px solid color-mix(in srgb, var(--border) 88%, var(--accent-nature));
+		background: linear-gradient(
+			145deg,
+			color-mix(in srgb, var(--bg) 88%, white),
+			color-mix(in srgb, var(--joy) 5%, var(--bg))
+		);
+		box-shadow:
+			0 1px 0 color-mix(in srgb, white 70%, transparent) inset,
+			0 6px 22px color-mix(in srgb, var(--fg) 5%, transparent);
+		transition:
+			transform 0.2s ease,
+			border-color 0.2s ease,
+			box-shadow 0.2s ease;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.contact-card {
+			background: linear-gradient(
+				145deg,
+				color-mix(in srgb, var(--bg) 96%, var(--accent-nature)),
+				color-mix(in srgb, var(--bg) 94%, var(--joy))
+			);
+			box-shadow:
+				0 1px 0 color-mix(in srgb, white 6%, transparent) inset,
+				0 8px 28px color-mix(in srgb, black 25%, transparent);
+		}
+	}
+
+	.contact-card:hover {
+		transform: translateY(-3px);
+		border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
+		box-shadow:
+			0 1px 0 color-mix(in srgb, white 55%, transparent) inset,
+			0 12px 32px color-mix(in srgb, var(--accent) 12%, transparent);
+	}
+
+	.contact-card:focus-visible {
+		outline: 2px solid var(--joy, #c9892e);
+		outline-offset: 3px;
+	}
+
+	.contact-card-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 3rem;
+		height: 3rem;
+		margin-bottom: 0.15rem;
+		border-radius: 0.75rem;
+		color: var(--accent, #8f2d4a);
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--accent) 12%, transparent),
+			color-mix(in srgb, var(--accent-nature) 14%, transparent)
+		);
+		border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+	}
+
+	.contact-card-icon--tel {
+		color: var(--accent-nature, #35624a);
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--accent-nature) 16%, transparent),
+			color-mix(in srgb, var(--joy) 12%, transparent)
+		);
+		border-color: color-mix(in srgb, var(--accent-nature) 28%, transparent);
+	}
+
+	.contact-card-label {
+		font-size: 0.7rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--muted, #5a5c52);
+	}
+
+	.contact-card-value {
+		font-family: var(--font-display, Georgia, serif);
+		font-weight: 700;
+		font-size: 1.05rem;
+		letter-spacing: -0.02em;
+		color: var(--fg, #1c221c);
+		line-height: 1.25;
+		word-break: break-word;
+	}
+
+	.contact-card-hint {
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: var(--accent-soft, #a84862);
+		margin-top: 0.15rem;
+	}
+
+	.contact-card--tel .contact-card-hint {
+		color: var(--accent-nature-soft, #4a7d62);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.contact-aside {
+		padding: 1.25rem 1.35rem 1.35rem;
+		margin-bottom: 1.75rem;
+		border-radius: var(--contact-radius);
+		background: linear-gradient(
+			120deg,
+			color-mix(in srgb, var(--accent-nature) 8%, transparent),
+			color-mix(in srgb, var(--joy) 7%, transparent)
+		);
+		border: 1px solid color-mix(in srgb, var(--border) 75%, var(--accent-nature));
+	}
+
+	.contact-aside h2 {
+		margin: 0 0 0.85rem;
+		font-size: 0.82rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--accent-nature, #35624a);
+	}
+
+	.contact-links {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 0.85rem;
+	}
+
+	.contact-links li {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		padding-bottom: 0.75rem;
+		border-bottom: 1px solid color-mix(in srgb, var(--border) 90%, transparent);
+	}
+
+	.contact-links li:last-child {
+		padding-bottom: 0;
+		border-bottom: none;
+	}
+
+	.contact-links a {
+		font-weight: 600;
+		color: var(--accent, #8f2d4a);
+		text-decoration: none;
+		font-size: 1rem;
+	}
+
+	.contact-links a:hover {
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+	}
+
+	.contact-links-desc {
+		font-size: 0.86rem;
+		color: var(--muted, #5a5c52);
+		line-height: 1.35;
+	}
+
+	.contact-note {
+		margin: 0;
+		font-size: 0.88rem;
+		line-height: 1.5;
+		color: var(--muted, #5a5c52);
+		font-style: italic;
+		padding-top: 0.25rem;
+		border-top: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
 	}
 </style>
