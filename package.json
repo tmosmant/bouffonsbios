@@ -12,7 +12,8 @@
     "astro": "astro",
     "generate-types": "wrangler types",
     "deploy": "astro build && wrangler deploy",
-    "deploy:oauth": "wrangler deploy -c workers/decap-oauth/wrangler.jsonc"
+    "deploy:oauth": "wrangler deploy -c workers/decap-oauth/wrangler.jsonc",
+    "import:wp": "node scripts/import-wordpress.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.7",
@@ -21,5 +22,9 @@
   },
   "overrides": {
     "vite": "^7"
+  },
+  "devDependencies": {
+    "fast-xml-parser": "^5.5.10",
+    "turndown": "^7.2.3"
   }
 }
