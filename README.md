@@ -23,6 +23,16 @@ npm run dev
 - Site : <http://localhost:4321>
 - Admin : <http://localhost:4321/admin/> (`local_backend: true` → en local, prévoir [Decap server](https://decapcms.org/docs/working-with-a-local-git-repository/) si besoin)
 
+### Carte Mapbox (plan d’accès)
+
+La page `/plan-dacces/` charge [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) avec un style hébergé sur ton compte. Copier `.env.example` vers `.env` et renseigner :
+
+```env
+PUBLIC_MAPBOX_ACCESS_TOKEN=pk.…
+```
+
+En production (Cloudflare Pages, etc.), définir la même variable d’environnement au moment du build pour qu’elle soit injectée dans le bundle client. Restreindre le jeton par URL dans [Mapbox Account](https://account.mapbox.com/).
+
 ## Déploiement
 
 ```sh

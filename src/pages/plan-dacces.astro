@@ -1,17 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 const planImage =
 	'https://bouffonsbios.files.wordpress.com/2025/03/plan-dacces.jpg';
 
-const SORTIE5 = { lat: 48.858425, lng: 2.436327 };
-const zoom = 17;
+const MAPBOX_STYLE = 'mapbox://styles/tmosmant/cmniwegjm003z01sa181h9ma0';
+const hasMapboxToken = Boolean(import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN);
 ---
 
 <Layout title="Plan d'accès — Bouffons Bios" description="Marché de la Croix de Chavaux, Montreuil" current="plan">
-	<Fragment slot="head">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous" />
-	</Fragment>
 	<article class="prose">
 		<h1>Plan d’accès</h1>
 		<p>
@@ -26,21 +24,32 @@ const zoom = 17;
 				id="map-acces"
 				class="map-acces-inner"
 				role="region"
-				aria-label="Carte du quartier Croix de Chavaux"
-				data-lat={SORTIE5.lat}
-				data-lng={SORTIE5.lng}
-				data-zoom={zoom}
+				aria-label="Carte Mapbox — Croix de Chavaux, métro, bus et accès marché"
+				data-style={MAPBOX_STYLE}
+				data-has-token={hasMapboxToken ? '1' : ''}
 			>
 			</div>
-			<p class="map-live-fallback">
+			{!hasMapboxToken && (
+				<p class="map-live-fallback map-live-fallback--token">
+					Carte interactive&nbsp;: définissez <code>PUBLIC_MAPBOX_ACCESS_TOKEN</code> dans un fichier{' '}
+					<code>.env</code> (voir README).
+				</p>
+			)}
+			<p class="map-live-fallback map-live-fallback--osm">
 				<a
-					href={`https://www.openstreetmap.org/?mlat=${SORTIE5.lat}&mlon=${SORTIE5.lng}#map=${zoom}/${SORTIE5.lat}/${SORTIE5.lng}`}
+					href="https://www.openstreetmap.org/#map=17/48.8582/2.4360"
 					rel="noopener noreferrer"
 				>
-					Afficher la carte
+					Ouvrir la zone sur OpenStreetMap
 				</a>
 			</p>
 		</div>
+
+		<p class="map-transit-source">
+			Sorties de métro et arrêts de bus&nbsp;: positions issues d’<a
+				href="https://www.openstreetmap.org/copyright"
+				rel="noopener noreferrer">OpenStreetMap</a> (mise à jour ponctuelle du site).
+		</p>
 
 		<figure class="map-fig">
 			<img src={planImage} alt="Plan d’accès au marché de la Croix de Chavaux" width="720" height="393" loading="lazy" />
@@ -48,42 +57,147 @@ const zoom = 17;
 	</article>
 </Layout>
 
-<script is:inline src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
-<script is:inline>
-	(function () {
-		function boot() {
-			if (typeof L === 'undefined') return;
-			const el = document.getElementById('map-acces');
-			if (!el || el.dataset.mapReady) return;
-			const la = parseFloat(el.dataset.lat || '');
-			const ln = parseFloat(el.dataset.lng || '');
-			const z = parseInt(el.dataset.zoom || '17', 10);
-			if (Number.isNaN(la) || Number.isNaN(ln)) return;
-			el.dataset.mapReady = '1';
-			const map = L.map(el, { scrollWheelZoom: false }).setView([la, ln], z);
-			/* Fond type « plan clair » : géométrie des rues et espaces verts, sans POI ni textes (CARTO light_nolabels). */
-			L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
-				attribution:
-					'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-				subdomains: 'abcd',
-				maxZoom: 20,
-			}).addTo(map);
-			L.circleMarker([la, ln], {
-				radius: 9,
-				color: '#003d82',
-				weight: 2,
-				fillColor: '#ffffff',
-				fillOpacity: 1,
-			})
-				.addTo(map)
-				.bindPopup('Sortie 5 · place du marché');
-			const wrap = el.closest('.map-live');
-			const fb = wrap && wrap.querySelector('.map-live-fallback');
-			if (fb) fb.remove();
+<script>
+	import mapboxgl from 'mapbox-gl';
+	import transitFc from '../data/croix-chavaux-transit.json';
+
+	const TOKEN = import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN;
+	const INTERACTIVE_LAYERS = ['transit-bus', 'transit-exit', 'transit-station', 'transit-venue'];
+
+	function escapeHtml(s: string) {
+		return s
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;');
+	}
+
+	function popupHtml(props: Record<string, string | undefined>) {
+		const title = escapeHtml(props.name || '');
+		const sub = props.ref ? `<div class="mapbox-popup-ref">Sortie&nbsp;${escapeHtml(props.ref)}</div>` : '';
+		const detail = props.detail ? `<p>${escapeHtml(props.detail)}</p>` : '';
+		return `<div class="mapbox-popup-inner"><strong>${title}</strong>${sub}${detail}</div>`;
+	}
+
+	function boundsFromGeoJSON(fc: typeof transitFc): mapboxgl.LngLatBounds {
+		const b = new mapboxgl.LngLatBounds();
+		for (const f of fc.features) {
+			if (f.geometry?.type === 'Point') {
+				const c = f.geometry.coordinates as [number, number];
+				b.extend(c);
+			}
 		}
-		if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-		else boot();
-	})();
+		return b;
+	}
+
+	function boot() {
+		const el = document.getElementById('map-acces');
+		if (!el || el.dataset.mapReady) return;
+		if (!TOKEN) return;
+
+		el.dataset.mapReady = '1';
+		mapboxgl.accessToken = TOKEN;
+
+		const style = el.dataset.style || '';
+		const map = new mapboxgl.Map({
+			container: el,
+			style,
+			center: [2.4358, 48.8582],
+			zoom: 16,
+			scrollZoom: false,
+			attributionControl: true,
+		});
+
+		map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-left');
+
+		map.on('load', () => {
+			map.addSource('transit', {
+				type: 'geojson',
+				data: transitFc,
+			});
+
+			map.addLayer({
+				id: 'transit-bus',
+				type: 'circle',
+				source: 'transit',
+				filter: ['==', ['get', 'kind'], 'bus'],
+				paint: {
+					'circle-radius': 5,
+					'circle-color': '#0d8050',
+					'circle-stroke-width': 2,
+					'circle-stroke-color': '#ffffff',
+				},
+			});
+
+			map.addLayer({
+				id: 'transit-exit',
+				type: 'circle',
+				source: 'transit',
+				filter: ['==', ['get', 'kind'], 'exit'],
+				paint: {
+					'circle-radius': 7,
+					'circle-color': '#e6c200',
+					'circle-stroke-width': 2,
+					'circle-stroke-color': '#1a1a1a',
+				},
+			});
+
+			map.addLayer({
+				id: 'transit-station',
+				type: 'circle',
+				source: 'transit',
+				filter: ['==', ['get', 'kind'], 'station'],
+				paint: {
+					'circle-radius': 9,
+					'circle-color': '#003d82',
+					'circle-stroke-width': 2,
+					'circle-stroke-color': '#ffffff',
+				},
+			});
+
+			map.addLayer({
+				id: 'transit-venue',
+				type: 'circle',
+				source: 'transit',
+				filter: ['==', ['get', 'kind'], 'venue'],
+				paint: {
+					'circle-radius': 11,
+					'circle-color': '#9a3412',
+					'circle-stroke-width': 2,
+					'circle-stroke-color': '#fff7ed',
+				},
+			});
+
+			map.fitBounds(boundsFromGeoJSON(transitFc), {
+				padding: { top: 48, bottom: 52, left: 48, right: 48 },
+				maxZoom: 17,
+				duration: 0,
+			});
+
+			map.on('mousemove', (e) => {
+				const feats = map.queryRenderedFeatures(e.point, { layers: INTERACTIVE_LAYERS });
+				map.getCanvas().style.cursor = feats.length ? 'pointer' : '';
+			});
+
+			map.on('click', (e) => {
+				const feats = map.queryRenderedFeatures(e.point, { layers: INTERACTIVE_LAYERS });
+				const f = feats[0];
+				if (!f?.properties) return;
+				const p = f.properties as Record<string, string>;
+				new mapboxgl.Popup({ maxWidth: '280px' })
+					.setLngLat(e.lngLat)
+					.setHTML(popupHtml(p))
+					.addTo(map);
+			});
+		});
+
+		const wrap = el.closest('.map-live');
+		const fb = wrap?.querySelectorAll('.map-live-fallback');
+		fb?.forEach((n) => n.remove());
+	}
+
+	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+	else boot();
 </script>
 
 <style>
@@ -101,8 +215,7 @@ const zoom = 17;
 		border: 1px solid color-mix(in srgb, var(--border) 70%, #c4bfb4);
 		box-shadow: 0 2px 14px color-mix(in srgb, var(--fg) 5%, transparent);
 		z-index: 0;
-		/* Cadre « papier plan » même en thème sombre */
-		background: #ebe6dc;
+		background: #f2eee4;
 	}
 	.map-acces-inner {
 		position: absolute;
@@ -111,22 +224,18 @@ const zoom = 17;
 		height: 100%;
 		z-index: 2;
 	}
-	.map-live :global(.leaflet-container) {
-		font-family: var(--font-body, system-ui, sans-serif);
-		background: #ebe6dc;
+	.map-live :global(.mapboxgl-ctrl-bottom-right) {
+		display: flex;
+		align-items: flex-end;
+		gap: 0.25rem;
 	}
-	/* Teinte crème / plan RATP sur les tuiles sans libellés */
-	.map-live :global(.leaflet-tile-pane) {
-		filter: sepia(0.14) saturate(0.65) brightness(1.05) contrast(0.94);
-	}
-	.map-live :global(.leaflet-control-attribution) {
+	.map-live :global(.mapboxgl-ctrl-attrib) {
 		font-size: 0.65rem;
-		max-width: 100%;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		background: color-mix(in srgb, #ebe6dc 92%, transparent) !important;
-		color: var(--muted, #5a5c52);
+		background: color-mix(in srgb, #f2eee4 92%, transparent) !important;
+	}
+	.map-live :global(.mapboxgl-ctrl-group button) {
+		background: #fff;
+		color: #1a1a1a;
 	}
 	.map-live-fallback {
 		position: absolute;
@@ -136,14 +245,28 @@ const zoom = 17;
 		align-items: center;
 		justify-content: center;
 		padding: 1rem;
-		background: #ebe6dc;
+		background: #f2eee4;
 		font-size: 0.95rem;
 		z-index: 3;
+		pointer-events: none;
+		text-align: center;
+	}
+	.map-live-fallback--osm {
 		pointer-events: none;
 	}
 	.map-live-fallback a {
 		pointer-events: auto;
 		font-weight: 600;
+	}
+	.map-live-fallback--token {
+		font-size: 0.88rem;
+		color: var(--muted, #5a5c52);
+		padding: 1.25rem;
+	}
+	.map-transit-source {
+		font-size: 0.85rem;
+		color: var(--muted, #5a5c52);
+		margin: -0.5rem 0 1.25rem;
 	}
 	.map-fig {
 		margin: 1.5rem 0 0;
@@ -157,5 +280,18 @@ const zoom = 17;
 		box-shadow:
 			0 4px 20px color-mix(in srgb, var(--fg) 6%, transparent),
 			0 0 0 1px color-mix(in srgb, var(--joy) 15%, transparent);
+	}
+	.map-live :global(.mapbox-popup-inner) {
+		font-size: 0.85rem;
+		line-height: 1.35;
+	}
+	.map-live :global(.mapbox-popup-inner p) {
+		margin: 0.35rem 0 0;
+	}
+	.map-live :global(.mapbox-popup-ref) {
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: #003d82;
+		margin-top: 0.15rem;
 	}
 </style>

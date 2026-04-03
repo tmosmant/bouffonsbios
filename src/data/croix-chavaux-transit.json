@@ -1,0 +1,127 @@
+{
+	"type": "FeatureCollection",
+	"features": [
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "venue",
+				"name": "Marché · place Croix de Chavaux",
+				"detail": "Repère d’accès indiqué sur le plan du site."
+			},
+			"geometry": { "type": "Point", "coordinates": [2.436327, 48.858425] }
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "station",
+				"name": "Croix de Chavaux",
+				"detail": "Métro ligne 9"
+			},
+			"geometry": { "type": "Point", "coordinates": [2.43575, 48.8579778] }
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "exit",
+				"name": "Place du Marché",
+				"ref": "5",
+				"detail": "Métro ligne 9 — accès place du marché"
+			},
+			"geometry": { "type": "Point", "coordinates": [2.4334952, 48.8576598] }
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "exit",
+				"name": "Rue de Paris",
+				"ref": "2",
+				"detail": "Métro ligne 9"
+			},
+			"geometry": { "type": "Point", "coordinates": [2.435539, 48.858074] }
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "exit",
+				"name": "Bd Chanzy (centre commercial)",
+				"ref": "3",
+				"detail": "Métro ligne 9"
+			},
+			"geometry": { "type": "Point", "coordinates": [2.435767, 48.8585145] }
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "exit",
+				"name": "Place Jacques Duclos",
+				"ref": "1",
+				"detail": "Métro ligne 9"
+			},
+			"geometry": { "type": "Point", "coordinates": [2.435573, 48.8577949] }
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "exit",
+				"name": "Rue Kléber",
+				"ref": "4",
+				"detail": "Métro ligne 9"
+			},
+			"geometry": { "type": "Point", "coordinates": [2.4367256, 48.8577626] }
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "bus",
+				"name": "Croix de Chavaux — Métro",
+				"detail": "Bus 102"
+			},
+			"geometry": { "type": "Point", "coordinates": [2.435382, 48.858173] }
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "bus",
+				"name": "Croix de Chavaux — Métro",
+				"detail": "Bus 127 (quais à proximité)"
+			},
+			"geometry": { "type": "Point", "coordinates": [2.4365625, 48.8577129] }
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "bus",
+				"name": "Croix de Chavaux — Rouget de Lisle",
+				"detail": "Bus 115, 122, N16, N34"
+			},
+			"geometry": { "type": "Point", "coordinates": [2.4374402, 48.8586538] }
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "bus",
+				"name": "Croix de Chavaux — Métro",
+				"detail": "Bus 122"
+			},
+			"geometry": { "type": "Point", "coordinates": [2.4368944, 48.8588661] }
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "bus",
+				"name": "Croix de Chavaux",
+				"detail": "Bus (arrêt RATP)"
+			},
+			"geometry": { "type": "Point", "coordinates": [2.4370697, 48.859423] }
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"kind": "bus",
+				"name": "Croix de Chavaux — Métro",
+				"detail": "Correspondances bus"
+			},
+			"geometry": { "type": "Point", "coordinates": [2.4372254, 48.8577387] }
+		}
+	]
+}
