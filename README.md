@@ -76,4 +76,4 @@ Sans argument, le script cherche par défaut `~/Downloads/bouffonsbios.WordPress
 
 ## Dépôt
 
-<https://github.com/tmosmant/bouffonsbio>
+<https://github.com/tmosmant/bouffonsbios>

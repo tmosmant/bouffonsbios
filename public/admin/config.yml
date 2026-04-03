@@ -2,7 +2,7 @@
 # Site public : https://bouffonsbios.org
 backend:
   name: github
-  repo: tmosmant/bouffonsbio
+  repo: tmosmant/bouffonsbios
   branch: main
   base_url: https://bouffonsbios-oauth.thomas-mosmant.workers.dev
   auth_endpoint: auth
