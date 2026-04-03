@@ -1,7 +1,7 @@
 /** Libellé court pour le lien d’accueil (équivalent de l’entrée “à la une” du menu WordPress). */
 export const NAV_HIGHLIGHT = {
 	label: '21ᵉ marché des vins bio 2026',
-	href: '/#marche',
+	href: '/',
 } as const;
 
 /** Catégories (identiques au site WordPress). */

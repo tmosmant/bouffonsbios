@@ -83,7 +83,11 @@ for (const p of allPosts) {
 		font-size: 0.95rem;
 	}
 	.intro a {
-		color: var(--accent, #6b3d2e);
+		color: var(--accent-nature, #35624a);
+		font-weight: 600;
+	}
+	.intro a:hover {
+		color: var(--accent, #8f2d4a);
 	}
 	.filters {
 		display: flex;
@@ -95,22 +99,41 @@ for (const p of allPosts) {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.35rem;
-		padding: 0.35rem 0.65rem;
+		padding: 0.38rem 0.72rem;
 		border-radius: 999px;
 		font-size: 0.82rem;
 		font-weight: 500;
 		text-decoration: none;
-		color: var(--muted, #5c5850);
-		background: color-mix(in srgb, var(--muted) 12%, transparent);
-		border: 1px solid var(--border, #e0dbd4);
+		color: var(--muted, #5a5c52);
+		background: color-mix(in srgb, var(--accent-nature) 8%, transparent);
+		border: 1px solid var(--border, #dcd4c8);
+		transition:
+			transform 0.15s ease,
+			box-shadow 0.15s ease,
+			border-color 0.15s ease,
+			background 0.15s ease,
+			color 0.15s ease;
 	}
 	.chip:hover {
-		color: var(--accent, #6b3d2e);
+		color: var(--accent, #8f2d4a);
+		border-color: color-mix(in srgb, var(--accent-nature) 45%, var(--border));
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--joy) 12%, transparent),
+			color-mix(in srgb, var(--accent-nature) 10%, transparent)
+		);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 14px color-mix(in srgb, var(--accent-nature) 12%, transparent);
 	}
 	.chip-active {
-		background: color-mix(in srgb, var(--accent) 18%, transparent);
-		color: var(--accent, #6b3d2e);
-		border-color: var(--accent, #6b3d2e);
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--accent) 16%, transparent),
+			color-mix(in srgb, var(--joy) 12%, transparent)
+		);
+		color: var(--accent, #8f2d4a);
+		border-color: color-mix(in srgb, var(--joy) 40%, var(--accent));
+		font-weight: 600;
 	}
 	.count {
 		opacity: 0.75;
@@ -122,17 +145,29 @@ for (const p of allPosts) {
 		margin: 0;
 	}
 	.list li {
-		padding: 1rem 0;
-		border-bottom: 1px solid var(--border, #e0dbd4);
+		padding: 1rem 0.35rem;
+		margin: 0 -0.35rem;
+		border-bottom: 1px solid var(--border, #dcd4c8);
+		transition: background 0.15s ease;
+	}
+	.list li:hover {
+		background: linear-gradient(
+			90deg,
+			color-mix(in srgb, var(--joy) 5%, transparent),
+			transparent 70%
+		);
 	}
 	.list .title {
 		font-weight: 600;
 		font-size: 1.05rem;
-		color: var(--accent, #6b3d2e);
+		color: var(--fg, #1c221c);
 		text-decoration: none;
+		transition: color 0.15s ease;
 	}
 	.list .title:hover {
+		color: var(--accent, #8f2d4a);
 		text-decoration: underline;
+		text-decoration-color: color-mix(in srgb, var(--joy) 70%, var(--accent));
 	}
 	time {
 		display: block;

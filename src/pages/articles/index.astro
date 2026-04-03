@@ -82,23 +82,41 @@ const byCat = counts();
 		display: inline-flex;
 		align-items: center;
 		gap: 0.35rem;
-		padding: 0.35rem 0.65rem;
+		padding: 0.38rem 0.72rem;
 		border-radius: 999px;
 		font-size: 0.82rem;
 		font-weight: 500;
 		text-decoration: none;
-		color: var(--muted, #5c5850);
-		background: color-mix(in srgb, var(--muted) 12%, transparent);
-		border: 1px solid var(--border, #e0dbd4);
+		color: var(--muted, #5a5c52);
+		background: color-mix(in srgb, var(--accent-nature) 8%, transparent);
+		border: 1px solid var(--border, #dcd4c8);
+		transition:
+			transform 0.15s ease,
+			box-shadow 0.15s ease,
+			border-color 0.15s ease,
+			background 0.15s ease,
+			color 0.15s ease;
 	}
 	.chip:hover {
-		color: var(--accent, #6b3d2e);
-		border-color: var(--accent, #6b3d2e);
+		color: var(--accent, #8f2d4a);
+		border-color: color-mix(in srgb, var(--accent-nature) 45%, var(--border));
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--joy) 12%, transparent),
+			color-mix(in srgb, var(--accent-nature) 10%, transparent)
+		);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 14px color-mix(in srgb, var(--accent-nature) 12%, transparent);
 	}
 	.chip-all {
-		background: color-mix(in srgb, var(--accent) 15%, transparent);
-		color: var(--accent, #6b3d2e);
-		border-color: transparent;
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--accent) 14%, transparent),
+			color-mix(in srgb, var(--joy) 10%, transparent)
+		);
+		color: var(--accent, #8f2d4a);
+		border-color: color-mix(in srgb, var(--joy) 35%, transparent);
+		font-weight: 600;
 	}
 	.count {
 		opacity: 0.75;
@@ -110,8 +128,18 @@ const byCat = counts();
 		margin: 0;
 	}
 	.list li {
-		padding: 1rem 0;
-		border-bottom: 1px solid var(--border, #e0dbd4);
+		padding: 1rem 0.35rem;
+		margin: 0 -0.35rem;
+		border-bottom: 1px solid var(--border, #dcd4c8);
+		border-radius: 0;
+		transition: background 0.15s ease;
+	}
+	.list li:hover {
+		background: linear-gradient(
+			90deg,
+			color-mix(in srgb, var(--joy) 5%, transparent),
+			transparent 70%
+		);
 	}
 	.list .cat {
 		display: inline-block;
@@ -119,7 +147,7 @@ const byCat = counts();
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
-		color: var(--accent, #6b3d2e);
+		color: var(--accent-nature, #35624a);
 		text-decoration: none;
 		margin-bottom: 0.35rem;
 	}
@@ -134,7 +162,7 @@ const byCat = counts();
 		text-decoration: none;
 	}
 	.list .title:hover {
-		color: var(--accent, #6b3d2e);
+		color: var(--accent, #8f2d4a);
 	}
 	time {
 		display: block;

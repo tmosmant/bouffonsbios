@@ -3,9 +3,15 @@ import Layout from '../layouts/Layout.astro';
 
 const planImage =
 	'https://bouffonsbios.files.wordpress.com/2025/03/plan-dacces.jpg';
+
+const SORTIE5 = { lat: 48.858425, lng: 2.436327 };
+const zoom = 17;
 ---
 
 <Layout title="Plan d'accès — Bouffons Bios" description="Marché de la Croix de Chavaux, Montreuil" current="plan">
+	<Fragment slot="head">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous" />
+	</Fragment>
 	<article class="prose">
 		<h1>Plan d’accès</h1>
 		<p>
@@ -14,15 +20,130 @@ const planImage =
 			<strong>Métro&nbsp;:</strong> Croix de Chavaux (ligne 9)<br />
 			<strong>Bus&nbsp;:</strong> 102, 115, 122, 127, 202
 		</p>
+
+		<div class="map-live">
+			<div
+				id="map-acces"
+				class="map-acces-inner"
+				role="region"
+				aria-label="Carte du quartier Croix de Chavaux"
+				data-lat={SORTIE5.lat}
+				data-lng={SORTIE5.lng}
+				data-zoom={zoom}
+			>
+			</div>
+			<p class="map-live-fallback">
+				<a
+					href={`https://www.openstreetmap.org/?mlat=${SORTIE5.lat}&mlon=${SORTIE5.lng}#map=${zoom}/${SORTIE5.lat}/${SORTIE5.lng}`}
+					rel="noopener noreferrer"
+				>
+					Afficher la carte
+				</a>
+			</p>
+		</div>
+
 		<figure class="map-fig">
 			<img src={planImage} alt="Plan d’accès au marché de la Croix de Chavaux" width="720" height="393" loading="lazy" />
 		</figure>
 	</article>
 </Layout>
 
+<script is:inline src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+<script is:inline>
+	(function () {
+		function boot() {
+			if (typeof L === 'undefined') return;
+			const el = document.getElementById('map-acces');
+			if (!el || el.dataset.mapReady) return;
+			const la = parseFloat(el.dataset.lat || '');
+			const ln = parseFloat(el.dataset.lng || '');
+			const z = parseInt(el.dataset.zoom || '17', 10);
+			if (Number.isNaN(la) || Number.isNaN(ln)) return;
+			el.dataset.mapReady = '1';
+			const map = L.map(el, { scrollWheelZoom: false }).setView([la, ln], z);
+			/* Fond type « plan clair » : géométrie des rues et espaces verts, sans POI ni textes (CARTO light_nolabels). */
+			L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
+				attribution:
+					'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+				subdomains: 'abcd',
+				maxZoom: 20,
+			}).addTo(map);
+			L.circleMarker([la, ln], {
+				radius: 9,
+				color: '#003d82',
+				weight: 2,
+				fillColor: '#ffffff',
+				fillOpacity: 1,
+			})
+				.addTo(map)
+				.bindPopup('Sortie 5 · place du marché');
+			const wrap = el.closest('.map-live');
+			const fb = wrap && wrap.querySelector('.map-live-fallback');
+			if (fb) fb.remove();
+		}
+		if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+		else boot();
+	})();
+</script>
+
 <style>
 	h1 {
 		margin-top: 0;
+	}
+	.map-live {
+		position: relative;
+		width: 100%;
+		height: min(42vh, 420px);
+		min-height: 280px;
+		margin: 1.25rem 0 1.5rem;
+		border-radius: 0.85rem;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--border) 70%, #c4bfb4);
+		box-shadow: 0 2px 14px color-mix(in srgb, var(--fg) 5%, transparent);
+		z-index: 0;
+		/* Cadre « papier plan » même en thème sombre */
+		background: #ebe6dc;
+	}
+	.map-acces-inner {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 2;
+	}
+	.map-live :global(.leaflet-container) {
+		font-family: var(--font-body, system-ui, sans-serif);
+		background: #ebe6dc;
+	}
+	/* Teinte crème / plan RATP sur les tuiles sans libellés */
+	.map-live :global(.leaflet-tile-pane) {
+		filter: sepia(0.14) saturate(0.65) brightness(1.05) contrast(0.94);
+	}
+	.map-live :global(.leaflet-control-attribution) {
+		font-size: 0.65rem;
+		max-width: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		background: color-mix(in srgb, #ebe6dc 92%, transparent) !important;
+		color: var(--muted, #5a5c52);
+	}
+	.map-live-fallback {
+		position: absolute;
+		inset: 0;
+		margin: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+		background: #ebe6dc;
+		font-size: 0.95rem;
+		z-index: 3;
+		pointer-events: none;
+	}
+	.map-live-fallback a {
+		pointer-events: auto;
+		font-weight: 600;
 	}
 	.map-fig {
 		margin: 1.5rem 0 0;
@@ -31,7 +152,10 @@ const planImage =
 	.map-fig img {
 		width: 100%;
 		height: auto;
-		border-radius: 6px;
-		border: 1px solid var(--border, #e0dbd4);
+		border-radius: 0.85rem;
+		border: 1px solid color-mix(in srgb, var(--border) 75%, var(--accent-nature));
+		box-shadow:
+			0 4px 20px color-mix(in srgb, var(--fg) 6%, transparent),
+			0 0 0 1px color-mix(in srgb, var(--joy) 15%, transparent);
 	}
 </style>

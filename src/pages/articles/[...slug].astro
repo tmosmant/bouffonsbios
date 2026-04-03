@@ -59,7 +59,7 @@ const catSlug = CATEGORY_SLUGS[post.data.category];
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
 		font-size: 0.72rem;
-		color: var(--accent, #6b3d2e);
+		color: var(--accent-nature, #35624a);
 		text-decoration: none;
 	}
 	.cat:hover {
@@ -70,14 +70,20 @@ const catSlug = CATEGORY_SLUGS[post.data.category];
 	}
 	h1 {
 		margin: 0;
-		font-size: clamp(1.5rem, 3vw, 2rem);
+		font-size: clamp(1.5rem, 3vw, 2.1rem);
 		line-height: 1.2;
 	}
 	.back {
 		margin-top: 2rem;
 		font-size: 0.95rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid color-mix(in srgb, var(--border) 80%, var(--accent-nature));
 	}
 	.back a {
-		color: var(--accent, #6b3d2e);
+		color: var(--accent-nature, #35624a);
+		font-weight: 600;
+	}
+	.back a:hover {
+		color: var(--accent, #8f2d4a);
 	}
 </style>
