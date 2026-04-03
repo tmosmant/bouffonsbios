@@ -1,0 +1,140 @@
+/**
+ * Surcouche visuelle Decap (login + cohérence générale).
+ * Les styles internes sont en Emotion : !important et sélecteurs longs pour la section
+ * de connexion (repérée par l’image du logo cms-logo.svg).
+ */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,800;1,700&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+	--bb-ui-bg: #f6f1e8;
+	--bb-ui-fg: #1c221c;
+	--bb-ui-accent: #8f2d4a;
+	--bb-ui-accent-deep: #6e2238;
+	--bb-ui-nature: #35624a;
+	--bb-ui-joy: #c9892e;
+	--bb-ui-muted: #5a5c52;
+	--bb-ui-card: color-mix(in srgb, #fff 78%, var(--bb-ui-bg));
+	--bb-ui-border: color-mix(in srgb, #dcd4c8 85%, var(--bb-ui-nature));
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bb-ui-bg: #151a16;
+		--bb-ui-fg: #f2eee6;
+		--bb-ui-accent: #e8a0b3;
+		--bb-ui-accent-deep: #c77d91;
+		--bb-ui-nature: #8fbc9f;
+		--bb-ui-joy: #e8c15a;
+		--bb-ui-muted: #a8a99e;
+		--bb-ui-card: color-mix(in srgb, #1c221c 88%, var(--bb-ui-nature));
+		--bb-ui-border: color-mix(in srgb, #2d332e 80%, var(--bb-ui-nature));
+	}
+}
+
+html {
+	background:
+		radial-gradient(ellipse 90% 55% at 100% -5%, color-mix(in srgb, var(--bb-ui-joy) 14%, transparent), transparent 52%),
+		radial-gradient(ellipse 75% 50% at -8% 25%, color-mix(in srgb, var(--bb-ui-nature) 12%, transparent), transparent 48%),
+		radial-gradient(ellipse 65% 45% at 85% 95%, color-mix(in srgb, var(--bb-ui-accent) 9%, transparent), transparent 55%),
+		var(--bb-ui-bg) !important;
+	background-attachment: fixed !important;
+}
+
+body {
+	margin: 0 !important;
+	min-height: 100vh !important;
+	font-family: 'Source Sans 3', system-ui, sans-serif !important;
+	color: var(--bb-ui-fg) !important;
+	background: transparent !important;
+}
+
+#nc-root {
+	font-family: 'Source Sans 3', system-ui, sans-serif !important;
+	color: var(--bb-ui-fg) !important;
+}
+
+/* ——— Page de login (section qui affiche notre logo) ——— */
+#nc-root section:has(img[src*='cms-logo']) {
+	gap: 1.75rem !important;
+	padding: 2.35rem 2.5rem 2.6rem !important;
+	max-width: min(22rem, calc(100vw - 2rem)) !important;
+	margin-left: auto !important;
+	margin-right: auto !important;
+	border-radius: 1.05rem !important;
+	border: 1px solid var(--bb-ui-border) !important;
+	background: var(--bb-ui-card) !important;
+	box-shadow:
+		0 1px 0 color-mix(in srgb, white 55%, transparent) inset,
+		0 18px 48px color-mix(in srgb, var(--bb-ui-fg) 8%, transparent) !important;
+	backdrop-filter: blur(10px);
+}
+
+@media (prefers-color-scheme: dark) {
+	#nc-root section:has(img[src*='cms-logo']) {
+		box-shadow:
+			0 1px 0 color-mix(in srgb, white 6%, transparent) inset,
+			0 20px 56px color-mix(in srgb, black 45%, transparent) !important;
+	}
+}
+
+#nc-root section:has(img[src*='cms-logo']) img {
+	max-width: min(280px, 100%) !important;
+	height: auto !important;
+}
+
+#nc-root section:has(img[src*='cms-logo']) button {
+	border-radius: 0.65rem !important;
+	font-family: inherit !important;
+	font-weight: 600 !important;
+	font-size: 0.95rem !important;
+	padding: 0.7rem 1.25rem !important;
+	background: linear-gradient(
+		180deg,
+		color-mix(in srgb, var(--bb-ui-accent) 92%, #fff),
+		var(--bb-ui-accent)
+	) !important;
+	color: #fff !important;
+	border: 1px solid var(--bb-ui-accent-deep) !important;
+	box-shadow: 0 4px 16px color-mix(in srgb, var(--bb-ui-accent) 30%, transparent) !important;
+	transition:
+		transform 0.15s ease,
+		box-shadow 0.15s ease !important;
+}
+
+#nc-root section:has(img[src*='cms-logo']) button:hover:not(:disabled) {
+	filter: brightness(1.05) !important;
+	transform: translateY(-1px) !important;
+	box-shadow: 0 8px 22px color-mix(in srgb, var(--bb-ui-accent) 35%, transparent) !important;
+}
+
+#nc-root section:has(img[src*='cms-logo']) button:disabled {
+	opacity: 0.65 !important;
+}
+
+/* Lien « retour au site » sous le bouton GitHub */
+#nc-root section:has(img[src*='cms-logo']) a {
+	color: var(--bb-ui-nature) !important;
+	font-weight: 600 !important;
+	text-decoration: none !important;
+	border-bottom: 1px solid color-mix(in srgb, var(--bb-ui-nature) 35%, transparent) !important;
+}
+
+#nc-root section:has(img[src*='cms-logo']) a:hover {
+	color: var(--bb-ui-accent) !important;
+	border-bottom-color: color-mix(in srgb, var(--bb-ui-accent) 40%, transparent) !important;
+}
+
+/* Petits crédits / textes d’erreur */
+#nc-root section:has(img[src*='cms-logo']) p,
+#nc-root section:has(img[src*='cms-logo']) span {
+	color: var(--bb-ui-muted) !important;
+}
+
+/* ——— Éditeur connecté : liens et accents discrets ——— */
+#nc-root a {
+	color: color-mix(in srgb, var(--bb-ui-accent) 85%, var(--bb-ui-fg)) !important;
+}
+
+#nc-root a:hover {
+	color: var(--bb-ui-accent) !important;
+}

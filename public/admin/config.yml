@@ -3,6 +3,12 @@
 site_url: https://bouffonsbios.org
 display_url: https://bouffonsbios.org
 
+locale: fr
+
+logo:
+  src: /admin/cms-logo.svg
+  show_in_header: true
+
 backend:
   name: github
   repo: tmosmant/bouffonsbios
