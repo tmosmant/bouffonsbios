@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const posts = (await getCollection('articles')).sort(
+	(a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<Layout title="Articles — Bouffons Bios" description="Articles et actualités">
+	<h1>Articles</h1>
+	<ul class="list">
+		{
+			posts.map((post) => (
+				<li>
+					<a href={`/articles/${post.id}/`}>{post.data.title}</a>
+					<time datetime={post.data.date.toISOString()}>
+						{post.data.date.toLocaleDateString('fr-FR', {
+							year: 'numeric',
+							month: 'long',
+							day: 'numeric',
+						})}
+					</time>
+					{post.data.excerpt && <p class="excerpt">{post.data.excerpt}</p>}
+				</li>
+			))
+		}
+	</ul>
+</Layout>
+
+<style>
+	h1 {
+		margin-top: 0;
+	}
+	.list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.list li {
+		padding: 1rem 0;
+		border-bottom: 1px solid var(--border, #e0dbd4);
+	}
+	.list a {
+		font-weight: 600;
+		color: var(--accent, #5c3d2e);
+		text-decoration: none;
+	}
+	.list a:hover {
+		text-decoration: underline;
+	}
+	time {
+		display: block;
+		font-size: 0.85rem;
+		color: var(--muted, #5c5850);
+		margin-top: 0.25rem;
+	}
+	.excerpt {
+		margin: 0.5rem 0 0;
+		font-size: 0.95rem;
+		color: var(--muted, #5c5850);
+	}
+</style>

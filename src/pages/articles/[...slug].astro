@@ -1,0 +1,56 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('articles');
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout title={`${post.data.title} — Bouffons Bios`} description={post.data.excerpt}>
+	<article class="prose">
+		<header>
+			<h1>{post.data.title}</h1>
+			<time datetime={post.data.date.toISOString()}>
+				{
+					post.data.date.toLocaleDateString('fr-FR', {
+						year: 'numeric',
+						month: 'long',
+						day: 'numeric',
+					})
+				}
+			</time>
+		</header>
+		<Content />
+	</article>
+	<p class="back">
+		<a href="/articles">← Tous les articles</a>
+	</p>
+</Layout>
+
+<style>
+	header {
+		margin-bottom: 1.5rem;
+	}
+	h1 {
+		margin: 0 0 0.35em;
+		font-size: clamp(1.5rem, 3vw, 2rem);
+	}
+	time {
+		font-size: 0.9rem;
+		color: var(--muted, #5c5850);
+	}
+	.back {
+		margin-top: 2rem;
+	}
+	.back a {
+		color: var(--accent, #5c3d2e);
+	}
+</style>

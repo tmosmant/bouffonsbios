@@ -1,0 +1,153 @@
+---
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = 'Bouffons Bios — association' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		{description && <meta name="description" content={description} />}
+		<title>{title}</title>
+	</head>
+	<body>
+		<a href="#contenu" class="skip">Aller au contenu</a>
+		<header class="site-header">
+			<a class="logo" href="/">Bouffons Bios</a>
+			<nav aria-label="Navigation principale">
+				<a href="/">Accueil</a>
+				<a href="/articles">Articles</a>
+			</nav>
+		</header>
+		<main id="contenu">
+			<slot />
+		</main>
+		<footer class="site-footer">
+			<p>Association Bouffons Bios</p>
+		</footer>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		color-scheme: light dark;
+		--bg: #faf8f5;
+		--fg: #1a1814;
+		--accent: #5c3d2e;
+		--muted: #5c5850;
+		--border: #e0dbd4;
+		font-family:
+			system-ui,
+			-apple-system,
+			'Segoe UI',
+			Roboto,
+			sans-serif;
+		line-height: 1.6;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:root {
+			--bg: #141210;
+			--fg: #f2ede6;
+			--accent: #d4a574;
+			--muted: #a39e94;
+			--border: #2e2a26;
+		}
+	}
+
+	* {
+		box-sizing: border-box;
+	}
+
+	html {
+		background: var(--bg);
+		color: var(--fg);
+	}
+
+	body {
+		margin: 0;
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.skip {
+		position: absolute;
+		left: -9999px;
+	}
+	.skip:focus {
+		left: 1rem;
+		top: 1rem;
+		z-index: 999;
+		padding: 0.5rem 1rem;
+		background: var(--accent);
+		color: var(--bg);
+	}
+
+	.site-header {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 1rem 1.5rem;
+		border-bottom: 1px solid var(--border);
+	}
+
+	.logo {
+		font-weight: 700;
+		font-size: 1.15rem;
+		color: var(--fg);
+		text-decoration: none;
+	}
+
+	nav {
+		display: flex;
+		gap: 1.25rem;
+	}
+
+	nav a {
+		color: var(--muted);
+		text-decoration: none;
+	}
+	nav a:hover {
+		color: var(--accent);
+	}
+
+	main {
+		flex: 1;
+		width: 100%;
+		max-width: 42rem;
+		margin: 0 auto;
+		padding: 2rem 1.5rem;
+	}
+
+	.site-footer {
+		padding: 1.5rem;
+		border-top: 1px solid var(--border);
+		text-align: center;
+		color: var(--muted);
+		font-size: 0.9rem;
+	}
+
+	.site-footer p {
+		margin: 0;
+	}
+
+	.prose :where(h1, h2, h3) {
+		line-height: 1.25;
+	}
+	.prose :where(p) {
+		margin: 0 0 1em;
+	}
+	.prose :where(a) {
+		color: var(--accent);
+	}
+</style>

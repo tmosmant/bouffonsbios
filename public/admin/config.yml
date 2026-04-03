@@ -1,0 +1,31 @@
+# Renseigne repo + OAuth GitHub (voir README) avant d’utiliser l’admin en production.
+backend:
+  name: github
+  repo: tmosmant/bouffonsbio
+  branch: main
+
+local_backend: true
+
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: articles
+    label: Articles
+    label_singular: Article
+    folder: src/content/articles
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    fields:
+      - {
+          label: "Slug (fichier URL)",
+          name: slug,
+          widget: string,
+          pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Minuscules et tirets uniquement'],
+        }
+      - { label: Titre, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime }
+      - { label: Résumé, name: excerpt, widget: text, required: false }
+      - { label: Corps, name: body, widget: markdown }
