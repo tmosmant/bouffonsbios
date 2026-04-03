@@ -1,35 +1,35 @@
 {
-	"page": {
-		"metaTitle": "Contact — Bouffons Bios",
-		"metaDescription": "Contacter l'association Bouffons Bios — marché des vins bio à Montreuil",
-		"eyebrow": "Association",
-		"heading": "Contact",
-		"leadMarkdown": "Questions sur le **marché des vins bio**, les participations vignerons ou l'organisation ? Écrivez-nous ou appelez — nous répondons avec plaisir.",
-		"email": "bouffonsbios@gmail.com",
-		"emailCardLabel": "E-mail",
-		"emailHint": "Ouvre votre messagerie",
-		"phoneTel": "+33676692598",
-		"phoneCardLabel": "Téléphone",
-		"phoneContactName": "Daniel Mosmant",
-		"phoneHint": "+33 6 76 69 25 98",
-		"asideTitle": "À voir aussi",
-		"asideLinks": [
-			{
-				"label": "Plan d'accès",
-				"href": "/plan-dacces/",
-				"description": "Croix de Chavaux, métro & bus"
-			},
-			{
-				"label": "Accueil",
-				"href": "/",
-				"description": "Dates & infos du marché"
-			},
-			{
-				"label": "Articles",
-				"href": "/articles/",
-				"description": "Communiqués & listes de vignerons"
-			}
-		],
-		"footnote": "Pas de formulaire sur le site pour l'instant — l'e-mail ou l'appel restent les moyens les plus simples pour nous joindre."
-	}
+  "page": {
+    "asideTitle": "À voir aussi",
+    "footnote": "Pas de formulaire sur le site — l'e-mail ou l'appel restent les moyens les plus simples pour nous joindre.",
+    "asideLinks": [
+      {
+        "label": "Plan d'accès",
+        "href": "/plan-dacces/",
+        "description": "Croix de Chavaux, métro & bus"
+      },
+      {
+        "label": "Accueil",
+        "href": "/",
+        "description": "Dates & infos du marché"
+      },
+      {
+        "label": "Articles",
+        "href": "/articles/",
+        "description": "Communiqués & listes de vignerons"
+      }
+    ],
+    "heading": "Contact",
+    "emailHint": "Ouvre votre messagerie",
+    "emailCardLabel": "E-mail",
+    "eyebrow": "Association",
+    "leadMarkdown": "Questions sur le **marché des vins bio**, les participations vignerons ou l'organisation ? Écrivez-nous ou appelez — nous répondons avec plaisir.",
+    "phoneTel": "+33676692598",
+    "metaTitle": "Contact — Bouffons Bios",
+    "phoneHint": "+33 6 76 69 25 98",
+    "phoneCardLabel": "Téléphone",
+    "metaDescription": "Contacter l'association Bouffons Bios — marché des vins bio à Montreuil",
+    "email": "bouffonsbios@gmail.com",
+    "phoneContactName": "Daniel Mosmant"
+  }
 }
