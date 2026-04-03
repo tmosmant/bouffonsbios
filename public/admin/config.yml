@@ -1,5 +1,8 @@
 # OAuth : voir README (GitHub App + secrets Wrangler sur bouffonsbios-oauth).
 # Site public : https://bouffonsbios.org
+site_url: https://bouffonsbios.org
+display_url: https://bouffonsbios.org
+
 backend:
   name: github
   repo: tmosmant/bouffonsbios
@@ -98,6 +101,7 @@ collections:
     label: Articles
     label_singular: Article
     folder: src/content/articles
+    preview_path: "/articles/{{slug}}/"
     create: true
     slug: "{{slug}}"
     extension: md

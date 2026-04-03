@@ -1,0 +1,233 @@
+/* Aperçu Decap — isolé de la charte du site (iframe CMS) */
+html,
+body {
+	margin: 0;
+	padding: 0;
+	background: #faf9f6;
+	color: #1c221c;
+	font-family: Georgia, "Times New Roman", serif;
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+.decap-contact-preview,
+.decap-article-preview {
+	box-sizing: border-box;
+	max-width: 40rem;
+	margin: 0 auto;
+	padding: 1.25rem 1.5rem 2rem;
+}
+
+.dcp-eyebrow {
+	margin: 0 0 0.35rem;
+	font-family: system-ui, sans-serif;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: #35624a;
+}
+
+.decap-contact-preview h1,
+.decap-article-preview h1 {
+	margin: 0 0 0.65rem;
+	font-size: 1.85rem;
+	font-weight: 700;
+	line-height: 1.15;
+	color: #1c221c;
+}
+
+.dcp-lead,
+.dcp-excerpt {
+	font-family: system-ui, sans-serif;
+	font-size: 1.02rem;
+	line-height: 1.55;
+	color: #5a5c52;
+	max-width: 38ch;
+	margin: 0 0 1rem;
+}
+
+.dcp-lead p,
+.dcp-body p {
+	margin: 0 0 0.65em;
+}
+
+.dcp-lead p:last-child,
+.dcp-body p:last-child {
+	margin-bottom: 0;
+}
+
+.dcp-lead strong,
+.dcp-body strong {
+	color: #8f2d4a;
+	font-weight: 600;
+}
+
+.dcp-cards {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1rem;
+	margin: 0 0 1.5rem;
+}
+
+@media (min-width: 32rem) {
+	.dcp-cards {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+.dcp-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+	padding: 1.1rem 1.2rem;
+	text-decoration: none;
+	color: inherit;
+	border-radius: 0.9rem;
+	border: 1px solid color-mix(in srgb, #c9c5b8 88%, #35624a);
+	background: linear-gradient(145deg, #fdfcfa, #faf6ef);
+	box-shadow: 0 1px 0 rgb(255 255 255 / 0.7) inset, 0 4px 16px rgb(28 34 28 / 6%);
+}
+
+.dcp-card:hover {
+	border-color: color-mix(in srgb, #8f2d4a 35%, #c9c5b8);
+}
+
+.dcp-card-label {
+	font-family: system-ui, sans-serif;
+	font-size: 0.68rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: #5a5c52;
+}
+
+.dcp-card-value {
+	font-weight: 700;
+	font-size: 1.02rem;
+	color: #1c221c;
+	word-break: break-word;
+}
+
+.dcp-card-hint {
+	font-family: system-ui, sans-serif;
+	font-size: 0.88rem;
+	font-weight: 600;
+	color: #a84862;
+}
+
+.dcp-card--tel .dcp-card-hint {
+	color: #4a7d62;
+	font-variant-numeric: tabular-nums;
+}
+
+.dcp-aside {
+	padding: 1rem 1.15rem;
+	margin-bottom: 1.25rem;
+	border-radius: 0.9rem;
+	background: linear-gradient(120deg, rgb(53 98 74 / 8%), rgb(201 137 46 / 8%));
+	border: 1px solid color-mix(in srgb, #c9c5b8 75%, #35624a);
+}
+
+.dcp-aside h2 {
+	margin: 0 0 0.75rem;
+	font-family: system-ui, sans-serif;
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: #35624a;
+}
+
+.dcp-aside ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.dcp-aside li {
+	padding-bottom: 0.65rem;
+	margin-bottom: 0.65rem;
+	border-bottom: 1px solid rgb(201 197 184 / 0.5);
+}
+
+.dcp-aside li:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+.dcp-aside a {
+	font-family: system-ui, sans-serif;
+	font-weight: 600;
+	color: #8f2d4a;
+	text-decoration: none;
+}
+
+.dcp-aside a:hover {
+	text-decoration: underline;
+}
+
+.dcp-link-desc {
+	display: block;
+	font-family: system-ui, sans-serif;
+	font-size: 0.84rem;
+	color: #5a5c52;
+	margin-top: 0.15rem;
+}
+
+.dcp-note {
+	font-family: system-ui, sans-serif;
+	font-size: 0.86rem;
+	line-height: 1.5;
+	color: #5a5c52;
+	font-style: italic;
+	margin: 0;
+	padding-top: 0.5rem;
+	border-top: 1px solid rgb(201 197 184 / 0.85);
+}
+
+/* Article */
+.dcp-meta {
+	font-family: system-ui, sans-serif;
+	font-size: 0.82rem;
+	color: #35624a;
+	margin: 0 0 0.5rem;
+}
+
+.dcp-body {
+	font-size: 1rem;
+	line-height: 1.6;
+	color: #1c221c;
+}
+
+.dcp-body h2,
+.dcp-body h3 {
+	font-family: system-ui, sans-serif;
+	margin: 1.25em 0 0.5em;
+	color: #35624a;
+}
+
+.dcp-body a {
+	color: #8f2d4a;
+}
+
+.dcp-body img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 0.35rem;
+}
+
+.dcp-body blockquote {
+	margin: 1em 0;
+	padding-left: 1rem;
+	border-left: 3px solid #c9892e;
+	color: #5a5c52;
+}
+
+.dcp-empty {
+	font-family: system-ui, sans-serif;
+	font-size: 0.95rem;
+	color: #5a5c52;
+	padding: 1rem 0;
+}
