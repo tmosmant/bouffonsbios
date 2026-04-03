@@ -1,8 +1,10 @@
-# Renseigne repo + OAuth GitHub (voir README) avant d’utiliser l’admin en production.
+# OAuth : voir README (GitHub App + secrets Wrangler sur bouffonsbio-oauth).
 backend:
   name: github
   repo: tmosmant/bouffonsbio
   branch: main
+  base_url: https://bouffonsbio-oauth.thomas-mosmant.workers.dev
+  auth_endpoint: auth
 
 local_backend: true
 

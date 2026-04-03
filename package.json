@@ -10,7 +10,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "generate-types": "wrangler types"
+    "generate-types": "wrangler types",
+    "deploy": "astro build && wrangler deploy",
+    "deploy:oauth": "wrangler deploy -c workers/decap-oauth/wrangler.jsonc"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.7",
