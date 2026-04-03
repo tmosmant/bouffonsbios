@@ -6,8 +6,9 @@ Site [Astro](https://astro.build) + [Decap CMS](https://decapcms.org), déployé
 
 | Ressource | URL |
 |-----------|-----|
-| Site (prod) | <https://bouffonsbio.thomas-mosmant.workers.dev> |
-| Admin Decap | <https://bouffonsbio.thomas-mosmant.workers.dev/admin/> |
+| Site (prod) | <https://bouffonsbio.org> · <https://www.bouffonsbio.org> |
+| Alias Workers | <https://bouffonsbio.thomas-mosmant.workers.dev> |
+| Admin Decap | <https://bouffonsbio.org/admin/> |
 | OAuth GitHub (proxy) | <https://bouffonsbio-oauth.thomas-mosmant.workers.dev> |
 
 ## Développement
@@ -35,7 +36,7 @@ npm run deploy:oauth
 ## Decap + GitHub en production
 
 1. **GitHub** → *Settings* → *Developer settings* → *OAuth Apps* → *New OAuth App*  
-   - **Homepage URL** : l’URL du site (ex. `https://bouffonsbio.thomas-mosmant.workers.dev`)  
+   - **Homepage URL** : `https://bouffonsbio.org`  
    - **Authorization callback URL** :  
      `https://bouffonsbio-oauth.thomas-mosmant.workers.dev/callback?provider=github`
 

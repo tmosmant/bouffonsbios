@@ -2,11 +2,16 @@
 	"compatibility_date": "2026-04-03",
 	"compatibility_flags": ["global_fetch_strictly_public"],
 	"name": "bouffonsbio",
+	"workers_dev": true,
 	"main": "@astrojs/cloudflare/entrypoints/server",
 	"assets": {
 		"directory": "./dist",
 		"binding": "ASSETS"
 	},
+	"routes": [
+		{ "pattern": "bouffonsbio.org", "custom_domain": true },
+		{ "pattern": "www.bouffonsbio.org", "custom_domain": true }
+	],
 	"observability": {
 		"enabled": true
 	}
