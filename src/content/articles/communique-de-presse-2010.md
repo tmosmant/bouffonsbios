@@ -2,6 +2,7 @@
 slug: communique-de-presse-2010
 title: Communiqué de presse 2010
 date: 2018-02-08
+category: Communiqués de presse
 ---
 
 Montreuil, le 16 mars 2010

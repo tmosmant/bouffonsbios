@@ -2,6 +2,7 @@
 slug: communique-de-presse-2017
 title: Communiqué de presse 2017
 date: 2018-02-08
+category: Communiqués de presse
 ---
 
 Montreuil, le 26 février 2017

@@ -2,6 +2,7 @@
 slug: vignerons-participants-en-2009
 title: Vignerons participants en 2009
 date: 2018-02-08
+category: Vignerons
 ---
 
 Ont participé à l'édition 2009 du marché des vins bio de Montreuil :

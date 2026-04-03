@@ -2,6 +2,7 @@
 slug: communique-de-presse-2011
 title: Communiqué de presse 2011
 date: 2018-02-08
+category: Communiqués de presse
 ---
 
 Montreuil, le 6 mars 2011

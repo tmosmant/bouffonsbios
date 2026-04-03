@@ -2,6 +2,7 @@
 slug: communique-de-presse-2014
 title: Communiqué de presse 2014
 date: 2018-02-08
+category: Communiqués de presse
 ---
 
 Montreuil, le 19 février 2014

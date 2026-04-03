@@ -2,6 +2,7 @@
 slug: communique-de-presse-2019
 title: Communiqué de presse 2019
 date: 2020-01-27
+category: Communiqués de presse
 ---
 
 Montreuil, le 7 février 2019

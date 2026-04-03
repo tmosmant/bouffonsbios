@@ -2,6 +2,7 @@
 slug: communique-de-presse-2012
 title: Communiqué de presse 2012
 date: 2018-02-08
+category: Communiqués de presse
 ---
 
 Montreuil, le 1er mars 2012

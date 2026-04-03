@@ -2,6 +2,7 @@
 slug: communique-de-presse-2009
 title: Communiqué de presse 2009
 date: 2018-02-08
+category: Communiqués de presse
 ---
 
 Montreuil, le 25 février 2009

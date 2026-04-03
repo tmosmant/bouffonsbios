@@ -13,7 +13,8 @@
     "generate-types": "wrangler types",
     "deploy": "astro build && wrangler deploy",
     "deploy:oauth": "wrangler deploy -c workers/decap-oauth/wrangler.jsonc",
-    "import:wp": "node scripts/import-wordpress.mjs"
+    "import:wp": "node scripts/import-wordpress.mjs",
+    "assign:categories": "node scripts/assign-categories.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.7",

@@ -2,6 +2,7 @@
 slug: communique-s-de-presse-2020
 title: Communiqué-s de presse 2020
 date: 2020-03-29
+category: Communiqués de presse
 ---
 
 #### **Montreuil, le 29 mars 2020 - Le marché des vins bio de Montreuil s'est tenu le 14 mars 2020 sous la halle du marché de la Croix de Chavaux.** 

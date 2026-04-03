@@ -2,6 +2,7 @@
 slug: vignerons-participants-en-2025
 title: Vignerons participants en 2025
 date: 2025-03-30
+category: Vignerons
 ---
 
 Participeront à l'édition 2025 du marché des vins bio de Montreuil (liste en devenir) :

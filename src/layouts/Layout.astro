@@ -1,10 +1,22 @@
 ---
+import { NAV_HIGHLIGHT } from '../site-config';
+
 interface Props {
 	title: string;
 	description?: string;
+	/** Lien actif dans la barre principale */
+	current?: 'highlight' | 'articles' | 'manifeste' | 'contact' | 'plan';
 }
 
-const { title, description = 'Bouffons Bios — association' } = Astro.props;
+const { title, description = 'Bouffons Bios — association', current } = Astro.props;
+
+const nav = [
+	{ id: 'highlight' as const, href: NAV_HIGHLIGHT.href, label: NAV_HIGHLIGHT.label },
+	{ id: 'articles' as const, href: '/articles/', label: 'Articles' },
+	{ id: 'manifeste' as const, href: '/manifeste/', label: 'Manifeste' },
+	{ id: 'contact' as const, href: '/contact/', label: 'Contact' },
+	{ id: 'plan' as const, href: '/plan-dacces/', label: "Plan d'accès" },
+];
 ---
 
 <!doctype html>
@@ -19,18 +31,29 @@ const { title, description = 'Bouffons Bios — association' } = Astro.props;
 	</head>
 	<body>
 		<a href="#contenu" class="skip">Aller au contenu</a>
-		<header class="site-header">
-			<a class="logo" href="/">Bouffons Bios</a>
-			<nav aria-label="Navigation principale">
-				<a href="/">Accueil</a>
-				<a href="/articles">Articles</a>
+		<header class="site-head">
+			<div class="site-brand">
+				<a class="logo" href="/">Bouffons Bios</a>
+			</div>
+			<nav class="site-nav" aria-label="Navigation principale">
+				<ul>
+					{
+						nav.map((item) => (
+							<li>
+								<a href={item.href} class:list={[{ active: current === item.id }]}>
+									{item.label}
+								</a>
+							</li>
+						))
+					}
+				</ul>
 			</nav>
 		</header>
-		<main id="contenu">
+		<main id="contenu" class="site-main">
 			<slot />
 		</main>
 		<footer class="site-footer">
-			<p>Association Bouffons Bios</p>
+			<p>Association Bouffons Bios — <a href="/contact/">Contact</a></p>
 		</footer>
 	</body>
 </html>
@@ -40,9 +63,11 @@ const { title, description = 'Bouffons Bios — association' } = Astro.props;
 		color-scheme: light dark;
 		--bg: #faf8f5;
 		--fg: #1a1814;
-		--accent: #5c3d2e;
+		--accent: #6b3d2e;
+		--accent-soft: #8b5a45;
 		--muted: #5c5850;
 		--border: #e0dbd4;
+		--nav-bg: #f0ebe3;
 		font-family:
 			system-ui,
 			-apple-system,
@@ -57,8 +82,10 @@ const { title, description = 'Bouffons Bios — association' } = Astro.props;
 			--bg: #141210;
 			--fg: #f2ede6;
 			--accent: #d4a574;
+			--accent-soft: #c9a882;
 			--muted: #a39e94;
 			--border: #2e2a26;
+			--nav-bg: #1c1a17;
 		}
 	}
 
@@ -91,54 +118,95 @@ const { title, description = 'Bouffons Bios — association' } = Astro.props;
 		color: var(--bg);
 	}
 
-	.site-header {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
-		padding: 1rem 1.5rem;
+	.site-head {
 		border-bottom: 1px solid var(--border);
+		background: var(--bg);
+	}
+
+	.site-brand {
+		padding: 1rem 1.25rem 0.6rem;
 	}
 
 	.logo {
 		font-weight: 700;
-		font-size: 1.15rem;
+		font-size: 1.2rem;
 		color: var(--fg);
 		text-decoration: none;
+		letter-spacing: -0.02em;
 	}
-
-	nav {
-		display: flex;
-		gap: 1.25rem;
-	}
-
-	nav a {
-		color: var(--muted);
-		text-decoration: none;
-	}
-	nav a:hover {
+	.logo:hover {
 		color: var(--accent);
 	}
 
-	main {
+	.site-nav {
+		background: var(--nav-bg);
+		border-top: 1px solid var(--border);
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.site-nav ul {
+		display: flex;
+		flex-wrap: nowrap;
+		gap: 0;
+		margin: 0;
+		padding: 0 0.5rem;
+		list-style: none;
+		min-height: 2.85rem;
+		align-items: stretch;
+	}
+
+	.site-nav li {
+		display: flex;
+		flex-shrink: 0;
+	}
+
+	.site-nav a {
+		display: flex;
+		align-items: center;
+		padding: 0.65rem 0.9rem;
+		color: var(--muted);
+		text-decoration: none;
+		font-size: 0.9rem;
+		font-weight: 500;
+		border-bottom: 2px solid transparent;
+		white-space: nowrap;
+		max-width: 16rem;
+		line-height: 1.25;
+	}
+
+	.site-nav a:hover {
+		color: var(--accent);
+		background: color-mix(in srgb, var(--accent) 6%, transparent);
+	}
+
+	.site-nav a.active {
+		color: var(--accent);
+		border-bottom-color: var(--accent);
+	}
+
+	.site-main {
 		flex: 1;
 		width: 100%;
-		max-width: 42rem;
+		max-width: 46rem;
 		margin: 0 auto;
-		padding: 2rem 1.5rem;
+		padding: 2rem 1.5rem 3rem;
 	}
 
 	.site-footer {
-		padding: 1.5rem;
+		padding: 1.25rem 1.5rem;
 		border-top: 1px solid var(--border);
 		text-align: center;
 		color: var(--muted);
-		font-size: 0.9rem;
+		font-size: 0.88rem;
 	}
 
 	.site-footer p {
 		margin: 0;
+	}
+
+	.site-footer a {
+		color: var(--accent);
 	}
 
 	.prose :where(h1, h2, h3) {

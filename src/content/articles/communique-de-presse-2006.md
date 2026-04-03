@@ -2,6 +2,7 @@
 slug: communique-de-presse-2006
 title: Communiqué de presse 2006
 date: 2018-02-08
+category: Communiqués de presse
 ---
 
 Montreuil, le 10 mars 2006

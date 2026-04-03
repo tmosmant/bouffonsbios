@@ -2,6 +2,7 @@
 slug: communique-de-presse-2008
 title: Communiqué de presse 2008
 date: 2018-02-08
+category: Communiqués de presse
 ---
 
 Montreuil, le 15 février 2008

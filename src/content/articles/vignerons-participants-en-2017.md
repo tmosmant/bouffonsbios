@@ -2,6 +2,7 @@
 slug: vignerons-participants-en-2017
 title: Vignerons participants en 2017
 date: 2018-02-08
+category: Vignerons
 ---
 
 Ont participé à l'édition 2017 du marché des vins bio de Montreuil :

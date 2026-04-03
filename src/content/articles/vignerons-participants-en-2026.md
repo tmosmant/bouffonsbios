@@ -2,6 +2,7 @@
 slug: vignerons-participants-en-2026
 title: Vignerons participants en 2026
 date: 2026-03-04
+category: Vignerons
 ---
 
 Participeront à l'édition 2026 du marché des vins bio de Montreuil (liste en devenir) :

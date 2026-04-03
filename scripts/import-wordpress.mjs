@@ -15,6 +15,14 @@ const DEFAULT_XML = join(process.env.HOME, 'Downloads/bouffonsbios.WordPress.202
 
 const xmlPath = process.argv[2] || DEFAULT_XML;
 
+/** nicename WordPress (taxonomie category) → libellé Astro / Decap */
+const NICENAME_TO_CATEGORY = {
+	affiches: 'Affiches',
+	'communiques-de-presse': 'Communiqués de presse',
+	'non-classe': 'Non classé',
+	vignerons: 'Vignerons',
+};
+
 const turndown = new TurndownService({
 	headingStyle: 'atx',
 	codeBlockStyle: 'fenced',
@@ -83,6 +91,21 @@ function plainExcerpt(html) {
 	return t.length > 280 ? `${t.slice(0, 277)}…` : t;
 }
 
+/** @param {unknown} item */
+function categoryFromWpItem(item) {
+	const c = item?.category;
+	if (!c) return 'Non classé';
+	const arr = Array.isArray(c) ? c : [c];
+	for (const el of arr) {
+		if (typeof el !== 'object' || el === null) continue;
+		const dom = /** @type {Record<string, string>} */ (el)['@_domain'];
+		if (dom !== 'category') continue;
+		const nice = /** @type {Record<string, string>} */ (el)['@_nicename'];
+		if (nice && NICENAME_TO_CATEGORY[nice]) return NICENAME_TO_CATEGORY[nice];
+	}
+	return 'Non classé';
+}
+
 const xml = readFileSync(xmlPath, 'utf8');
 const parser = new XMLParser({
 	ignoreAttributes: false,
@@ -93,7 +116,7 @@ const data = parser.parse(xml);
 const rawItems = data?.rss?.channel?.item;
 const items = Array.isArray(rawItems) ? rawItems : rawItems ? [rawItems] : [];
 
-/** @type {{ slug: string; title: string; date: string; excerpt?: string; body: string }[]} */
+/** @type {{ slug: string; title: string; date: string; category: string; excerpt?: string; body: string }[]} */
 const posts = [];
 
 for (const item of items) {
@@ -114,8 +137,9 @@ for (const item of items) {
 	const contentHtml = str(item['content:encoded']);
 	const excerpt = plainExcerpt(excerptHtml) || undefined;
 	const body = htmlToMarkdown(contentHtml);
+	const category = categoryFromWpItem(item);
 
-	posts.push({ slug, title, date, excerpt, body });
+	posts.push({ slug, title, date, category, excerpt, body });
 }
 
 /** @param {string} s */
@@ -146,6 +170,7 @@ for (const p of posts) {
 slug: ${p.slug}
 title: ${yamlString(p.title)}
 date: ${p.date}
+category: ${yamlString(p.category)}
 ${excerptLine}---
 
 ${p.body || '_Contenu vide._'}

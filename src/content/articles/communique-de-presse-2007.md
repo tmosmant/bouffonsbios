@@ -2,6 +2,7 @@
 slug: communique-de-presse-2007
 title: Communiqué de presse 2007
 date: 2018-02-08
+category: Communiqués de presse
 ---
 
 Montreuil, le 13 mars 2007,

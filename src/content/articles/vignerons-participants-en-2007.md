@@ -2,6 +2,7 @@
 slug: vignerons-participants-en-2007
 title: Vignerons participants en 2007
 date: 2018-02-08
+category: Vignerons
 ---
 
 Ont participé à l'édition 2007 du marché des vins bio de Montreuil :

@@ -30,5 +30,16 @@ collections:
         }
       - { label: Titre, name: title, widget: string }
       - { label: Date, name: date, widget: datetime }
+      - {
+          label: Catégorie,
+          name: category,
+          widget: select,
+          default: "Non classé",
+          options:
+            - { label: Affiches, value: Affiches }
+            - { label: "Communiqués de presse", value: "Communiqués de presse" }
+            - { label: "Non classé", value: "Non classé" }
+            - { label: Vignerons, value: Vignerons }
+        }
       - { label: Résumé, name: excerpt, widget: text, required: false }
       - { label: Corps, name: body, widget: markdown }

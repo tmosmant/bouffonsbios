@@ -66,13 +66,21 @@ Schéma Astro : `src/content.config.ts` — après gros changements : `npx astro
 
 ### Import WordPress (WXR)
 
-L’export **Outils → Exporter** (fichier `.xml`) est compatible : champs `title`, `wp:post_date_gmt` / `wp:post_date`, `excerpt:encoded`, `content:encoded` → front matter + corps Markdown.
+L’export **Outils → Exporter** (fichier `.xml`) est compatible : champs `title`, `wp:post_date_gmt` / `wp:post_date`, catégories WordPress, `excerpt:encoded`, `content:encoded` → front matter + corps Markdown.
 
 ```sh
 npm run import:wp -- /chemin/vers/export.xml
 ```
 
 Sans argument, le script cherche par défaut `~/Downloads/bouffonsbios.WordPress.YYYY-MM-DD.xml`. Il **remplace** tous les `.md` du dossier `articles` (billets `post` publiés uniquement ; pas les pages type Accueil / Contact, ni les commentaires). Les blocs Gutenberg (`<!-- wp:… -->`) sont retirés ; les liens `bouffonsbios.wordpress.com` pointent vers `https://bouffonsbios.org`. Les images hébergées chez WordPress restent en **hotlink** `*.files.wordpress.com` tant qu’elles y sont servies.
+
+### Catégories (sans réimporter le WXR)
+
+Les catégories sont dans le front matter (`category:`). Pour recalculer à partir des slugs de fichiers :
+
+```sh
+npm run assign:categories
+```
 
 ## Dépôt
 

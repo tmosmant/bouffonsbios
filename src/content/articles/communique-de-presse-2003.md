@@ -2,6 +2,7 @@
 slug: communique-de-presse-2003
 title: Communiqué de presse 2003
 date: 2018-02-08
+category: Communiqués de presse
 ---
 
 **15 mars 2003 : premier "marché aux vins bios" de Montreuil**

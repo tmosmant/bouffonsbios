@@ -2,42 +2,126 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Bouffons Bios">
-	<section class="hero">
-		<h1>Bouffons Bios</h1>
-		<p class="lead">
-			Site en cours de reconstruction — contenu géré via <strong>Decap CMS</strong> et hébergé sur
-			<strong>Cloudflare Pages</strong>.
+<Layout title="Bouffons Bios" current="highlight">
+	<section id="marche" class="hero" aria-labelledby="marche-title">
+		<h1 id="marche-title" class="hero-title">
+			Samedi 9 mai 2026 — 21<sup>e</sup> marché des vins bio
+		</h1>
+		<p class="hero-tagline"><em>Le grand retour du Développement buvable&nbsp;!</em></p>
+
+		<p class="hero-lead">
+			<strong
+				><a href="/articles/vignerons-participants-en-2026/">Liste évolutive des participants</a></strong
+			>
 		</p>
-		<p>
-			<a class="btn" href="/articles">Voir les articles</a>
+
+		<div class="hero-block">
+			<p>
+				<strong>50+ vignerons passionnés</strong> venus des quatre coins de France, mais aussi de plus loin avec
+				nos invités d’<strong>Italie</strong> et de <strong>Géorgie</strong> (le berceau du vin&nbsp;!).
+			</p>
+			<p>Des quilles vivantes, du bio, du biodynamique, du naturel et de la bonne humeur à chaque stand.</p>
+		</div>
+
+		<div class="hero-infos">
+			<p>
+				<strong>Quand&nbsp;?</strong> samedi 9 mai 2026, 10h00–19h00<br />
+				<strong>Où&nbsp;?</strong> sous la halle du marché de la Croix de Chavaux,<br />
+				rue de Paris, 93100 Montreuil.<br />
+				<strong>Métro&nbsp;:</strong> Croix de Chavaux (ligne 9). <strong>Bus&nbsp;:</strong> 102, 115, 122, 127,
+				202
+			</p>
+			<p>Entrée&nbsp;: 5&nbsp;€, verre gravé offert.</p>
+			<p class="legal">
+				<em>Si l’abus d’alcool est dangereux pour la santé, le vin bio est une fête pour l’esprit&nbsp;!</em>
+			</p>
+		</div>
+
+		<p class="org">
+			Organisé par l’association Bouffons Bios — <a href="/contact/">Contact</a> : Daniel Mosmant,
+			<a href="tel:+33676692598">+33&nbsp;6&nbsp;76&nbsp;69&nbsp;25&nbsp;98</a>
+		</p>
+
+		<p class="cta">
+			<a class="btn" href="/articles/">Tous les articles</a>
+			<a class="btn btn-secondary" href="/plan-dacces/">Plan d’accès</a>
 		</p>
 	</section>
 </Layout>
 
 <style>
-	.hero h1 {
-		font-size: clamp(1.75rem, 4vw, 2.25rem);
-		margin: 0 0 0.75em;
+	.hero {
+		padding-bottom: 1rem;
 	}
-	.lead {
-		color: var(--muted, #5c5850);
+	.hero-title {
+		font-size: clamp(1.35rem, 4vw, 1.85rem);
+		margin: 0 0 0.5rem;
+		line-height: 1.2;
+		font-weight: 700;
+	}
+	.hero-tagline {
+		font-size: 1.1rem;
+		margin: 0 0 1.25rem;
+		color: var(--accent, #6b3d2e);
+	}
+	.hero-lead {
+		margin: 0 0 1.25rem;
 		font-size: 1.05rem;
-		margin: 0 0 1.5rem;
-		max-width: 36ch;
+	}
+	.hero-block p,
+	.hero-infos p {
+		margin: 0 0 1rem;
+		color: var(--muted, #5c5850);
+	}
+	.hero-block p strong,
+	.hero-infos p strong {
+		color: var(--fg, #1a1814);
+	}
+	@media (prefers-color-scheme: dark) {
+		.hero-block p strong,
+		.hero-infos p strong {
+			color: var(--fg, #f2ede6);
+		}
+	}
+	.legal {
+		font-size: 0.95rem;
+	}
+	.org {
+		margin-top: 1.5rem;
+		font-size: 0.95rem;
+		color: var(--muted, #5c5850);
+	}
+	.org a {
+		color: var(--accent, #6b3d2e);
+	}
+	.cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.65rem;
+		margin-top: 1.75rem;
 	}
 	.btn {
 		display: inline-block;
-		padding: 0.6rem 1.1rem;
-		background: var(--accent, #5c3d2e);
+		padding: 0.55rem 1rem;
+		background: var(--accent, #6b3d2e);
 		color: var(--bg, #faf8f5);
 		text-decoration: none;
 		border-radius: 6px;
 		font-weight: 600;
+		font-size: 0.95rem;
+	}
+	.btn-secondary {
+		background: transparent;
+		color: var(--accent, #6b3d2e);
+		border: 2px solid var(--accent, #6b3d2e);
 	}
 	@media (prefers-color-scheme: dark) {
 		.btn {
 			color: #141210;
+		}
+		.btn-secondary {
+			color: var(--accent, #d4a574);
+			border-color: var(--accent, #d4a574);
 		}
 	}
 </style>

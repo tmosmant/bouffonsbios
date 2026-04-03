@@ -2,6 +2,7 @@
 slug: communique-de-presse-2025-2
 title: Communiqué de presse 2025-2
 date: 2026-03-04
+category: Communiqués de presse
 ---
 
 **20ÈME MARCHÉ AUX VINS BIO DE MONTREUIL**  

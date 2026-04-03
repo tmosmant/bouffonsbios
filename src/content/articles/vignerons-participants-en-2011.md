@@ -2,6 +2,7 @@
 slug: vignerons-participants-en-2011
 title: Vignerons participants en 2011
 date: 2018-02-08
+category: Vignerons
 ---
 
 Ont participé à l'édition 2011 du marché des vins bio de Montreuil :

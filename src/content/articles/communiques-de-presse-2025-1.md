@@ -2,6 +2,7 @@
 slug: communiques-de-presse-2025-1
 title: Communiqués de presse 2025 - 1
 date: 2025-03-30
+category: Communiqués de presse
 ---
 
 **20ème édition du Marché aux vins bio de Montreuil**

@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Contact — Bouffons Bios" description="Contacter l’association Bouffons Bios" current="contact">
+	<article class="prose">
+		<h1>Contact</h1>
+		<p>
+			Pour toute question sur le marché des vins bio, les participations ou l’association, vous pouvez écrire ou
+			appeler&nbsp;:
+		</p>
+		<ul class="contacts">
+			<li>
+				<strong>E-mail</strong> — <a href="mailto:bouffonsbios@gmail.com">bouffonsbios@gmail.com</a>
+			</li>
+			<li>
+				<strong>Daniel Mosmant</strong> — <a href="tel:+33676692598">+33&nbsp;6&nbsp;76&nbsp;69&nbsp;25&nbsp;98</a>
+			</li>
+		</ul>
+		<p class="note">
+			Un formulaire de contact sur le site pourra être ajouté plus tard ; en attendant, merci d’utiliser l’e-mail
+			ou le téléphone.
+		</p>
+	</article>
+</Layout>
+
+<style>
+	h1 {
+		margin-top: 0;
+	}
+	.contacts {
+		margin: 1.25rem 0;
+		padding-left: 1.25rem;
+	}
+	.contacts li {
+		margin-bottom: 0.65rem;
+	}
+	.note {
+		font-size: 0.92rem;
+		color: var(--muted, #5c5850);
+		margin-top: 2rem;
+	}
+</style>

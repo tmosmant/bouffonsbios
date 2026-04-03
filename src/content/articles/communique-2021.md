@@ -2,6 +2,7 @@
 slug: communique-2021
 title: Communiqué de presse 2021
 date: 2025-03-30
+category: Communiqués de presse
 ---
 
 **LE 19ÈME MARCHÉ AUX VINS BIO DE MONTREUIL : UN MARCHÉ TRÈS ATTENDU**

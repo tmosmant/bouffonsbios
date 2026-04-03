@@ -1,39 +1,53 @@
 ---
 import { getCollection } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import { ARTICLE_CATEGORIES, CATEGORY_SLUGS, type ArticleCategory } from '../../site-config';
+import Layout from '../../../layouts/Layout.astro';
+import { CATEGORY_SLUGS, categoryFromSlug, ARTICLE_CATEGORIES, type ArticleCategory } from '../../../site-config';
 
-const posts = (await getCollection('articles')).sort(
-	(a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
-
-function counts(): Record<ArticleCategory, number> {
-	const init: Record<ArticleCategory, number> = {
-		Affiches: 0,
-		'Communiqués de presse': 0,
-		'Non classé': 0,
-		Vignerons: 0,
-	};
-	for (const p of posts) {
-		init[p.data.category] += 1;
-	}
-	return init;
+export async function getStaticPaths() {
+	return Object.values(CATEGORY_SLUGS).map((slug) => ({
+		params: { categorie: slug },
+	}));
 }
 
-const byCat = counts();
+const raw = Astro.params.categorie;
+const label = categoryFromSlug(raw ?? '');
+if (!label) {
+	throw new Error(`Catégorie inconnue : ${raw}`);
+}
+
+const allPosts = await getCollection('articles');
+const posts = allPosts
+	.filter(({ data }) => data.category === label)
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const byCat: Record<ArticleCategory, number> = {
+	Affiches: 0,
+	'Communiqués de presse': 0,
+	'Non classé': 0,
+	Vignerons: 0,
+};
+for (const p of allPosts) {
+	byCat[p.data.category] += 1;
+}
 ---
 
-<Layout title="Articles — Bouffons Bios" description="Articles et actualités" current="articles">
-	<h1>Articles</h1>
-	<p class="intro">Communiqués, listes de vignerons, affiches et textes du site.</p>
+<Layout title={`${label} — Articles — Bouffons Bios`} description={`Articles : ${label}`} current="articles">
+	<h1>{label}</h1>
+	<p class="intro">
+		<a href="/articles/">← Toutes les catégories</a>
+	</p>
 
 	<nav class="filters" aria-label="Filtrer par catégorie">
-		<a href="/articles/" class="chip chip-all" aria-current="page">Toutes</a>
+		<a href="/articles/" class="chip">Toutes</a>
 		{
-			ARTICLE_CATEGORIES.map((label) => (
-				<a href={`/articles/categorie/${CATEGORY_SLUGS[label]}/`} class="chip">
-					{label}
-					<span class="count">{byCat[label]}</span>
+			ARTICLE_CATEGORIES.map((cat) => (
+				<a
+					href={`/articles/categorie/${CATEGORY_SLUGS[cat]}/`}
+					class:list={['chip', { 'chip-active': cat === label }]}
+					aria-current={cat === label ? 'page' : undefined}
+				>
+					{cat}
+					<span class="count">{byCat[cat]}</span>
 				</a>
 			))
 		}
@@ -43,9 +57,6 @@ const byCat = counts();
 		{
 			posts.map((post) => (
 				<li>
-					<a class="cat" href={`/articles/categorie/${CATEGORY_SLUGS[post.data.category]}/`}>
-						{post.data.category}
-					</a>
 					<a class="title" href={`/articles/${post.id}/`}>
 						{post.data.title}
 					</a>
@@ -68,9 +79,11 @@ const byCat = counts();
 		margin-top: 0;
 	}
 	.intro {
-		color: var(--muted, #5c5850);
 		margin: 0 0 1.25rem;
-		font-size: 0.98rem;
+		font-size: 0.95rem;
+	}
+	.intro a {
+		color: var(--accent, #6b3d2e);
 	}
 	.filters {
 		display: flex;
@@ -93,12 +106,11 @@ const byCat = counts();
 	}
 	.chip:hover {
 		color: var(--accent, #6b3d2e);
-		border-color: var(--accent, #6b3d2e);
 	}
-	.chip-all {
-		background: color-mix(in srgb, var(--accent) 15%, transparent);
+	.chip-active {
+		background: color-mix(in srgb, var(--accent) 18%, transparent);
 		color: var(--accent, #6b3d2e);
-		border-color: transparent;
+		border-color: var(--accent, #6b3d2e);
 	}
 	.count {
 		opacity: 0.75;
@@ -113,28 +125,14 @@ const byCat = counts();
 		padding: 1rem 0;
 		border-bottom: 1px solid var(--border, #e0dbd4);
 	}
-	.list .cat {
-		display: inline-block;
-		font-size: 0.72rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
-		color: var(--accent, #6b3d2e);
-		text-decoration: none;
-		margin-bottom: 0.35rem;
-	}
-	.list .cat:hover {
-		text-decoration: underline;
-	}
 	.list .title {
-		display: block;
 		font-weight: 600;
 		font-size: 1.05rem;
-		color: var(--fg, #1a1814);
+		color: var(--accent, #6b3d2e);
 		text-decoration: none;
 	}
 	.list .title:hover {
-		color: var(--accent, #6b3d2e);
+		text-decoration: underline;
 	}
 	time {
 		display: block;

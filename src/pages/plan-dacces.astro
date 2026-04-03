@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const planImage =
+	'https://bouffonsbios.files.wordpress.com/2025/03/plan-dacces.jpg';
+---
+
+<Layout title="Plan d'accès — Bouffons Bios" description="Marché de la Croix de Chavaux, Montreuil" current="plan">
+	<article class="prose">
+		<h1>Plan d’accès</h1>
+		<p>
+			<strong>Place du marché Croix de Chavaux</strong><br />
+			93100 Montreuil<br />
+			<strong>Métro&nbsp;:</strong> Croix de Chavaux (ligne 9)<br />
+			<strong>Bus&nbsp;:</strong> 102, 115, 122, 127, 202
+		</p>
+		<figure class="map-fig">
+			<img src={planImage} alt="Plan d’accès au marché de la Croix de Chavaux" width="720" height="393" loading="lazy" />
+		</figure>
+	</article>
+</Layout>
+
+<style>
+	h1 {
+		margin-top: 0;
+	}
+	.map-fig {
+		margin: 1.5rem 0 0;
+		padding: 0;
+	}
+	.map-fig img {
+		width: 100%;
+		height: auto;
+		border-radius: 6px;
+		border: 1px solid var(--border, #e0dbd4);
+	}
+</style>

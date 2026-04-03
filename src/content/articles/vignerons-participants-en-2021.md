@@ -2,6 +2,7 @@
 slug: vignerons-participants-en-2021
 title: Vignerons participants en 2021
 date: 2025-03-30
+category: Vignerons
 ---
 
 Ont participé à l'édition 2021 du marché des vins bio de Montreuil :

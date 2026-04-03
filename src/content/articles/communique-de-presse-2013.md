@@ -2,6 +2,7 @@
 slug: communique-de-presse-2013
 title: Communiqué de presse 2013
 date: 2018-02-08
+category: Communiqués de presse
 ---
 
 Montreuil, le 23 février 2013

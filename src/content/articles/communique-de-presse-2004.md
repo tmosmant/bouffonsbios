@@ -2,6 +2,7 @@
 slug: communique-de-presse-2004
 title: Communiqué de presse 2004
 date: 2018-02-08
+category: Communiqués de presse
 ---
 
 **4 avril 2004 : 2ème marché aux vins bio de Montreuil**

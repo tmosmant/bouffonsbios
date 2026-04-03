@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import { CATEGORY_SLUGS } from '../../site-config';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('articles');
@@ -12,26 +13,32 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+const catSlug = CATEGORY_SLUGS[post.data.category];
 ---
 
-<Layout title={`${post.data.title} — Bouffons Bios`} description={post.data.excerpt}>
+<Layout title={`${post.data.title} — Bouffons Bios`} description={post.data.excerpt} current="articles">
 	<article class="prose">
 		<header>
+			<p class="meta">
+				<a class="cat" href={`/articles/categorie/${catSlug}/`}>{post.data.category}</a>
+				<time datetime={post.data.date.toISOString()}>
+					{
+						post.data.date.toLocaleDateString('fr-FR', {
+							year: 'numeric',
+							month: 'long',
+							day: 'numeric',
+						})
+					}
+				</time>
+			</p>
 			<h1>{post.data.title}</h1>
-			<time datetime={post.data.date.toISOString()}>
-				{
-					post.data.date.toLocaleDateString('fr-FR', {
-						year: 'numeric',
-						month: 'long',
-						day: 'numeric',
-					})
-				}
-			</time>
 		</header>
 		<Content />
 	</article>
 	<p class="back">
-		<a href="/articles">← Tous les articles</a>
+		<a href={`/articles/categorie/${catSlug}/`}>← {post.data.category}</a>
+		&nbsp;·&nbsp;
+		<a href="/articles/">Tous les articles</a>
 	</p>
 </Layout>
 
@@ -39,18 +46,38 @@ const { Content } = await render(post);
 	header {
 		margin-bottom: 1.5rem;
 	}
-	h1 {
-		margin: 0 0 0.35em;
-		font-size: clamp(1.5rem, 3vw, 2rem);
+	.meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.5rem 1rem;
+		margin: 0 0 0.75rem;
+		font-size: 0.88rem;
+	}
+	.cat {
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		font-size: 0.72rem;
+		color: var(--accent, #6b3d2e);
+		text-decoration: none;
+	}
+	.cat:hover {
+		text-decoration: underline;
 	}
 	time {
-		font-size: 0.9rem;
 		color: var(--muted, #5c5850);
+	}
+	h1 {
+		margin: 0;
+		font-size: clamp(1.5rem, 3vw, 2rem);
+		line-height: 1.2;
 	}
 	.back {
 		margin-top: 2rem;
+		font-size: 0.95rem;
 	}
 	.back a {
-		color: var(--accent, #5c3d2e);
+		color: var(--accent, #6b3d2e);
 	}
 </style>
