@@ -37,7 +37,14 @@ body {
 	color: #1c221c;
 }
 
-.dcp-lead,
+.dcp-lead {
+	font-family: system-ui, sans-serif;
+	font-size: 1.02rem;
+	line-height: 1.55;
+	color: #5a5c52;
+	margin: 0 0 1rem;
+}
+
 .dcp-excerpt {
 	font-family: system-ui, sans-serif;
 	font-size: 1.02rem;
