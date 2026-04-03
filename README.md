@@ -48,7 +48,8 @@ npm run deploy:oauth
 1. **GitHub** → *Settings* → *Developer settings* → *OAuth Apps* → *New OAuth App*  
    - **Homepage URL** : `https://bouffonsbios.org`  
    - **Authorization callback URL** :  
-     `https://bouffonsbios-oauth.thomas-mosmant.workers.dev/callback?provider=github`
+     `https://bouffonsbios-oauth.thomas-mosmant.workers.dev/callback?provider=github`  
+   - L’app demande les scopes `public_repo`, `user` et `user:email` : le dernier permet de lire les adresses **vérifiées** sur GitHub pour calculer l’avatar **Gravatar** (MD5 de l’e-mail en minuscules, comme chez Gravatar). Sans e-mail vérifié, l’avatar GitHub classique reste affiché. Après un changement de scopes, chaque éditeur doit se **reconnecter** une fois à l’admin.
 
 2. **Cloudflare** — sur le worker `bouffonsbios-oauth` :
 
@@ -61,7 +62,11 @@ npm run deploy:oauth
 
    Ne mets **pas** `GITHUB_OAUTH_ID` dans `workers/decap-oauth/wrangler.jsonc` : un déploiement écraserait sinon les variables du dashboard. Configure-les uniquement via les commandes ci-dessus ou l’UI Cloudflare.
 
-3. Redéploie le site après modification de `public/admin/config.yml` : `npm run deploy`.
+3. Déploie le worker OAuth après modification de son code : `npm run deploy:oauth`.
+
+4. Redéploie le site après modification de `public/admin/config.yml` : `npm run deploy`.
+
+Si l’URL du worker OAuth change, mets à jour `ALLOWED_ORIGINS` dans `public/admin/decap-gravatar.js` pour que le `postMessage` soit accepté.
 
 Tant que l’étape 2 n’est pas faite, `/auth` sur le worker OAuth répond **503** avec un message explicite.
 

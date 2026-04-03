@@ -4,9 +4,47 @@
  * Client ID (public) : npx wrangler vars put GITHUB_OAUTH_ID -c workers/decap-oauth/wrangler.jsonc
  */
 
+import { createHash } from 'node:crypto';
+
 interface Env {
 	GITHUB_OAUTH_ID: string;
 	GITHUB_OAUTH_SECRET: string;
+}
+
+interface GitHubEmailRow {
+	email: string;
+	primary?: boolean;
+	verified?: boolean;
+}
+
+const GH_API_HEADERS = {
+	Accept: 'application/vnd.github+json',
+	'User-Agent': 'bouffonsbio-decap-oauth',
+} as const;
+
+function md5HexLowerEmail(email: string): string {
+	const normalized = email.trim().toLowerCase();
+	return createHash('md5').update(normalized, 'utf8').digest('hex');
+}
+
+/** E-mail vérifié (primaire de préférence) pour Gravatar ; `avatar_url` pour le paramètre `d=` si pas d’image Gravatar. */
+async function githubIdentityForAvatar(token: string): Promise<{ email: string; avatar_url: string }> {
+	const auth = { Authorization: `Bearer ${token}`, ...GH_API_HEADERS };
+	const uRes = await fetch('https://api.github.com/user', { headers: auth });
+	const user = (await uRes.json()) as { email?: string | null; avatar_url?: string | null };
+	const avatar_url = typeof user.avatar_url === 'string' ? user.avatar_url : '';
+
+	const eRes = await fetch('https://api.github.com/user/emails', { headers: auth });
+	const emails = (await eRes.json()) as GitHubEmailRow[] | { message?: string };
+	let email = '';
+	if (Array.isArray(emails)) {
+		const primary = emails.find((r) => r.primary && r.verified);
+		const anyVerified = emails.find((r) => r.verified);
+		email = primary?.email || anyVerified?.email || '';
+	}
+	if (!email && user.email) email = user.email;
+
+	return { email, avatar_url };
 }
 
 function randomState(): string {
@@ -27,7 +65,7 @@ function authRedirect(url: URL, env: Env): Response {
 		return new Response('Invalid provider', { status: 400 });
 	}
 	const redirectUri = `https://${url.hostname}/callback?provider=github`;
-	const scope = 'public_repo,user';
+	const scope = 'public_repo,user,user:email';
 	const state = randomState();
 	const authorize = new URL('https://github.com/login/oauth/authorize');
 	authorize.searchParams.set('client_id', env.GITHUB_OAUTH_ID);
@@ -63,9 +101,18 @@ async function exchangeCode(code: string, redirectUri: string, env: Env): Promis
 	return data.access_token;
 }
 
-function callbackHtml(accessToken: string): Response {
+function callbackHtml(
+	accessToken: string,
+	avatarMeta: { gravatarHash: string; avatarFallback: string },
+): Response {
 	const oauthPayload = { token: accessToken, provider: 'github' as const };
 	const embedded = JSON.stringify(oauthPayload);
+	const bbAvatar = JSON.stringify({
+		source: 'bouffonsbio-oauth',
+		type: 'bb-avatar',
+		hash: avatarMeta.gravatarHash,
+		fallback: avatarMeta.avatarFallback,
+	});
 	const html = `<!DOCTYPE html>
 <html lang="fr">
 <head><meta charset="utf-8"><title>Connexion GitHub</title></head>
@@ -74,8 +121,12 @@ function callbackHtml(accessToken: string): Response {
 <script>
 (function () {
   var oauthPayload = ${embedded};
+  var bbAvatar = ${bbAvatar};
   function onMessage() {
     window.opener.postMessage('authorization:github:success:' + JSON.stringify(oauthPayload), '*');
+    try {
+      window.opener.postMessage(bbAvatar, '*');
+    } catch (e) {}
     window.removeEventListener('message', onMessage);
   }
   window.addEventListener('message', onMessage, false);
@@ -133,7 +184,9 @@ export default {
 			try {
 				const redirectUri = `https://${url.hostname}/callback?provider=github`;
 				const token = await exchangeCode(code, redirectUri, env);
-				return callbackHtml(token);
+				const { email, avatar_url } = await githubIdentityForAvatar(token);
+				const gravatarHash = email ? md5HexLowerEmail(email) : '';
+				return callbackHtml(token, { gravatarHash, avatarFallback: avatar_url });
 			} catch (e) {
 				const msg = e instanceof Error ? e.message : 'Unknown error';
 				return callbackError(msg);

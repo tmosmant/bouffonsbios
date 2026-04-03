@@ -179,3 +179,150 @@ body {
 #nc-root a:hover {
 	color: var(--bb-ui-accent) !important;
 }
+
+/* ——— Éditeur connecté : cohérence fond / cartes / formulaires ——— */
+#nc-root > div {
+	background: transparent !important;
+}
+
+/* ——— Dark : toute l’interface après connexion (Emotion = !important) ——— */
+@media (prefers-color-scheme: dark) {
+	#nc-root,
+	#nc-root > div,
+	#nc-root > div > div {
+		background-color: transparent !important;
+		color: var(--bb-ui-fg) !important;
+	}
+
+	#nc-root aside,
+	#nc-root [class*='Sidebar'],
+	#nc-root nav[aria-label],
+	#nc-root [class*='BackButton'] + div,
+	#nc-root [class*='AppHeader'] {
+		background: color-mix(in srgb, var(--bb-ui-bg) 92%, #000) !important;
+		border-color: var(--bb-ui-border) !important;
+		color: var(--bb-ui-fg) !important;
+		box-shadow: none !important;
+	}
+
+	#nc-root aside a,
+	#nc-root aside button,
+	#nc-root nav a {
+		color: color-mix(in srgb, var(--bb-ui-fg) 88%, var(--bb-ui-muted)) !important;
+	}
+
+	#nc-root main,
+	#nc-root [class*='CollectionMain'],
+	#nc-root [class*='EditorMain'],
+	#nc-root [class*='WorkflowPage'],
+	#nc-root [class*='EditorContainer'],
+	#nc-root [class*='Pane'],
+	#nc-root [class*='SplitPane'] > div {
+		background: var(--bb-ui-bg) !important;
+		color: var(--bb-ui-fg) !important;
+	}
+
+	/* Listes d’entrées / cartes */
+	#nc-root [class*='ListCard'],
+	#nc-root [class*='card'],
+	#nc-root [class*='Card'],
+	#nc-root li[class*='css-'] {
+		background: var(--bb-ui-card) !important;
+		border-color: var(--bb-ui-border) !important;
+		color: var(--bb-ui-fg) !important;
+		box-shadow: 0 1px 0 color-mix(in srgb, white 4%, transparent) inset !important;
+	}
+
+	#nc-root [class*='ListCard']:hover,
+	#nc-root [class*='card']:hover {
+		border-color: color-mix(in srgb, var(--bb-ui-nature) 45%, var(--bb-ui-border)) !important;
+	}
+
+	/* En-têtes de panneau, barres d’outils */
+	#nc-root [class*='Toolbar'],
+	#nc-root [class*='AppHeader'],
+	#nc-root [class*='ControlPane'],
+	#nc-root [class*='FieldLabel'],
+	#nc-root h1,
+	#nc-root h2 {
+		color: var(--bb-ui-fg) !important;
+		background: transparent !important;
+		border-color: var(--bb-ui-border) !important;
+	}
+
+	/* Champs */
+	#nc-root input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='range']),
+	#nc-root textarea,
+	#nc-root select,
+	#nc-root [class*='ReactSelect'] [class*='control'],
+	#nc-root [class*='DateTimePicker'] input {
+		background: var(--bb-ui-card) !important;
+		color: var(--bb-ui-fg) !important;
+		border-color: var(--bb-ui-border) !important;
+		box-shadow: none !important;
+	}
+
+	#nc-root input::placeholder,
+	#nc-root textarea::placeholder {
+		color: color-mix(in srgb, var(--bb-ui-muted) 75%, transparent) !important;
+	}
+
+	#nc-root label,
+	#nc-root [class*='FieldLabel'] {
+		color: color-mix(in srgb, var(--bb-ui-fg) 85%, var(--bb-ui-muted)) !important;
+	}
+
+	/* Markdown / code */
+	#nc-root [class*='CodeMirror'],
+	#nc-root .cm-editor,
+	#nc-root .cm-scroller {
+		background: color-mix(in srgb, var(--bb-ui-card) 88%, #000) !important;
+		color: var(--bb-ui-fg) !important;
+		border-color: var(--bb-ui-border) !important;
+	}
+
+	#nc-root [class*='CodeMirror'] .cm-line,
+	#nc-root .cm-content {
+		caret-color: var(--bb-ui-accent) !important;
+	}
+
+	/* Boutons secondaires */
+	#nc-root button[class*='Button']:not([class*='Primary']),
+	#nc-root [class*='button']:not([class*='primary']) {
+		background: color-mix(in srgb, var(--bb-ui-card) 70%, var(--bb-ui-bg)) !important;
+		color: var(--bb-ui-fg) !important;
+		border-color: var(--bb-ui-border) !important;
+	}
+
+	#nc-root button[class*='Primary'],
+	#nc-root [class*='primary'] button {
+		background: linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--bb-ui-accent) 88%, #fff),
+			var(--bb-ui-accent-deep)
+		) !important;
+		color: #fff !important;
+		border-color: var(--bb-ui-accent-deep) !important;
+	}
+
+	/* Modales / dropdowns */
+	#nc-root [class*='Modal'],
+	#nc-root [role='dialog'],
+	#nc-root [class*='Dropdown'],
+	#nc-root [class*='menu'] {
+		background: var(--bb-ui-card) !important;
+		color: var(--bb-ui-fg) !important;
+		border-color: var(--bb-ui-border) !important;
+	}
+
+	#nc-root hr {
+		border-color: var(--bb-ui-border) !important;
+		background: var(--bb-ui-border) !important;
+	}
+
+	/* Tableaux média / grilles */
+	#nc-root [class*='MediaLibrary'] {
+		background: var(--bb-ui-bg) !important;
+		color: var(--bb-ui-fg) !important;
+	}
+}

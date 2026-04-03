@@ -27,6 +27,7 @@ collections:
     files:
       - label: Contact
         name: contact
+        summary: "Cartes e-mail / téléphone, liens utiles, texte d’intro"
         file: src/content/contact.json
         format: json
         fields:
@@ -108,6 +109,7 @@ collections:
     files:
       - label: Manifeste
         name: manifeste
+        summary: "Chapô, texte du manifeste (markdown), signature"
         file: src/content/manifeste.json
         format: json
         fields:
@@ -146,6 +148,7 @@ collections:
     files:
       - label: Bloc presse
         name: presse
+        summary: "Titre, intro et liste des liens presse"
         file: src/content/presse.json
         format: json
         fields:
@@ -181,6 +184,7 @@ collections:
     label: Articles
     label_singular: Article
     folder: src/content/articles
+    summary: "{{title}} · {{category}} · {{date | date('DD/MM/YYYY')}} — {{excerpt | default('') | truncate(96, '…')}}"
     preview_path: "/articles/{{slug}}/"
     create: true
     slug: "{{slug}}"
