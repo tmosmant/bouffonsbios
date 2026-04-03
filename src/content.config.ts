@@ -1,5 +1,5 @@
 import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const categoryEnum = z.enum([
@@ -20,4 +20,33 @@ const articles = defineCollection({
 	}),
 });
 
-export const collections = { articles };
+const contact = defineCollection({
+	loader: file('src/content/contact.json'),
+	schema: z.object({
+		metaTitle: z.string(),
+		metaDescription: z.string(),
+		eyebrow: z.string(),
+		heading: z.string(),
+		leadMarkdown: z.string(),
+		email: z.string(),
+		emailCardLabel: z.string(),
+		emailHint: z.string(),
+		phoneTel: z.string(),
+		phoneCardLabel: z.string(),
+		phoneContactName: z.string(),
+		phoneHint: z.string(),
+		asideTitle: z.string(),
+		asideLinks: z
+			.array(
+				z.object({
+					label: z.string(),
+					href: z.string(),
+					description: z.string(),
+				}),
+			)
+			.default([]),
+		footnote: z.string().optional().default(''),
+	}),
+});
+
+export const collections = { articles, contact };

@@ -1,25 +1,28 @@
 ---
+import { getEntry } from 'astro:content';
+import { marked } from 'marked';
 import Layout from '../layouts/Layout.astro';
+
+const entry = await getEntry('contact', 'page');
+if (!entry) {
+	throw new Error('Fichier src/content/contact.json introuvable ou clé "page" manquante.');
+}
+const c = entry.data;
+
+const leadHtml = marked(c.leadMarkdown, { async: false, breaks: true }) as string;
+const telHref = `tel:${c.phoneTel.replace(/\s/g, '')}`;
 ---
 
-<Layout
-	title="Contact — Bouffons Bios"
-	description="Contacter l’association Bouffons Bios — marché des vins bio à Montreuil"
-	current="contact"
-	mainClass="site-main--contact"
->
+<Layout title={c.metaTitle} description={c.metaDescription} current="contact" mainClass="site-main--contact">
 	<article class="contact-page prose">
 		<header class="contact-hero">
-			<p class="contact-eyebrow" aria-hidden="true">Association</p>
-			<h1>Contact</h1>
-			<p class="contact-lead">
-				Questions sur le <strong>marché des vins bio</strong>, les participations vignerons ou l’organisation&nbsp;?
-				Écrivez-nous ou appelez — nous répondons avec plaisir.
-			</p>
+			<p class="contact-eyebrow" aria-hidden="true">{c.eyebrow}</p>
+			<h1>{c.heading}</h1>
+			<div class="contact-lead markdown-inline" set:html={leadHtml} />
 		</header>
 
 		<div class="contact-cards" role="list">
-			<a class="contact-card" href="mailto:bouffonsbios@gmail.com" role="listitem">
+			<a class="contact-card" href={`mailto:${c.email}`} role="listitem">
 				<span class="contact-card-icon" aria-hidden="true">
 					<svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path
@@ -39,12 +42,12 @@ import Layout from '../layouts/Layout.astro';
 						/>
 					</svg>
 				</span>
-				<span class="contact-card-label">E-mail</span>
-				<span class="contact-card-value">bouffonsbios@gmail.com</span>
-				<span class="contact-card-hint">Ouvre votre messagerie</span>
+				<span class="contact-card-label">{c.emailCardLabel}</span>
+				<span class="contact-card-value">{c.email}</span>
+				<span class="contact-card-hint">{c.emailHint}</span>
 			</a>
 
-			<a class="contact-card contact-card--tel" href="tel:+33676692598" role="listitem">
+			<a class="contact-card contact-card--tel" href={telHref} role="listitem">
 				<span class="contact-card-icon contact-card-icon--tel" aria-hidden="true">
 					<svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path
@@ -56,34 +59,35 @@ import Layout from '../layouts/Layout.astro';
 						/>
 					</svg>
 				</span>
-				<span class="contact-card-label">Téléphone</span>
-				<span class="contact-card-value">Daniel Mosmant</span>
-				<span class="contact-card-hint">+33&nbsp;6&nbsp;76&nbsp;69&nbsp;25&nbsp;98</span>
+				<span class="contact-card-label">{c.phoneCardLabel}</span>
+				<span class="contact-card-value">{c.phoneContactName}</span>
+				<span class="contact-card-hint">{c.phoneHint.replace(/ /g, '\u00A0')}</span>
 			</a>
 		</div>
 
-		<section class="contact-aside" aria-labelledby="contact-liens">
-			<h2 id="contact-liens">À voir aussi</h2>
-			<ul class="contact-links">
-				<li>
-					<a href="/plan-dacces/">Plan d’accès</a>
-					<span class="contact-links-desc">Croix de Chavaux, métro &amp; bus</span>
-				</li>
-				<li>
-					<a href="/">Accueil</a>
-					<span class="contact-links-desc">Dates &amp; infos du marché</span>
-				</li>
-				<li>
-					<a href="/articles/">Articles</a>
-					<span class="contact-links-desc">Communiqués &amp; listes de vignerons</span>
-				</li>
-			</ul>
-		</section>
+		{
+			c.asideLinks.length > 0 && (
+				<section class="contact-aside" aria-labelledby="contact-liens">
+					<h2 id="contact-liens">{c.asideTitle}</h2>
+					<ul class="contact-links">
+						{c.asideLinks.map((link) => (
+							<li>
+								<a href={link.href}>{link.label}</a>
+								<span class="contact-links-desc">{link.description}</span>
+							</li>
+						))}
+					</ul>
+				</section>
+			)
+		}
 
-		<p class="contact-note">
-			Pas de formulaire sur le site pour l’instant — l’e-mail ou l’appel restent les moyens les plus simples pour
-			nous joindre.
-		</p>
+		{
+			c.footnote?.trim() && (
+				<p class="contact-note">
+					{c.footnote}
+				</p>
+			)
+		}
 	</article>
 </Layout>
 
@@ -116,14 +120,21 @@ import Layout from '../layouts/Layout.astro';
 	}
 
 	.contact-lead {
-		margin: 0;
 		font-size: 1.08rem;
 		line-height: 1.55;
 		color: var(--muted, #5a5c52);
 		max-width: 38ch;
 	}
 
-	.contact-lead strong {
+	.contact-lead.markdown-inline :global(p) {
+		margin: 0 0 0.65em;
+	}
+
+	.contact-lead.markdown-inline :global(p:last-child) {
+		margin-bottom: 0;
+	}
+
+	.contact-lead :global(strong) {
 		color: var(--accent, #8f2d4a);
 		font-weight: 600;
 	}

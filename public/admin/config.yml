@@ -13,6 +13,87 @@ media_folder: public/uploads
 public_folder: /uploads
 
 collections:
+  - name: contact
+    label: Page contact
+    files:
+      - label: Contact
+        name: contact
+        file: src/content/contact.json
+        format: json
+        fields:
+          - label: Contenu de la page
+            name: page
+            widget: object
+            collapsed: false
+            fields:
+              - label: Titre (onglet du navigateur)
+                name: metaTitle
+                widget: string
+              - label: Description (résumé pour Google)
+                name: metaDescription
+                widget: text
+              - label: Petit surtitre (au-dessus du titre)
+                name: eyebrow
+                widget: string
+                default: Association
+              - label: Titre principal
+                name: heading
+                widget: string
+                default: Contact
+              - label: Texte d'introduction
+                hint: "Markdown simple — ex. **en gras**"
+                name: leadMarkdown
+                widget: markdown
+              - label: Adresse e-mail
+                name: email
+                widget: string
+              - label: Libellé carte e-mail
+                name: emailCardLabel
+                widget: string
+                default: E-mail
+              - label: Sous-texte carte e-mail
+                name: emailHint
+                widget: string
+                default: Ouvre votre messagerie
+              - label: Téléphone (lien, sans espaces)
+                hint: "Ex. +33676692598"
+                name: phoneTel
+                widget: string
+              - label: Libellé carte téléphone
+                name: phoneCardLabel
+                widget: string
+                default: Téléphone
+              - label: Nom affiché (carte téléphone)
+                name: phoneContactName
+                widget: string
+              - label: Numéro affiché (lisible)
+                hint: "Ex. +33 6 76 69 25 98"
+                name: phoneHint
+                widget: string
+              - label: Titre du bloc liens
+                name: asideTitle
+                widget: string
+                default: À voir aussi
+              - label: Liens utiles
+                name: asideLinks
+                widget: list
+                summary: "{{fields.label}}"
+                fields:
+                  - label: Texte du lien
+                    name: label
+                    widget: string
+                  - label: URL
+                    hint: "Commence par / pour une page du site"
+                    name: href
+                    widget: string
+                  - label: Ligne de description
+                    name: description
+                    widget: string
+              - label: Note en bas de page
+                name: footnote
+                widget: text
+                required: false
+
   - name: articles
     label: Articles
     label_singular: Article
