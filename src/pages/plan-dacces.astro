@@ -1,12 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getEnv } from 'astro/env/runtime';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-const planImage =
-	'https://bouffonsbios.files.wordpress.com/2025/03/plan-dacces.jpg';
+/** Rendu à la demande : le jeton Mapbox est lu depuis l’env Worker (dashboard / wrangler), pas seulement au build. */
+export const prerender = false;
 
 const MAPBOX_STYLE = 'mapbox://styles/tmosmant/cmniwegjm003z01sa181h9ma0';
-const hasMapboxToken = Boolean(import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN);
+const mapboxToken = (getEnv('PUBLIC_MAPBOX_ACCESS_TOKEN') ?? '').trim();
+const hasMapboxToken = mapboxToken.length > 0;
 ---
 
 <Layout title="Plan d'accès — Bouffons Bios" description="Marché de la Croix de Chavaux, Montreuil" current="plan">
@@ -26,13 +28,13 @@ const hasMapboxToken = Boolean(import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN);
 				role="region"
 				aria-label="Carte Mapbox — Croix de Chavaux, métro, bus et accès marché"
 				data-style={MAPBOX_STYLE}
-				data-has-token={hasMapboxToken ? '1' : ''}
+				data-mapbox-token={mapboxToken}
 			>
 			</div>
 			{!hasMapboxToken && (
 				<p class="map-live-fallback map-live-fallback--token">
-					Carte interactive&nbsp;: définissez <code>PUBLIC_MAPBOX_ACCESS_TOKEN</code> dans un fichier{' '}
-					<code>.env</code> (voir README).
+					Carte interactive&nbsp;: ajoutez <code>PUBLIC_MAPBOX_ACCESS_TOKEN</code> au Worker Cloudflare
+					(variables) et dans un <code>.env</code> local pour le dev — voir README.
 				</p>
 			)}
 			<p class="map-live-fallback map-live-fallback--osm">
@@ -44,16 +46,6 @@ const hasMapboxToken = Boolean(import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN);
 				</a>
 			</p>
 		</div>
-
-		<p class="map-transit-source">
-			Sorties de métro et arrêts de bus&nbsp;: positions issues d’<a
-				href="https://www.openstreetmap.org/copyright"
-				rel="noopener noreferrer">OpenStreetMap</a> (mise à jour ponctuelle du site).
-		</p>
-
-		<figure class="map-fig">
-			<img src={planImage} alt="Plan d’accès au marché de la Croix de Chavaux" width="720" height="393" loading="lazy" />
-		</figure>
 	</article>
 </Layout>
 
@@ -61,8 +53,74 @@ const hasMapboxToken = Boolean(import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN);
 	import mapboxgl from 'mapbox-gl';
 	import transitFc from '../data/croix-chavaux-transit.json';
 
-	const TOKEN = import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN;
 	const INTERACTIVE_LAYERS = ['transit-bus', 'transit-exit', 'transit-station', 'transit-venue'];
+
+	const ICON_URLS: Record<string, string> = {
+		'bb-metro': '/map-icons/metro.svg',
+		'bb-bus': '/map-icons/bus.png',
+		'bb-exit': '/map-icons/exit.png',
+		'bb-venue': '/map-icons/venue.svg',
+	};
+
+	/** Taille d’affichage « logique » sur la carte (sources 500×500 / 800×800 redimensionnées). */
+	const ICON_LOGICAL_PX: Record<string, { w: number; h: number }> = {
+		'bb-metro': { w: 32, h: 32 },
+		'bb-bus': { w: 32, h: 32 },
+		'bb-exit': { w: 32, h: 32 },
+		'bb-venue': { w: 36, h: 40 },
+	};
+
+	const ICON_PIXEL_RATIO = 2;
+
+	/**
+	 * Raster commun : SVG (fetch text → blob) ou PNG (fetch blob) → canvas @2x → ImageData pour Mapbox.
+	 */
+	async function addRasterIcon(map: mapboxgl.Map, id: string, path: string): Promise<void> {
+		const logical = ICON_LOGICAL_PX[id];
+		if (!logical) throw new Error(`Icône inconnue : ${id}`);
+
+		const url = new URL(path, window.location.origin).href;
+		const res = await fetch(url);
+		if (!res.ok) throw new Error(`HTTP ${res.status} — ${path}`);
+
+		const isSvg = path.endsWith('.svg');
+		let objectUrl: string;
+		if (isSvg) {
+			const svgMarkup = await res.text();
+			objectUrl = URL.createObjectURL(
+				new Blob([svgMarkup], { type: 'image/svg+xml;charset=utf-8' }),
+			);
+		} else {
+			objectUrl = URL.createObjectURL(await res.blob());
+		}
+
+		const img = new Image();
+		try {
+			await new Promise<void>((resolve, reject) => {
+				img.onload = () => resolve();
+				img.onerror = () =>
+					reject(new Error(`Décode image impossible : ${path}`));
+				img.src = objectUrl;
+			});
+		} finally {
+			URL.revokeObjectURL(objectUrl);
+		}
+
+		const cw = logical.w * ICON_PIXEL_RATIO;
+		const ch = logical.h * ICON_PIXEL_RATIO;
+		const canvas = document.createElement('canvas');
+		canvas.width = cw;
+		canvas.height = ch;
+		const ctx = canvas.getContext('2d', { willReadFrequently: true });
+		if (!ctx) throw new Error('Canvas 2D indisponible');
+
+		ctx.clearRect(0, 0, cw, ch);
+		ctx.drawImage(img, 0, 0, cw, ch);
+
+		const data = ctx.getImageData(0, 0, cw, ch);
+		if (map.hasImage(id)) map.removeImage(id);
+		map.addImage(id, data, { pixelRatio: ICON_PIXEL_RATIO });
+	}
 
 	function escapeHtml(s: string) {
 		return s
@@ -93,10 +151,11 @@ const hasMapboxToken = Boolean(import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN);
 	function boot() {
 		const el = document.getElementById('map-acces');
 		if (!el || el.dataset.mapReady) return;
-		if (!TOKEN) return;
+		const token = (el.getAttribute('data-mapbox-token') || '').trim();
+		if (!token) return;
 
 		el.dataset.mapReady = '1';
-		mapboxgl.accessToken = TOKEN;
+		mapboxgl.accessToken = token;
 
 		const style = el.dataset.style || '';
 		const map = new mapboxgl.Map({
@@ -110,63 +169,136 @@ const hasMapboxToken = Boolean(import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN);
 
 		map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-left');
 
-		map.on('load', () => {
+		map.on('load', async () => {
+			for (const [id, path] of Object.entries(ICON_URLS)) {
+				try {
+					await addRasterIcon(map, id, path);
+				} catch (e) {
+					console.warn(`[plan-dacces] Icône ${id} :`, e);
+				}
+			}
+
 			map.addSource('transit', {
 				type: 'geojson',
 				data: transitFc,
 			});
 
-			map.addLayer({
-				id: 'transit-bus',
-				type: 'circle',
-				source: 'transit',
-				filter: ['==', ['get', 'kind'], 'bus'],
-				paint: {
-					'circle-radius': 5,
-					'circle-color': '#0d8050',
-					'circle-stroke-width': 2,
-					'circle-stroke-color': '#ffffff',
-				},
-			});
+			if (map.hasImage('bb-bus')) {
+				map.addLayer({
+					id: 'transit-bus',
+					type: 'symbol',
+					source: 'transit',
+					filter: ['==', ['get', 'kind'], 'bus'],
+					layout: {
+						'icon-image': 'bb-bus',
+						'icon-size': 0.88,
+						'icon-anchor': 'center',
+						'icon-allow-overlap': true,
+						'icon-ignore-placement': true,
+					},
+				});
+			} else {
+				map.addLayer({
+					id: 'transit-bus',
+					type: 'circle',
+					source: 'transit',
+					filter: ['==', ['get', 'kind'], 'bus'],
+					paint: {
+						'circle-radius': 5,
+						'circle-color': '#0d8050',
+						'circle-stroke-width': 2,
+						'circle-stroke-color': '#ffffff',
+					},
+				});
+			}
 
-			map.addLayer({
-				id: 'transit-exit',
-				type: 'circle',
-				source: 'transit',
-				filter: ['==', ['get', 'kind'], 'exit'],
-				paint: {
-					'circle-radius': 7,
-					'circle-color': '#e6c200',
-					'circle-stroke-width': 2,
-					'circle-stroke-color': '#1a1a1a',
-				},
-			});
+			if (map.hasImage('bb-exit')) {
+				map.addLayer({
+					id: 'transit-exit',
+					type: 'symbol',
+					source: 'transit',
+					filter: ['==', ['get', 'kind'], 'exit'],
+					layout: {
+						'icon-image': 'bb-exit',
+						'icon-size': 0.92,
+						'icon-anchor': 'center',
+						'icon-allow-overlap': true,
+						'icon-ignore-placement': true,
+					},
+				});
+			} else {
+				map.addLayer({
+					id: 'transit-exit',
+					type: 'circle',
+					source: 'transit',
+					filter: ['==', ['get', 'kind'], 'exit'],
+					paint: {
+						'circle-radius': 7,
+						'circle-color': '#e6c200',
+						'circle-stroke-width': 2,
+						'circle-stroke-color': '#1a1a1a',
+					},
+				});
+			}
 
-			map.addLayer({
-				id: 'transit-station',
-				type: 'circle',
-				source: 'transit',
-				filter: ['==', ['get', 'kind'], 'station'],
-				paint: {
-					'circle-radius': 9,
-					'circle-color': '#003d82',
-					'circle-stroke-width': 2,
-					'circle-stroke-color': '#ffffff',
-				},
-			});
+			if (map.hasImage('bb-metro')) {
+				map.addLayer({
+					id: 'transit-station',
+					type: 'symbol',
+					source: 'transit',
+					filter: ['==', ['get', 'kind'], 'station'],
+					layout: {
+						'icon-image': 'bb-metro',
+						'icon-size': 1,
+						'icon-anchor': 'center',
+						'icon-allow-overlap': true,
+						'icon-ignore-placement': true,
+					},
+				});
+			} else {
+				map.addLayer({
+					id: 'transit-station',
+					type: 'circle',
+					source: 'transit',
+					filter: ['==', ['get', 'kind'], 'station'],
+					paint: {
+						'circle-radius': 9,
+						'circle-color': '#003d82',
+						'circle-stroke-width': 2,
+						'circle-stroke-color': '#ffffff',
+					},
+				});
+			}
 
-			map.addLayer({
-				id: 'transit-venue',
-				type: 'circle',
-				source: 'transit',
-				filter: ['==', ['get', 'kind'], 'venue'],
-				paint: {
-					'circle-radius': 11,
-					'circle-color': '#9a3412',
-					'circle-stroke-width': 2,
-					'circle-stroke-color': '#fff7ed',
-				},
-			});
+			if (map.hasImage('bb-venue')) {
+				map.addLayer({
+					id: 'transit-venue',
+					type: 'symbol',
+					source: 'transit',
+					filter: ['==', ['get', 'kind'], 'venue'],
+					layout: {
+						'icon-image': 'bb-venue',
+						'icon-size': 0.95,
+						'icon-anchor': 'bottom',
+						'icon-offset': [0, -4],
+						'icon-allow-overlap': true,
+						'icon-ignore-placement': true,
+					},
+				});
+			} else {
+				map.addLayer({
+					id: 'transit-venue',
+					type: 'circle',
+					source: 'transit',
+					filter: ['==', ['get', 'kind'], 'venue'],
+					paint: {
+						'circle-radius': 11,
+						'circle-color': '#9a3412',
+						'circle-stroke-width': 2,
+						'circle-stroke-color': '#fff7ed',
+					},
+				});
+			}
 
 			map.fitBounds(boundsFromGeoJSON(transitFc), {
 				padding: { top: 48, bottom: 52, left: 48, right: 48 },
@@ -262,24 +394,6 @@ const hasMapboxToken = Boolean(import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN);
 		font-size: 0.88rem;
 		color: var(--muted, #5a5c52);
 		padding: 1.25rem;
-	}
-	.map-transit-source {
-		font-size: 0.85rem;
-		color: var(--muted, #5a5c52);
-		margin: -0.5rem 0 1.25rem;
-	}
-	.map-fig {
-		margin: 1.5rem 0 0;
-		padding: 0;
-	}
-	.map-fig img {
-		width: 100%;
-		height: auto;
-		border-radius: 0.85rem;
-		border: 1px solid color-mix(in srgb, var(--border) 75%, var(--accent-nature));
-		box-shadow:
-			0 4px 20px color-mix(in srgb, var(--fg) 6%, transparent),
-			0 0 0 1px color-mix(in srgb, var(--joy) 15%, transparent);
 	}
 	.map-live :global(.mapbox-popup-inner) {
 		font-size: 0.85rem;

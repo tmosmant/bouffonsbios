@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500" role="img" aria-label="Métro">
+	<!-- Style aligné sur bus.png : anneau bleu marine épais, M très grasse, intérieur du disque transparent. -->
+	<circle cx="250" cy="250" r="201" fill="none" stroke="#0f2840" stroke-width="46" />
+	<path
+		fill="#0f2840"
+		d="M142 360V148h58l50 122 50-122h58v212h-50V226l-44 108h-28l-44-108v134h-50z"
+	/>
+</svg>

@@ -25,13 +25,11 @@ npm run dev
 
 ### Carte Mapbox (plan d’accès)
 
-La page `/plan-dacces/` charge [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) avec un style hébergé sur ton compte. Copier `.env.example` vers `.env` et renseigner :
+La page `/plan-dacces/` charge [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) avec un style hébergé sur ton compte.
 
-```env
-PUBLIC_MAPBOX_ACCESS_TOKEN=pk.…
-```
-
-En production (Cloudflare Pages, etc.), définir la même variable d’environnement au moment du build pour qu’elle soit injectée dans le bundle client. Restreindre le jeton par URL dans [Mapbox Account](https://account.mapbox.com/).
+- **En local** : copier `.env.example` vers `.env` et renseigner `PUBLIC_MAPBOX_ACCESS_TOKEN=pk.…` (Astro charge ce fichier au dev / au build).
+- **Sur Cloudflare Workers** (déploiement `wrangler deploy`) : ajouter la variable **`PUBLIC_MAPBOX_ACCESS_TOKEN`** dans le tableau de bord du worker **bouffonsbios** (*Settings* → *Variables and Secrets*), pas seulement au « build » Git. La page est rendue côté serveur et lit le jeton à chaque requête via l’env Worker ; un jeton défini uniquement au build CI ne suffit pas.
+- Restreindre le jeton par URL dans [Mapbox Account](https://account.mapbox.com/).
 
 ## Déploiement
 
