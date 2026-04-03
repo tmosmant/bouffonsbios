@@ -97,6 +97,44 @@ collections:
                 widget: text
                 required: false
 
+  - name: manifeste
+    label: Page manifeste
+    files:
+      - label: Manifeste
+        name: manifeste
+        file: src/content/manifeste.json
+        format: json
+        fields:
+          - label: Contenu de la page
+            name: page
+            widget: object
+            collapsed: false
+            fields:
+              - label: Titre (onglet du navigateur)
+                name: metaTitle
+                widget: string
+              - label: Description (résumé pour Google)
+                name: metaDescription
+                widget: text
+              - label: Surtitre (ligne fine au-dessus du titre)
+                name: eyebrow
+                widget: string
+              - label: Titre principal
+                name: heading
+                widget: string
+                default: Manifeste
+              - label: Sous-titre (chapô)
+                hint: "Une ou deux phrases — apparaît sous le titre principal"
+                name: subtitle
+                widget: text
+              - label: Texte du manifeste
+                hint: "Paragraphes séparés par une ligne vide. Markdown : **gras**, [lien](url)"
+                name: bodyMarkdown
+                widget: markdown
+              - label: Signature (bas de page)
+                name: signature
+                widget: text
+
   - name: articles
     label: Articles
     label_singular: Article

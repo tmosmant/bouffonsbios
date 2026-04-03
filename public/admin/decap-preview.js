@@ -84,6 +84,40 @@
 		},
 	});
 
+	var ManifestePreview = createClass({
+		render: function () {
+			var entry = this.props.entry;
+			var p = entry.getIn(['data', 'page']);
+			if (!p || p.size === 0) {
+				return h(
+					'div',
+					{ className: 'decap-manifeste-preview' },
+					h('p', { className: 'dcp-empty' }, 'Remplissez le bloc « Contenu de la page » pour voir l’aperçu.'),
+				);
+			}
+			var widgets = this.props.widgetsFor('page');
+			var bodyPreview = widgets && widgets.getIn ? widgets.getIn(['widgets', 'bodyMarkdown']) : null;
+			return h(
+				'article',
+				{ className: 'decap-manifeste-preview' },
+				h(
+					'header',
+					{ className: 'dcp-manifeste-hero' },
+					h('p', { className: 'dcp-manifeste-eyebrow' }, p.get('eyebrow') || ''),
+					h('h1', {}, p.get('heading') || 'Manifeste'),
+					p.get('subtitle') ? h('p', { className: 'dcp-manifeste-sub' }, p.get('subtitle')) : null,
+				),
+				h('div', { className: 'dcp-manifeste-bar', 'aria-hidden': true }),
+				h('div', { className: 'dcp-body dcp-manifeste-md' }, bodyPreview || h('p', {}, p.get('bodyMarkdown') || '')),
+				h(
+					'footer',
+					{ className: 'dcp-manifeste-sign' },
+					h('p', {}, p.get('signature') || ''),
+				),
+			);
+		},
+	});
+
 	var ArticlePreview = createClass({
 		render: function () {
 			var entry = this.props.entry;
@@ -118,5 +152,6 @@
 
 	/* Fichier unique « contact » dans la collection files : le nom du fichier est la clé Decap. */
 	CMS.registerPreviewTemplate('contact', ContactPreview);
+	CMS.registerPreviewTemplate('manifeste', ManifestePreview);
 	CMS.registerPreviewTemplate('articles', ArticlePreview);
 })();

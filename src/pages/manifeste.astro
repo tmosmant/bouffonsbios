@@ -1,78 +1,269 @@
 ---
+import { getEntry } from 'astro:content';
+import { marked } from 'marked';
 import Layout from '../layouts/Layout.astro';
+
+const entry = await getEntry('manifeste', 'page');
+if (!entry) {
+	throw new Error('Fichier src/content/manifeste.json introuvable ou clé "page" manquante.');
+}
+const m = entry.data;
+
+const bodyHtml = marked(m.bodyMarkdown, { async: false, breaks: true }) as string;
 ---
 
-<Layout
-	title="Manifeste — Bouffons Bios"
-	description="Politique du vin : manifeste du premier marché des vins bios de Montreuil"
-	current="manifeste"
->
-	<article class="prose">
-		<h1>Manifeste</h1>
-		<h2>Politique du vin : manifeste du premier «&nbsp;marché des vins bios&nbsp;» de Montreuil</h2>
+<Layout title={m.metaTitle} description={m.metaDescription} current="manifeste" mainClass="site-main--manifeste">
+	<article class="manifeste-page" lang="fr">
+		<div class="manifeste-frame">
+			<div class="manifeste-deco" aria-hidden="true">
+				<span class="manifeste-deco-quote">«</span>
+				<svg class="manifeste-deco-vine" viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M60 8c-8 18-22 32-28 52-4 14-2 30 8 42 6 8 16 14 26 14 12 0 22-8 28-18 10-18 8-40-4-56-8-10-20-16-30-34z"
+						stroke="currentColor"
+						stroke-width="1.25"
+						stroke-linejoin="round"
+						opacity="0.35"
+					/>
+					<path
+						d="M60 116v36M44 132c10-6 22-6 32 0M52 100c-14 4-24 16-28 30M76 98c14 6 24 18 28 32"
+						stroke="currentColor"
+						stroke-width="1.15"
+						stroke-linecap="round"
+						opacity="0.4"
+					/>
+				</svg>
+			</div>
 
-		<p>
-			On peut vivre sans vin, et même très bien. Heureusement. Mais nous aimons le vin car il est avant tout
-			plaisir et partage.
-		</p>
-		<p>
-			Plaisir de découvrir le fruit de tant de combinaisons : plante, sol, climat, soleil et intempéries de
-			l’année, savoir-faire (tradition et audace), petite et grande histoire (d’un pays, d’une région, d’un homme,
-			d’une femme…). Nous revendiquons la bio-diversité des vins et rejetons la standardisation, la norme
-			commerciale…
-		</p>
-		<p>
-			Plaisir aussi de cet état léger qui délie l’esprit et l’imagination, apaise et libère la parole… Partage
-			de l’espoir d’un Monde meilleur.
-		</p>
-		<p>
-			Bien sûr, nous n’ignorons pas que la limite est parfois ténue entre le plaisir et le dépassement. Boire doit
-			être un acte conscient et responsable. Si les difficultés de la vie peuvent conduire vers le piège de la
-			dépendance, la solidarité doit être au rendez-vous.
-		</p>
-		<p>
-			Responsabilité, solidarité : les vignerons que nous accueillons ce 15 mars 2003 à Montreuil en font preuve
-			tout au long de l’année. «&nbsp;Bios&nbsp;» ou dans une démarche proche, la responsabilité est leur
-			engagement commun. Alors que nombre de leurs confrères abusent d’engrais chimiques et de pesticides, ils ont
-			compris que le respect qu’ils portent aux vignes, à leurs vins et à ceux qui les boiront, est un acte
-			citoyen, pour aujourd’hui et pour demain.
-		</p>
-		<p>
-			Nous vous invitons à déguster ces vins, à choisir ceux que vous partagerez en famille ou entre amis. Nous
-			vous invitons à converser avec ces vignerons de leur travail, c’est-à-dire de leur art, de leur passion et
-			de leur générosité.
-		</p>
-		<p>
-			Pour nous, écologistes montreuillois, ce premier «&nbsp;marché des vins bios&nbsp;» est une façon parmi
-			d’autres de faire de la politique autrement. C’est une nouvelle occasion de refaire le monde «&nbsp;autour
-			d’un verre&nbsp;».
-		</p>
-		<p>
-			Nous trinquons ainsi à l’avenir de notre cité, pour que la politique s’y régénère, tourne la page de
-			pratiques autoritaires ou politicardes d’un autre temps, dans l’intérêt de tous. Pour que cette ville soit
-			toujours à gauche, c’est-à-dire diverse, démocratique et solidaire, innovante et joyeuse.
-		</p>
-		<p>A la vôtre, à la nôtre.</p>
-		<p class="sign">Les organisateurs du «&nbsp;premier marché des vins bios&nbsp;» de Montreuil (15 mars 2003)</p>
+			<header class="manifeste-hero">
+				<p class="manifeste-eyebrow">{m.eyebrow}</p>
+				<h1 class="manifeste-title">{m.heading}</h1>
+				<p class="manifeste-subtitle">{m.subtitle}</p>
+			</header>
+
+			<div class="manifeste-accent-bar" aria-hidden="true"></div>
+
+			<div class="manifeste-body manifeste-md prose" set:html={bodyHtml} />
+
+			<footer class="manifeste-sign">
+				<div class="manifeste-sign-inner">
+					<p>{m.signature}</p>
+				</div>
+			</footer>
+		</div>
 	</article>
 </Layout>
 
 <style>
-	h1 {
-		margin-top: 0;
-		font-size: 1.75rem;
+	:global(.site-main--manifeste) {
+		max-width: min(44rem, 100%);
+		padding-top: 2.25rem;
 	}
-	h2 {
-		font-size: 1.15rem;
+
+	.manifeste-page {
+		position: relative;
+	}
+
+	.manifeste-frame {
+		position: relative;
+		overflow: hidden;
+		padding: 2rem 1.65rem 2.35rem;
+		border-radius: 1.15rem;
+		border: 1px solid color-mix(in srgb, var(--border) 82%, var(--accent-nature));
+		background:
+			linear-gradient(
+				165deg,
+				color-mix(in srgb, var(--bg) 94%, white) 0%,
+				color-mix(in srgb, var(--joy) 4%, var(--bg)) 38%,
+				color-mix(in srgb, var(--bg) 96%, var(--accent-nature)) 100%
+			);
+		box-shadow:
+			0 1px 0 color-mix(in srgb, white 65%, transparent) inset,
+			0 14px 40px color-mix(in srgb, var(--fg) 6%, transparent);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.manifeste-frame {
+			background: linear-gradient(
+				165deg,
+				color-mix(in srgb, var(--bg) 92%, var(--accent-nature)) 0%,
+				color-mix(in srgb, var(--bg) 94%, var(--joy)) 45%,
+				color-mix(in srgb, var(--bg) 96%, transparent) 100%
+			);
+			box-shadow:
+				0 1px 0 color-mix(in srgb, white 5%, transparent) inset,
+				0 16px 48px color-mix(in srgb, black 35%, transparent);
+		}
+	}
+
+	.manifeste-deco {
+		position: absolute;
+		top: 0.35rem;
+		right: 0.5rem;
+		width: 7.5rem;
+		height: 9rem;
+		pointer-events: none;
+		color: var(--accent-nature);
+		opacity: 0.9;
+	}
+
+	.manifeste-deco-quote {
+		position: absolute;
+		top: -0.2rem;
+		right: 0.15rem;
+		font-family: var(--font-display, Georgia, serif);
+		font-size: clamp(4.5rem, 14vw, 6.5rem);
+		font-weight: 800;
+		line-height: 0.85;
+		color: color-mix(in srgb, var(--accent) 22%, var(--accent-nature));
+		opacity: 0.11;
+		user-select: none;
+	}
+
+	.manifeste-deco-vine {
+		position: absolute;
+		bottom: 0;
+		right: 0.25rem;
+		width: 4.25rem;
+		height: auto;
+		color: var(--accent-nature-soft);
+		opacity: 0.45;
+	}
+
+	.manifeste-hero {
+		position: relative;
+		z-index: 1;
+		max-width: 38rem;
+		padding-right: clamp(0rem, 8vw, 4rem);
+	}
+
+	.manifeste-eyebrow {
+		margin: 0 0 0.5rem;
+		font-size: 0.74rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--accent-nature, #35624a);
+	}
+
+	.manifeste-title {
+		margin: 0 0 0.85rem;
+		font-family: var(--font-display, Georgia, serif);
+		font-weight: 800;
+		font-size: clamp(2.05rem, 5.2vw, 2.85rem);
+		line-height: 1.08;
+		letter-spacing: -0.03em;
+		color: var(--fg, #1c221c);
+		text-wrap: balance;
+	}
+
+	.manifeste-subtitle {
+		margin: 0;
+		font-size: clamp(1.02rem, 2.2vw, 1.14rem);
+		font-weight: 500;
+		line-height: 1.48;
+		color: var(--muted, #5a5c52);
+		max-width: 38ch;
+		text-wrap: balance;
+	}
+
+	.manifeste-accent-bar {
+		width: 3.75rem;
+		height: 0.22rem;
+		margin: 1.35rem 0 1.65rem;
+		border-radius: 999px;
+		background: linear-gradient(
+			90deg,
+			var(--joy, #c9892e),
+			color-mix(in srgb, var(--accent) 55%, var(--joy)),
+			var(--accent-nature, #35624a)
+		);
+		box-shadow: 0 1px 2px color-mix(in srgb, var(--joy) 25%, transparent);
+	}
+
+	.manifeste-body {
+		position: relative;
+		z-index: 1;
+	}
+
+	.manifeste-md {
+		font-size: 1.05rem;
+		line-height: 1.75;
+		color: var(--fg, #1c221c);
+	}
+
+	.manifeste-md :global(p) {
+		margin: 0 0 1.05em;
+		hyphens: auto;
+	}
+
+	.manifeste-md :global(p:last-child) {
+		margin-bottom: 0;
+	}
+
+	.manifeste-md :global(p:first-of-type::first-letter) {
+		float: left;
+		font-family: var(--font-display, Georgia, serif);
+		font-size: 3.35em;
+		font-weight: 800;
+		line-height: 0.82;
+		margin: 0.04em 0.14em 0 0;
+		color: var(--accent-nature, #35624a);
+		text-shadow: 0 2px 0 color-mix(in srgb, var(--joy) 35%, transparent);
+	}
+
+	.manifeste-md :global(strong) {
+		color: var(--accent, #8f2d4a);
 		font-weight: 600;
-		margin: 0 0 1.25rem;
-		line-height: 1.35;
-		color: var(--muted, #5c5850);
 	}
-	.sign {
-		font-size: 0.95rem;
+
+	.manifeste-md :global(a) {
+		color: var(--accent, #8f2d4a);
+		font-weight: 600;
+		text-underline-offset: 0.15em;
+	}
+
+	.manifeste-md :global(a:hover) {
+		color: var(--accent-soft, #a84862);
+	}
+
+	.manifeste-sign {
+		margin-top: 2.25rem;
+		padding-top: 0.25rem;
+		position: relative;
+		z-index: 1;
+	}
+
+	.manifeste-sign-inner {
+		padding: 1.2rem 1.35rem 1.3rem;
+		border-radius: 0.85rem;
+		text-align: center;
+		font-family: var(--font-display, Georgia, serif);
+		font-size: 0.98rem;
 		font-style: italic;
-		color: var(--muted, #5c5850);
-		margin-top: 2rem;
+		font-weight: 600;
+		line-height: 1.45;
+		color: var(--muted, #5a5c52);
+		border: 1px solid color-mix(in srgb, var(--border) 75%, var(--accent));
+		background: linear-gradient(
+			125deg,
+			color-mix(in srgb, var(--accent) 6%, transparent),
+			color-mix(in srgb, var(--joy) 8%, transparent),
+			color-mix(in srgb, var(--accent-nature) 7%, transparent)
+		);
+		box-shadow: 0 1px 0 color-mix(in srgb, white 50%, transparent) inset;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.manifeste-sign-inner {
+			box-shadow: 0 1px 0 color-mix(in srgb, white 6%, transparent) inset;
+		}
+	}
+
+	.manifeste-sign-inner p {
+		margin: 0;
+		max-width: 36ch;
+		margin-left: auto;
+		margin-right: auto;
 	}
 </style>
