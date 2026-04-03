@@ -9,9 +9,9 @@ Site [Astro](https://astro.build) + [Decap CMS](https://decapcms.org), déployé
 | Ressource | URL |
 |-----------|-----|
 | Site (prod) | <https://bouffonsbios.org> · <https://www.bouffonsbios.org> |
-| Alias Workers | <https://bouffonsbio.thomas-mosmant.workers.dev> |
+| Alias Workers | <https://bouffonsbios.thomas-mosmant.workers.dev> |
 | Admin Decap | <https://bouffonsbios.org/admin/> |
-| OAuth GitHub (proxy) | <https://bouffonsbio-oauth.thomas-mosmant.workers.dev> |
+| OAuth GitHub (proxy) | <https://bouffonsbios-oauth.thomas-mosmant.workers.dev> |
 
 ## Développement
 
@@ -40,9 +40,9 @@ npm run deploy:oauth
 1. **GitHub** → *Settings* → *Developer settings* → *OAuth Apps* → *New OAuth App*  
    - **Homepage URL** : `https://bouffonsbios.org`  
    - **Authorization callback URL** :  
-     `https://bouffonsbio-oauth.thomas-mosmant.workers.dev/callback?provider=github`
+     `https://bouffonsbios-oauth.thomas-mosmant.workers.dev/callback?provider=github`
 
-2. **Cloudflare** — sur le worker `bouffonsbio-oauth` :
+2. **Cloudflare** — sur le worker `bouffonsbios-oauth` :
 
    ```sh
    npx wrangler secret put GITHUB_OAUTH_SECRET -c workers/decap-oauth/wrangler.jsonc
@@ -50,6 +50,8 @@ npm run deploy:oauth
    ```
 
    Colle le **Client ID** pour la variable, le **Client secret** pour le secret.
+
+   Ne mets **pas** `GITHUB_OAUTH_ID` dans `workers/decap-oauth/wrangler.jsonc` : un déploiement écraserait sinon les variables du dashboard. Configure-les uniquement via les commandes ci-dessus ou l’UI Cloudflare.
 
 3. Redéploie le site après modification de `public/admin/config.yml` : `npm run deploy`.
 

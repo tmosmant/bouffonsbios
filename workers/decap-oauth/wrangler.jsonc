@@ -1,8 +1,5 @@
 {
-	"name": "bouffonsbio-oauth",
+	"name": "bouffonsbios-oauth",
 	"main": "src/index.ts",
-	"compatibility_date": "2026-04-03",
-	"vars": {
-		"GITHUB_OAUTH_ID": ""
-	}
+	"compatibility_date": "2026-04-03"
 }
