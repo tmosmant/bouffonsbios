@@ -33,7 +33,7 @@ const nav = [
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,550;0,9..144,650;0,9..144,720;1,9..144,550&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500..900;1,9..144,500..800&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
 			rel="stylesheet"
 		/>
 		<slot name="head" />
@@ -157,12 +157,15 @@ const nav = [
 
 	.logo {
 		font-family: var(--font-display);
-		font-weight: 650;
+		/* Graisse élevée + axes stables : certains navigateurs Android (ex. Edge) affinent trop les fûts avec WONK / poids bas */
+		font-weight: 800;
 		font-size: 1.35rem;
 		color: var(--fg);
 		text-decoration: none;
-		letter-spacing: -0.02em;
-		font-variation-settings: 'SOFT' 40, 'WONK' 0.9;
+		letter-spacing: -0.012em;
+		font-variation-settings: 'SOFT' 70, 'WONK' 0;
+		font-optical-sizing: auto;
+		text-rendering: optimizeLegibility;
 	}
 	.logo:hover {
 		color: var(--accent);
@@ -248,6 +251,11 @@ const nav = [
 		}
 	}
 
+	/* Fiches article : colonne un peu plus étroite pour le confort de lecture */
+	.site-main--article {
+		max-width: 38rem;
+	}
+
 	.site-footer {
 		padding: 1.35rem 1.5rem;
 		border-top: 1px solid color-mix(in srgb, var(--border) 85%, var(--accent-nature));
@@ -271,10 +279,12 @@ const nav = [
 
 	.prose :where(h1) {
 		font-family: var(--font-display);
-		font-weight: 720;
+		font-weight: 800;
 		line-height: 1.18;
-		letter-spacing: -0.02em;
-		font-variation-settings: 'SOFT' 35, 'WONK' 0.85;
+		letter-spacing: -0.012em;
+		font-variation-settings: 'SOFT' 70, 'WONK' 0;
+		font-optical-sizing: auto;
+		text-rendering: optimizeLegibility;
 	}
 	.prose :where(h2) {
 		font-family: var(--font-body);
