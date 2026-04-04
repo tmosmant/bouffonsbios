@@ -87,6 +87,26 @@ collections:
               - label: Description (résumé pour Google)
                 name: metaDescription
                 widget: text
+              - label: "Open Graph — titre du partage"
+                hint: "Facebook, WhatsApp, Bluesky… Laisser vide pour un titre auto (marché + date + lieu)."
+                name: ogTitle
+                widget: string
+                required: false
+              - label: "Open Graph — texte du partage"
+                hint: "Deux ou trois phrases. Vide = texte proposé automatiquement à partir du héros."
+                name: ogDescription
+                widget: text
+                required: false
+              - label: "Open Graph — image"
+                hint: "Grande image (idéalement ≥ 1200 px de large). Vide = affiche par défaut du site."
+                name: ogImage
+                widget: image
+                required: false
+              - label: "Open Graph — description de l’image"
+                hint: "Pour l’accessibilité et les aperçus. Vide = libellé basé sur le titre du marché."
+                name: ogImageAlt
+                widget: string
+                required: false
               - label: Badge (pastille au-dessus de la date)
                 name: badge
                 widget: string

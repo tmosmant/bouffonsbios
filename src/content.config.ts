@@ -82,6 +82,11 @@ const home = defineCollection({
 		ctaPrimaryHref: z.string(),
 		ctaSecondaryLabel: z.string(),
 		ctaSecondaryHref: z.string(),
+		/** Open Graph / réseaux sociaux (accueil) — vides = valeurs dérivées du héros dans index.astro */
+		ogTitle: z.string().optional(),
+		ogDescription: z.string().optional(),
+		ogImage: z.string().optional(),
+		ogImageAlt: z.string().optional(),
 	}),
 });
 

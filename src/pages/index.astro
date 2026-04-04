@@ -20,13 +20,24 @@ const programHtml = marked(h.programMarkdown, { async: false, breaks: true }) as
 const legalHtml = marked.parseInline(h.legalMarkdown, { async: false }) as string;
 const orgHtml = marked.parseInline(h.orgMarkdown, { async: false }) as string;
 
-/** Partage réseaux sociaux : prochain marché (données du hero, texte soigné). */
-const openGraphTitle = `${h.titleLine1} — ${h.dateLabel} · ${h.titleLine2}`;
-const openGraphDescription =
+/** Partage réseaux sociaux : champs CMS (og*) ou repli à partir du héros. */
+const openGraphTitleFallback = `${h.titleLine1} — ${h.dateLabel} · ${h.titleLine2}`;
+const openGraphDescriptionFallback =
 	`${h.dateLabel}, ${h.hours} — sous la halle du marché, Croix de Chavaux (Montreuil). ` +
 	`Plus de cinquante vignerons en agriculture biologique, biodynamie et vins nature, ` +
 	`de la France à l’Italie et la Géorgie. Entrée 5 €, verre gravé offert. ` +
 	`Le rendez-vous convivial du vin vivant à l’est de Paris — ${h.badge}, par l’association Bouffons Bios.`;
+const openGraphTitle = h.ogTitle?.trim() || openGraphTitleFallback;
+const openGraphDescription = h.ogDescription?.trim() || openGraphDescriptionFallback;
+const openGraphImageRaw = h.ogImage?.trim() ?? '';
+const openGraphImage =
+	openGraphImageRaw !== ''
+		? openGraphImageRaw.startsWith('/')
+			? openGraphImageRaw
+			: `/${openGraphImageRaw}`
+		: '/uploads/affiche-site-2021.jpg';
+const openGraphImageAltFallback = `Affiche — ${h.titleLine1}, ${h.titleLine2} (${h.dateLabel})`;
+const openGraphImageAlt = h.ogImageAlt?.trim() || openGraphImageAltFallback;
 
 /** Ligne 2 sur la même ligne que la 1 si elle commence par un tiret long (ex. « — verre offert »). */
 function infoLine2SameRow(line2: string | undefined): boolean {
@@ -45,8 +56,8 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 	openGraph={{
 		title: openGraphTitle,
 		description: openGraphDescription,
-		image: '/uploads/affiche-site-2021.jpg',
-		imageAlt: `Affiche — ${h.titleLine1}, ${h.titleLine2} (${h.dateLabel})`,
+		image: openGraphImage,
+		imageAlt: openGraphImageAlt,
 		type: 'website',
 	}}
 >
