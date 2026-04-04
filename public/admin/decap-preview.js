@@ -146,6 +146,58 @@
 		},
 	});
 
+	var FlashPreview = createClass({
+		render: function () {
+			var entry = this.props.entry;
+			var f = entry.getIn(['data', 'flash']);
+			if (!f || f.size === 0) {
+				return h(
+					'div',
+					{ className: 'decap-flash-preview' },
+					h('p', { className: 'dcp-empty' }, 'Remplissez le bloc « Contenu » pour voir l’aperçu.'),
+				);
+			}
+			var widgets = this.props.widgetsFor('flash');
+			var bodyPreview = widgets && widgets.getIn ? widgets.getIn(['widgets', 'bodyMarkdown']) : null;
+			var enabled = !!f.get('enabled');
+			var allPages = !!f.get('showOnAllPages');
+			var title = (f.get('title') || '').trim();
+			var linkL = (f.get('linkLabel') || '').trim();
+			var linkH = (f.get('linkHref') || '').trim();
+			var hasLink = linkL && linkH;
+
+			return h(
+				'div',
+				{ className: 'decap-flash-preview' },
+				h(
+					'p',
+					{ className: 'dcp-flash-meta' },
+					enabled ? h('span', { className: 'dcp-flash-on' }, 'Affiché sur le site') : h('span', { className: 'dcp-flash-off' }, 'Désactivé (invisible)'),
+					' — ',
+					allPages ? 'Toutes les pages' : 'Accueil seulement',
+				),
+				h(
+					'aside',
+					{ className: 'dcp-flash-box' },
+					title ? h('h2', { className: 'dcp-flash-title' }, title) : null,
+					h('div', { className: 'dcp-flash-body' }, bodyPreview || h('p', {}, f.get('bodyMarkdown') || '')),
+					hasLink
+						? h(
+								'p',
+								{ className: 'dcp-flash-cta' },
+								h(
+									'a',
+									{ className: 'dcp-flash-link', href: linkH },
+									linkL,
+									' →',
+								),
+							)
+						: null,
+				),
+			);
+		},
+	});
+
 	var PressePreview = createClass({
 		render: function () {
 			var entry = this.props.entry;
@@ -370,5 +422,6 @@
 	CMS.registerPreviewTemplate('contact', ContactPreview);
 	CMS.registerPreviewTemplate('manifeste', ManifestePreview);
 	CMS.registerPreviewTemplate('presse', PressePreview);
+	CMS.registerPreviewTemplate('flash', FlashPreview);
 	CMS.registerPreviewTemplate('articles', ArticlePreview);
 })();

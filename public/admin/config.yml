@@ -192,6 +192,47 @@ collections:
                 name: ctaSecondaryHref
                 widget: string
 
+      - label: Bandeau infos (marché, nouveautés…)
+        name: flash
+        summary: "Activer, texte markdown, lien optionnel, accueil seul ou tout le site"
+        file: src/content/flash.json
+        format: json
+        fields:
+          - label: Contenu
+            name: flash
+            widget: object
+            collapsed: false
+            fields:
+              - label: Afficher le bandeau
+                hint: "Désactivé = invisible partout (même si du texte est saisi)."
+                name: enabled
+                widget: boolean
+                default: false
+              - label: Visible sur tout le site
+                hint: "Sous la navigation sur chaque page. Sinon, uniquement en haut de l’accueil."
+                name: showOnAllPages
+                widget: boolean
+                default: false
+              - label: Titre du bloc
+                hint: "Optionnel — laissez vide pour un bandeau sans titre."
+                name: title
+                widget: string
+                required: false
+              - label: Texte
+                hint: "Markdown — **gras**, [lien](url), paragraphes séparés par une ligne vide."
+                name: bodyMarkdown
+                widget: markdown
+              - label: Bouton / lien — libellé
+                hint: "Optionnel — avec l’URL ci-dessous."
+                name: linkLabel
+                widget: string
+                required: false
+              - label: Bouton / lien — URL
+                hint: "Ex. /articles/… ou https://…"
+                name: linkHref
+                widget: string
+                required: false
+
       - label: Page contact
         name: contact
         summary: "Cartes e-mail / téléphone, liens utiles, texte d’intro"

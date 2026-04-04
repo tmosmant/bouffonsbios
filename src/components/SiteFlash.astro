@@ -1,0 +1,146 @@
+---
+import { marked } from 'marked';
+
+interface Props {
+	title?: string;
+	bodyMarkdown: string;
+	linkLabel?: string;
+	linkHref?: string;
+	placement: 'home' | 'global';
+}
+
+const { title, bodyMarkdown, linkLabel, linkHref, placement } = Astro.props;
+
+const bodyHtml = marked.parse(bodyMarkdown.trim(), { async: false, breaks: true }) as string;
+const titleTrim = title?.trim() ?? '';
+const regionId = placement === 'home' ? 'accueil-flash-title' : 'site-flash-title';
+const linkL = linkLabel?.trim() ?? '';
+const linkH = linkHref?.trim() ?? '';
+const hasLink = linkL !== '' && linkH !== '';
+---
+
+<aside
+	class:list={['site-flash', `site-flash--${placement}`]}
+	role="region"
+	aria-label={titleTrim ? undefined : 'Annonce'}
+	aria-labelledby={titleTrim ? regionId : undefined}
+>
+	{titleTrim ? <h2 id={regionId} class="site-flash__title">{titleTrim}</h2> : null}
+	<div class="site-flash__body markdown-inline" set:html={bodyHtml} />
+	{
+		hasLink ? (
+			<p class="site-flash__cta">
+				<a class="site-flash__link" href={linkH}>
+					{linkL}
+					<span class="site-flash__link-arrow" aria-hidden="true">
+						→
+					</span>
+				</a>
+			</p>
+		) : null
+	}
+</aside>
+
+<style>
+	.site-flash {
+		font-family: var(--font-body, system-ui, sans-serif);
+		padding: 1rem 1.1rem 1.05rem;
+		border-radius: 1rem;
+		border: 1px solid color-mix(in srgb, var(--border) 75%, var(--joy));
+		background: linear-gradient(
+			145deg,
+			color-mix(in srgb, var(--joy) 14%, var(--bg)),
+			color-mix(in srgb, var(--accent-nature) 9%, var(--bg)) 55%,
+			var(--bg)
+		);
+		box-shadow:
+			0 1px 0 color-mix(in srgb, var(--joy) 18%, transparent) inset,
+			0 6px 22px -12px color-mix(in srgb, var(--accent) 22%, transparent);
+	}
+
+	.site-flash--home {
+		margin-bottom: 1.25rem;
+	}
+
+	.site-flash--global {
+		margin: -0.35rem 0 1.35rem;
+	}
+
+	.site-flash__title {
+		margin: 0 0 0.5rem;
+		font-family: var(--font-display, Georgia, serif);
+		font-size: 1rem;
+		font-weight: 800;
+		line-height: 1.25;
+		letter-spacing: -0.02em;
+		color: var(--accent-nature);
+		text-rendering: optimizeLegibility;
+	}
+
+	.site-flash__body {
+		margin: 0;
+		font-size: 0.92rem;
+		line-height: 1.5;
+		color: var(--muted);
+	}
+
+	.site-flash__body :global(p) {
+		margin: 0 0 0.55em;
+	}
+
+	.site-flash__body :global(p:last-child) {
+		margin-bottom: 0;
+	}
+
+	.site-flash__body :global(a) {
+		color: var(--accent);
+		font-weight: 600;
+		text-decoration: underline;
+		text-underline-offset: 0.18em;
+	}
+
+	.site-flash__body :global(a:hover) {
+		color: color-mix(in srgb, var(--accent) 70%, var(--joy));
+	}
+
+	.site-flash__body :global(strong) {
+		color: var(--fg);
+		font-weight: 600;
+	}
+
+	.site-flash__cta {
+		margin: 0.75rem 0 0;
+	}
+
+	.site-flash__link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.88rem;
+		font-weight: 600;
+		color: var(--accent);
+		text-decoration: none;
+		padding: 0.45rem 0.65rem;
+		margin: 0 -0.65rem;
+		border-radius: 0.55rem;
+		transition:
+			background 0.15s ease,
+			color 0.15s ease;
+	}
+
+	.site-flash__link:hover {
+		background: color-mix(in srgb, var(--accent) 10%, transparent);
+		color: color-mix(in srgb, var(--accent) 85%, var(--joy));
+	}
+
+	.site-flash__link-arrow {
+		font-size: 1rem;
+		color: var(--joy);
+		transition: transform 0.15s ease;
+	}
+
+	.site-flash__link:hover .site-flash__link-arrow {
+		transform: translateX(2px);
+	}
+
+</style>

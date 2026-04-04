@@ -90,6 +90,19 @@ const home = defineCollection({
 	}),
 });
 
+const flash = defineCollection({
+	loader: file('src/content/flash.json'),
+	schema: z.object({
+		enabled: z.boolean().default(false),
+		/** Si vrai, bandeau sous la navigation sur toutes les pages ; si faux, uniquement en haut de l’accueil */
+		showOnAllPages: z.boolean().default(false),
+		title: z.string().optional().default(''),
+		bodyMarkdown: z.string().default(''),
+		linkLabel: z.string().optional().default(''),
+		linkHref: z.string().optional().default(''),
+	}),
+});
+
 const contact = defineCollection({
 	loader: file('src/content/contact.json'),
 	schema: z.object({
@@ -119,4 +132,4 @@ const contact = defineCollection({
 	}),
 });
 
-export const collections = { articles, contact, home, manifeste, presse };
+export const collections = { articles, contact, flash, home, manifeste, presse };
