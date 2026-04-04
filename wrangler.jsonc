@@ -14,5 +14,12 @@
 	],
 	"observability": {
 		"enabled": true
-	}
+	},
+	"d1_databases": [
+		{
+			"binding": "NEWSLETTER_DB",
+			"database_name": "bouffonsbios-newsletter",
+			"database_id": "af15816e-562b-48f0-b823-7df2006a1fc8"
+		}
+	]
 }
