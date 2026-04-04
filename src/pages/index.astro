@@ -20,6 +20,14 @@ const programHtml = marked(h.programMarkdown, { async: false, breaks: true }) as
 const legalHtml = marked.parseInline(h.legalMarkdown, { async: false }) as string;
 const orgHtml = marked.parseInline(h.orgMarkdown, { async: false }) as string;
 
+/** Partage réseaux sociaux : prochain marché (données du hero, texte soigné). */
+const openGraphTitle = `${h.titleLine1} — ${h.dateLabel} · ${h.titleLine2}`;
+const openGraphDescription =
+	`${h.dateLabel}, ${h.hours} — sous la halle du marché, Croix de Chavaux (Montreuil). ` +
+	`Plus de cinquante vignerons en agriculture biologique, biodynamie et vins nature, ` +
+	`de la France à l’Italie et la Géorgie. Entrée 5 €, verre gravé offert. ` +
+	`Le rendez-vous convivial du vin vivant à l’est de Paris — ${h.badge}, par l’association Bouffons Bios.`;
+
 /** Ligne 2 sur la même ligne que la 1 si elle commence par un tiret long (ex. « — verre offert »). */
 function infoLine2SameRow(line2: string | undefined): boolean {
 	if (!line2?.trim()) return false;
@@ -29,7 +37,19 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 }
 ---
 
-<Layout title={h.metaTitle} description={h.metaDescription} current="highlight" mainClass="site-main--home">
+<Layout
+	title={h.metaTitle}
+	description={h.metaDescription}
+	current="highlight"
+	mainClass="site-main--home"
+	openGraph={{
+		title: openGraphTitle,
+		description: openGraphDescription,
+		image: '/uploads/affiche-site-2021.jpg',
+		imageAlt: `Affiche — ${h.titleLine1}, ${h.titleLine2} (${h.dateLabel})`,
+		type: 'website',
+	}}
+>
 	<div class="home-main">
 		<section class="hero" aria-labelledby="accueil-hero-title">
 		<div class="hero-surface">

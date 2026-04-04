@@ -1,6 +1,18 @@
 ---
 import { NAV_HIGHLIGHT } from '../site-config';
 
+interface OpenGraphProps {
+	/** Titre pour le partage (sinon = title de la page) */
+	title?: string;
+	/** Texte pour le partage (sinon = meta description) */
+	description?: string;
+	/** Chemin absolu sur le site, ex. /uploads/affiche.jpg */
+	image?: string;
+	/** Texte alternatif de l’image (accessibilité / aperçus) */
+	imageAlt?: string;
+	type?: 'website' | 'article';
+}
+
 interface Props {
 	title: string;
 	description?: string;
@@ -8,9 +20,23 @@ interface Props {
 	current?: 'highlight' | 'articles' | 'manifeste' | 'contact' | 'plan';
 	/** Classes additionnelles sur `<main>` (ex. `site-main--home` pour la grille d’accueil) */
 	mainClass?: string;
+	/** Open Graph / Twitter / réseaux sociaux */
+	openGraph?: OpenGraphProps;
 }
 
-const { title, description = 'Bouffons Bios — association', current, mainClass } = Astro.props;
+const { title, description = 'Bouffons Bios — association', current, mainClass, openGraph } = Astro.props;
+
+const site = Astro.site ?? new URL('https://bouffonsbios.org');
+const canonicalURL = new URL(Astro.url.pathname || '/', site);
+const ogTitle = openGraph?.title ?? title;
+const ogDescription = (openGraph?.description ?? description)?.trim() || undefined;
+const ogType = openGraph?.type ?? 'website';
+const ogImageAbsolute =
+	openGraph?.image != null && openGraph.image !== ''
+		? new URL(openGraph.image.replace(/^\//, ''), site).href
+		: undefined;
+const ogImageAlt = openGraph?.imageAlt?.trim() || ogTitle;
+const twitterCard = ogImageAbsolute ? 'summary_large_image' : 'summary';
 
 const nav = [
 	{ id: 'highlight' as const, href: NAV_HIGHLIGHT.href, label: NAV_HIGHLIGHT.label },
@@ -29,6 +55,23 @@ const nav = [
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		{description && <meta name="description" content={description} />}
+		<link rel="canonical" href={canonicalURL.href} />
+		<meta property="og:site_name" content="Bouffons Bios" />
+		<meta property="og:locale" content="fr_FR" />
+		<meta property="og:type" content={ogType} />
+		<meta property="og:url" content={canonicalURL.href} />
+		<meta property="og:title" content={ogTitle} />
+		{ogDescription && <meta property="og:description" content={ogDescription} />}
+		{ogImageAbsolute && (
+			<>
+				<meta property="og:image" content={ogImageAbsolute} />
+				<meta property="og:image:alt" content={ogImageAlt} />
+			</>
+		)}
+		<meta name="twitter:card" content={twitterCard} />
+		<meta name="twitter:title" content={ogTitle} />
+		{ogDescription && <meta name="twitter:description" content={ogDescription} />}
+		{ogImageAbsolute && <meta name="twitter:image" content={ogImageAbsolute} />}
 		<title>{title}</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
