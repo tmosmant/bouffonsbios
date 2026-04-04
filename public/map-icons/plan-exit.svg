@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 128" width="112" height="128" aria-hidden="true">
+	<title>Sortie métro</title>
+	<defs>
+		<filter id="plan-exit-shadow" x="-25%" y="-20%" width="150%" height="140%">
+			<feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#1a1814" flood-opacity="0.2" />
+		</filter>
+	</defs>
+	<rect
+		x="12"
+		y="16"
+		width="88"
+		height="96"
+		rx="12"
+		fill="#003189"
+		stroke="#ffffff"
+		stroke-width="3.5"
+		filter="url(#plan-exit-shadow)"
+	/>
+	<!-- Porte / sortie vers la rue -->
+	<path fill="#ffffff" d="M56 40 L36 72h40L56 40z" opacity="0.95" />
+	<rect x="48" y="72" width="16" height="22" rx="2" fill="#ffffff" opacity="0.9" />
+</svg>

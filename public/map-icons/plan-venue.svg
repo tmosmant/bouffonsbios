@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 112" width="96" height="112" aria-hidden="true">
+	<title>Repère du marché</title>
+	<defs>
+		<filter id="plan-venue-shadow" x="-30%" y="-25%" width="160%" height="160%">
+			<feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#1a1814" flood-opacity="0.22" />
+		</filter>
+	</defs>
+	<!-- Pin + point central = « vous êtes ici » sans texte -->
+	<path
+		filter="url(#plan-venue-shadow)"
+		fill="#c9892e"
+		stroke="#7c5a2b"
+		stroke-width="2"
+		d="M48 8c-16.5 0-30 13.2-30 29.5C18 58 48 96 48 96s30-38 30-58.5C78 21.2 64.5 8 48 8z"
+	/>
+	<circle cx="48" cy="37.5" r="14" fill="#fff8f0" stroke="#8f2d4a" stroke-width="1.8" />
+	<circle cx="48" cy="37.5" r="5.5" fill="#8f2d4a" />
+</svg>

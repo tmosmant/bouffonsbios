@@ -21,8 +21,8 @@
 			"type": "Feature",
 			"properties": {
 				"kind": "venue",
-				"name": "C’est ici — halle du marché",
-				"detail": "Place du marché Croix de Chavaux (repère sur le plan du site)."
+				"name": "Halle du marché",
+				"detail": "C'est ici !"
 			},
 			"geometry": {
 				"type": "Point",

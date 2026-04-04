@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" aria-hidden="true">
+	<title>Bus</title>
+	<defs>
+		<filter id="plan-bus-shadow" x="-25%" y="-25%" width="150%" height="150%">
+			<feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#1a1814" flood-opacity="0.2" />
+		</filter>
+	</defs>
+	<g filter="url(#plan-bus-shadow)">
+		<rect x="20" y="36" width="88" height="52" rx="8" fill="#00814f" stroke="#ffffff" stroke-width="3" />
+		<rect x="32" y="22" width="64" height="22" rx="5" fill="#00814f" stroke="#ffffff" stroke-width="2.5" />
+		<rect x="40" y="28" width="48" height="10" rx="2" fill="#ffffff" opacity="0.35" />
+		<circle cx="40" cy="92" r="10" fill="#25303b" stroke="#ffffff" stroke-width="2.5" />
+		<circle cx="88" cy="92" r="10" fill="#25303b" stroke="#ffffff" stroke-width="2.5" />
+	</g>
+</svg>
