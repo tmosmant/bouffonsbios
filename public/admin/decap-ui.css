@@ -180,6 +180,113 @@ body {
 	color: var(--bb-ui-accent) !important;
 }
 
+/*
+ * Liens « racine » d’une collection dans la barre latérale : #/collections/articles ou …/site
+ * (sans /entries/ — sinon on neutralise aussi les lignes du tableau des brouillons).
+ * Couleur neutre + survol en texte plein, au-dessus de #nc-root a:hover (spécificité + ordre).
+ */
+#nc-root a[href*='collections/']:not([href*='entries/']):not([href$='/new']):not([href$='/new/']) {
+	color: color-mix(in srgb, var(--bb-ui-fg) 85%, var(--bb-ui-muted)) !important;
+}
+
+#nc-root a[href*='collections/']:not([href*='entries/']):not([href$='/new']):not([href$='/new/']):hover {
+	color: var(--bb-ui-fg) !important;
+}
+
+/*
+ * Bouton « Créer une entrée de type … » (liste d’une collection à create: true) :
+ * lien vers #/collections/{nom}/new — même langage visuel que le bouton GitHub du login.
+ */
+#nc-root main a[href*='/collections/'][href$='/new'],
+#nc-root main a[href*='/collections/'][href$='/new/'],
+#nc-root main a[href^='#/collections/'][href$='/new'],
+#nc-root main a[href^='#/collections/'][href$='/new/'] {
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	gap: 0.45rem !important;
+	padding: 0.62rem 1.15rem !important;
+	border-radius: 0.65rem !important;
+	font-family: 'Source Sans 3', system-ui, sans-serif !important;
+	font-size: 0.92rem !important;
+	font-weight: 600 !important;
+	line-height: 1.25 !important;
+	text-decoration: none !important;
+	letter-spacing: 0.01em !important;
+	color: #fff !important;
+	border: 1px solid var(--bb-ui-accent-deep) !important;
+	background: linear-gradient(
+		180deg,
+		color-mix(in srgb, var(--bb-ui-accent) 92%, #fff),
+		var(--bb-ui-accent)
+	) !important;
+	box-shadow:
+		0 1px 0 color-mix(in srgb, white 25%, transparent) inset,
+		0 4px 16px color-mix(in srgb, var(--bb-ui-accent) 30%, transparent) !important;
+	transition:
+		transform 0.15s ease,
+		box-shadow 0.15s ease,
+		filter 0.15s ease !important;
+}
+
+#nc-root main a[href*='/collections/'][href$='/new']:hover,
+#nc-root main a[href*='/collections/'][href$='/new/']:hover,
+#nc-root main a[href^='#/collections/'][href$='/new']:hover,
+#nc-root main a[href^='#/collections/'][href$='/new/']:hover {
+	color: #fff !important;
+	filter: brightness(1.05) !important;
+	transform: translateY(-1px) !important;
+	box-shadow:
+		0 1px 0 color-mix(in srgb, white 32%, transparent) inset,
+		0 8px 22px color-mix(in srgb, var(--bb-ui-accent) 34%, transparent) !important;
+}
+
+#nc-root main a[href*='/collections/'][href$='/new'] svg,
+#nc-root main a[href*='/collections/'][href$='/new/'] svg,
+#nc-root main a[href^='#/collections/'][href$='/new'] svg,
+#nc-root main a[href^='#/collections/'][href$='/new/'] svg {
+	flex-shrink: 0 !important;
+	color: inherit !important;
+	fill: currentColor !important;
+	stroke: currentColor !important;
+}
+
+@media (prefers-color-scheme: dark) {
+	#nc-root main a[href*='/collections/'][href$='/new'],
+	#nc-root main a[href*='/collections/'][href$='/new/'],
+	#nc-root main a[href^='#/collections/'][href$='/new'],
+	#nc-root main a[href^='#/collections/'][href$='/new/'] {
+		background: linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--bb-ui-accent) 88%, #2a181c),
+			var(--bb-ui-accent-deep)
+		) !important;
+		border-color: color-mix(in srgb, var(--bb-ui-accent-deep) 85%, #000) !important;
+		box-shadow:
+			0 1px 0 color-mix(in srgb, white 10%, transparent) inset,
+			0 4px 18px color-mix(in srgb, var(--bb-ui-accent) 25%, transparent) !important;
+	}
+}
+
+/*
+ * Icônes collections (remplacées par decap-sidebar-icons.js) : style « contour » (lignes),
+ * pas des silhouettes pleines — les styles Emotion de Decap remplissent souvent les SVG en `fill`.
+ */
+#nc-root a[href*='collections/'] svg[data-bb-col],
+#nc-root a[href*='collections/'] svg[data-bb-col] path,
+#nc-root a[href*='collections/'] svg[data-bb-col] line,
+#nc-root a[href*='collections/'] svg[data-bb-col] polyline,
+#nc-root a[href*='collections/'] svg[data-bb-col] circle,
+#nc-root a[href*='collections/'] svg[data-bb-col] rect {
+	fill: none !important;
+	stroke: currentColor !important;
+}
+#nc-root a[href*='collections/'] svg[data-bb-col] {
+	stroke-width: 1.35 !important;
+	stroke-linecap: round !important;
+	stroke-linejoin: round !important;
+}
+
 /* ——— Éditeur connecté : cohérence fond / cartes / formulaires ——— */
 #nc-root > div {
 	background: transparent !important;
@@ -325,4 +432,24 @@ body {
 		background: var(--bb-ui-bg) !important;
 		color: var(--bb-ui-fg) !important;
 	}
+}
+
+/*
+ * Filet après les styles Emotion de Decap : mêmes cibles, spécificité + ordre document
+ * pour que le survol ne repasse pas en bleu / accent du thème.
+ */
+html body #nc-root a[href*='collections/']:not([href*='entries/']):not([href$='/new']):not([href$='/new/']) {
+	color: color-mix(in srgb, var(--bb-ui-fg) 85%, var(--bb-ui-muted)) !important;
+}
+
+html body #nc-root a[href*='collections/']:not([href*='entries/']):not([href$='/new']):not([href$='/new/']):hover {
+	color: var(--bb-ui-fg) !important;
+}
+
+html body #nc-root a[href*='collections/']:not([href*='entries/']):not([href$='/new']):not([href$='/new/']):hover svg[data-bb-col],
+html body #nc-root a[href*='collections/']:not([href*='entries/']):not([href$='/new']):not([href$='/new/']):hover svg[data-bb-col] path,
+html body #nc-root a[href*='collections/']:not([href*='entries/']):not([href$='/new']):not([href$='/new/']):hover svg[data-bb-col] line {
+	color: var(--bb-ui-fg) !important;
+	stroke: var(--bb-ui-fg) !important;
+	fill: none !important;
 }

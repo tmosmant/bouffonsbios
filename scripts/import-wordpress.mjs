@@ -2,7 +2,7 @@
  * Importe les billets WordPress (WXR) vers src/content/articles/*.md
  *
  * - Développe les shortcodes [gallery ids="…"] grâce aux pièces jointes (wp:post_type=attachment) du même export.
- * - Optionnel : télécharge les images WordPress vers public/uploads/wp-import/ et réécrit les liens en /uploads/…
+ * - Optionnel : télécharge les images WordPress vers public/uploads/ et réécrit les liens en /uploads/…
  *
  * Usage:
  *   node scripts/import-wordpress.mjs [export.xml]
@@ -25,7 +25,7 @@ import TurndownService from 'turndown';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const OUT_DIR = join(ROOT, 'src/content/articles');
-const UPLOADS_DIR = join(ROOT, 'public/uploads/wp-import');
+const UPLOADS_DIR = join(ROOT, 'public/uploads');
 const DEFAULT_XML = join(process.env.HOME, 'Downloads/bouffonsbios.WordPress.2026-04-03.xml');
 
 const args = process.argv.slice(2).filter((a) => !a.startsWith('--'));
@@ -200,7 +200,7 @@ function extFromContentType(contentType) {
 }
 
 /**
- * Télécharge les médias référencés dans le markdown et remplace par /uploads/wp-import/…
+ * Télécharge les médias référencés dans le markdown et remplace par /uploads/…
  * @param {string} md
  * @returns {Promise<string>}
  */
@@ -261,7 +261,7 @@ async function localizeWordPressImages(md) {
 
 			writeFileSync(join(UPLOADS_DIR, localName), buf);
 			usedNames.add(localName);
-			const publicPath = `/uploads/wp-import/${localName}`;
+			const publicPath = `/uploads/${localName}`;
 			remoteToPublic.set(remoteUrl, publicPath);
 			console.log(`  → ${publicPath}`);
 		} catch (e) {
@@ -334,7 +334,7 @@ for (const p of posts) {
 }
 
 if (!SKIP_DOWNLOAD) {
-	console.log('Téléchargement des images vers public/uploads/wp-import/ …');
+	console.log('Téléchargement des images vers public/uploads/ …');
 	for (const p of posts) {
 		const before = p.body;
 		p.body = await localizeWordPressImages(p.body);

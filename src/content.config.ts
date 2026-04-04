@@ -50,6 +50,41 @@ const presse = defineCollection({
 	}),
 });
 
+const home = defineCollection({
+	loader: file('src/content/home.json'),
+	schema: z.object({
+		metaTitle: z.string(),
+		metaDescription: z.string(),
+		badge: z.string(),
+		dateDatetime: z.string(),
+		dateLabel: z.string(),
+		hours: z.string(),
+		titleLine1: z.string(),
+		titleLine2: z.string(),
+		taglineMarkdown: z.string(),
+		participantsHref: z.string(),
+		participantsTitle: z.string(),
+		participantsHint: z.string(),
+		participantsIcon: z.string().default('◇'),
+		programTitle: z.string(),
+		programMarkdown: z.string(),
+		infosTitle: z.string(),
+		infoRows: z.array(
+			z.object({
+				term: z.string(),
+				line1: z.string(),
+				line2: z.string().optional().default(''),
+			}),
+		),
+		legalMarkdown: z.string(),
+		orgMarkdown: z.string(),
+		ctaPrimaryLabel: z.string(),
+		ctaPrimaryHref: z.string(),
+		ctaSecondaryLabel: z.string(),
+		ctaSecondaryHref: z.string(),
+	}),
+});
+
 const contact = defineCollection({
 	loader: file('src/content/contact.json'),
 	schema: z.object({
@@ -79,4 +114,4 @@ const contact = defineCollection({
 	}),
 });
 
-export const collections = { articles, contact, manifeste, presse };
+export const collections = { articles, contact, home, manifeste, presse };

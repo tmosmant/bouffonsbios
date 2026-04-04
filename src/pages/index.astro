@@ -1,88 +1,103 @@
 ---
 import { getEntry } from 'astro:content';
+import { marked } from 'marked';
 import Layout from '../layouts/Layout.astro';
+
+const homeEntry = await getEntry('home', 'hero');
+if (!homeEntry) {
+	throw new Error('Fichier src/content/home.json introuvable ou clé « hero » manquante.');
+}
+const h = homeEntry.data;
 
 const presseEntry = await getEntry('presse', 'block');
 if (!presseEntry) {
 	throw new Error('Fichier src/content/presse.json introuvable ou clé "block" manquante.');
 }
 const presse = presseEntry.data;
+
+const taglineHtml = marked.parseInline(h.taglineMarkdown, { async: false }) as string;
+const programHtml = marked(h.programMarkdown, { async: false, breaks: true }) as string;
+const legalHtml = marked.parseInline(h.legalMarkdown, { async: false }) as string;
+const orgHtml = marked.parseInline(h.orgMarkdown, { async: false }) as string;
+
+/** Ligne 2 sur la même ligne que la 1 si elle commence par un tiret long (ex. « — verre offert »). */
+function infoLine2SameRow(line2: string | undefined): boolean {
+	if (!line2?.trim()) return false;
+	const s = line2.trimStart();
+	const c = s.codePointAt(0);
+	return c === 0x2014 || c === 0x2013 || /^-\s/.test(s);
+}
 ---
 
-<Layout title="Bouffons Bios" current="highlight" mainClass="site-main--home">
+<Layout title={h.metaTitle} description={h.metaDescription} current="highlight" mainClass="site-main--home">
 	<div class="home-main">
 		<section class="hero" aria-labelledby="accueil-hero-title">
 		<div class="hero-surface">
 			<div class="hero-top">
-				<span class="hero-badge">21ᵉ édition</span>
+				<span class="hero-badge">{h.badge}</span>
 				<span class="hero-date" aria-hidden="true">·</span>
-				<time class="hero-date" datetime="2026-05-09">Samedi 9 mai 2026</time>
-				<span class="hero-hours">10h–19h</span>
+				<time class="hero-date" datetime={h.dateDatetime}>{h.dateLabel}</time>
+				<span class="hero-hours">{h.hours}</span>
 			</div>
 
 			<h1 id="accueil-hero-title" class="hero-display">
-				<span class="hero-display-line">Marché des vins bio</span>
-				<span class="hero-display-sub">Montreuil · Croix de Chavaux</span>
+				<span class="hero-display-line">{h.titleLine1}</span>
+				<span class="hero-display-sub">{h.titleLine2}</span>
 			</h1>
 
-			<p class="hero-tagline">Le grand retour du <em>Développement buvable</em></p>
+			<p class="hero-tagline markdown-inline" set:html={taglineHtml} />
 
-			<a class="hero-participants" href="/articles/vignerons-participants-en-2026/">
-				<span class="hero-participants-icon" aria-hidden="true">◇</span>
+			<a class="hero-participants" href={h.participantsHref}>
+				<span class="hero-participants-icon" aria-hidden="true">{h.participantsIcon}</span>
 				<span class="hero-participants-text">
-					<strong>Participants 2026</strong>
-					<span class="hero-participants-hint">Liste évolutive des vignerons</span>
+					<strong>{h.participantsTitle}</strong>
+					<span class="hero-participants-hint">{h.participantsHint}</span>
 				</span>
 				<span class="hero-participants-arrow" aria-hidden="true">→</span>
 			</a>
 
 			<div class="hero-grid">
-				<div class="hero-panel hero-panel--prose">
-					<h2 class="hero-panel-title">Au programme</h2>
-					<p>
-						<strong>50+ vignerons</strong> venus de France, d’<strong>Italie</strong> et de
-						<strong>Géorgie</strong> — bio, biodynamique, naturel et convivialité à chaque stand.
-					</p>
+				<div class="hero-panel hero-panel--prose markdown-inline">
+					<h2 class="hero-panel-title">{h.programTitle}</h2>
+					<div set:html={programHtml} />
 				</div>
 				<div class="hero-panel hero-panel--infos">
-					<h2 class="hero-panel-title">Infos pratiques</h2>
+					<h2 class="hero-panel-title">{h.infosTitle}</h2>
 					<dl class="hero-dl">
-						<div>
-							<dt>Lieu</dt>
-							<dd>
-								Halle du marché, Croix de Chavaux<br />
-								<span class="hero-dd-muted">rue de Paris, 93100 Montreuil</span>
-							</dd>
-						</div>
-						<div>
-							<dt>Accès</dt>
-							<dd>
-								Métro ligne 9 · Croix de Chavaux<br />
-								<span class="hero-dd-muted">Bus 102, 115, 122, 127, 202</span>
-							</dd>
-						</div>
-						<div>
-							<dt>Entrée</dt>
-							<dd>5&nbsp;€ <span class="hero-dd-muted">— verre gravé offert</span></dd>
-						</div>
+						{
+							h.infoRows.map((row) => (
+								<div>
+									<dt>{row.term}</dt>
+									<dd>
+										{row.line1}
+										{row.line2 ? (
+											infoLine2SameRow(row.line2) ? (
+												<>
+													{' '}
+													<span class="hero-dd-muted">{row.line2}</span>
+												</>
+											) : (
+												<>
+													<br />
+													<span class="hero-dd-muted">{row.line2}</span>
+												</>
+											)
+										) : null}
+									</dd>
+								</div>
+							))
+						}
 					</dl>
 				</div>
 			</div>
 
-			<p class="hero-legal">
-				<em>Si l’abus d’alcool est dangereux pour la santé, le vin bio est une fête pour l’esprit.</em>
-			</p>
+			<p class="hero-legal markdown-inline" set:html={legalHtml} />
 
-			<p class="hero-org">
-				Organisé par l’association Bouffons Bios ·
-				<a href="/contact/">Contact</a>
-				· Daniel Mosmant
-				<a href="tel:+33676692598">06&nbsp;76&nbsp;69&nbsp;25&nbsp;98</a>
-			</p>
+			<p class="hero-org markdown-inline" set:html={orgHtml} />
 
 			<div class="hero-cta">
-				<a class="btn btn-primary" href="/articles/">Tous les articles</a>
-				<a class="btn btn-ghost" href="/plan-dacces/">Plan d’accès</a>
+				<a class="btn btn-primary" href={h.ctaPrimaryHref}>{h.ctaPrimaryLabel}</a>
+				<a class="btn btn-ghost" href={h.ctaSecondaryHref}>{h.ctaSecondaryLabel}</a>
 			</div>
 		</div>
 	</section>
@@ -232,7 +247,7 @@ const presse = presseEntry.data;
 		max-width: 36ch;
 	}
 
-	.hero-tagline em {
+	.hero-tagline.markdown-inline :global(em) {
 		color: var(--accent, #8f2d4a);
 		font-style: italic;
 		font-weight: 500;
@@ -333,14 +348,14 @@ const presse = presseEntry.data;
 		color: transparent;
 	}
 
-	.hero-panel--prose p {
+	.hero-panel--prose.markdown-inline :global(p) {
 		margin: 0;
 		font-size: 0.95rem;
 		line-height: 1.55;
 		color: var(--muted, #5c5850);
 	}
 
-	.hero-panel--prose strong {
+	.hero-panel--prose.markdown-inline :global(strong) {
 		color: var(--fg, #1a1814);
 	}
 
@@ -391,12 +406,12 @@ const presse = presseEntry.data;
 		margin: 0 0 1.25rem;
 	}
 
-	.hero-org a {
+	.hero-org.markdown-inline :global(a) {
 		color: var(--accent, #6b3d2e);
 		font-weight: 500;
 		text-decoration: none;
 	}
-	.hero-org a:hover {
+	.hero-org.markdown-inline :global(a:hover) {
 		text-decoration: underline;
 	}
 

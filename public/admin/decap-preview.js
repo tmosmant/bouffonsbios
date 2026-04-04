@@ -9,6 +9,34 @@
 
 	CMS.registerPreviewStyle('/admin/decap-preview.css');
 
+	function dcpEscapeHtml(t) {
+		return String(t == null ? '' : t)
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;');
+	}
+
+	/** Aperçu uniquement : *em* et **gras** sur texte échappé */
+	function dcpInlineFormat(s) {
+		return dcpEscapeHtml(s)
+			.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+			.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+	}
+
+	/** Liens [libellé](url) pour la ligne organisateur */
+	function dcpLinkFormat(s) {
+		return dcpEscapeHtml(s).replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+	}
+
+	/** Même règle que sur le site : ligne 2 collée si elle commence par — / – / «- » */
+	function dcpInfoLine2SameRow(line2) {
+		if (line2 == null || !String(line2).trim()) return false;
+		var s = String(line2).trimStart();
+		var c = s.codePointAt(0);
+		return c === 0x2014 || c === 0x2013 || /^-\s/.test(s);
+	}
+
 	var ContactPreview = createClass({
 		render: function () {
 			var entry = this.props.entry;
@@ -155,6 +183,156 @@
 		},
 	});
 
+	var HomePreview = createClass({
+		render: function () {
+			var entry = this.props.entry;
+			/* Données sous data.hero (objet JSON) ; repli si structure plate */
+			var hero = entry.getIn(['data', 'hero']);
+			if (!hero || hero.size === 0) {
+				var root = entry.get('data');
+				if (root && root.size && root.get('titleLine1') != null) {
+					hero = root;
+				}
+			}
+			if (!hero || hero.size === 0) {
+				return h(
+					'div',
+					{ className: 'decap-home-preview' },
+					h('p', { className: 'dcp-empty' }, 'Remplissez le bloc « Contenu » pour voir l’aperçu.'),
+				);
+			}
+
+			var rows = hero.get('infoRows');
+			var rowEls = [];
+			if (rows && rows.size) {
+				rows.forEach(function (row, i) {
+					var l1 = row.get('line1') || '';
+					var l2 = row.get('line2');
+					var has2 = l2 != null && String(l2).trim() !== '';
+					var sameLine = dcpInfoLine2SameRow(l2);
+					rowEls.push(
+						h(
+							'div',
+							{ key: i, className: 'dcp-home-dl-row' },
+							h('dt', {}, row.get('term') || ''),
+							h(
+								'dd',
+								{},
+								l1,
+								has2
+									? sameLine
+										? h(
+												'span',
+												{},
+												'\u00a0',
+												h('span', { className: 'dcp-home-dd-muted' }, String(l2)),
+											)
+										: h(
+												'span',
+												{},
+												h('br'),
+												h('span', { className: 'dcp-home-dd-muted' }, String(l2)),
+											)
+									: null,
+							),
+						),
+					);
+				});
+			}
+
+			var tagHtml = dcpInlineFormat(hero.get('taglineMarkdown') || '');
+			var progHtml = dcpInlineFormat(hero.get('programMarkdown') || '');
+			var legalHtml = dcpInlineFormat(hero.get('legalMarkdown') || '');
+			var orgHtml = dcpLinkFormat(hero.get('orgMarkdown') || '');
+
+			return h(
+				'div',
+				{ className: 'decap-home-preview' },
+				h(
+					'div',
+					{ className: 'dcp-home-surface' },
+					h(
+						'div',
+						{ className: 'dcp-home-top' },
+						h('span', { className: 'dcp-home-badge' }, hero.get('badge') || ''),
+						h('span', { className: 'dcp-home-top-sep', 'aria-hidden': true }, '·'),
+						h('time', { className: 'dcp-home-date', dateTime: hero.get('dateDatetime') || '' }, hero.get('dateLabel') || ''),
+						h('span', { className: 'dcp-home-hours' }, hero.get('hours') || ''),
+					),
+					h(
+						'h1',
+						{ className: 'dcp-home-display' },
+						h('span', { className: 'dcp-home-line1' }, hero.get('titleLine1') || ''),
+						h('span', { className: 'dcp-home-line2' }, hero.get('titleLine2') || ''),
+					),
+					h('p', {
+						className: 'dcp-home-tagline',
+						dangerouslySetInnerHTML: { __html: tagHtml },
+					}),
+					h(
+						'a',
+						{ className: 'dcp-home-participants', href: hero.get('participantsHref') || '#' },
+						h('span', { className: 'dcp-home-p-ico', 'aria-hidden': true }, hero.get('participantsIcon') || '◇'),
+						h(
+							'span',
+							{ className: 'dcp-home-p-text' },
+							h('strong', {}, hero.get('participantsTitle') || ''),
+							h('span', { className: 'dcp-home-p-hint' }, hero.get('participantsHint') || ''),
+						),
+						h('span', { className: 'dcp-home-p-arrow', 'aria-hidden': true }, '→'),
+					),
+					h(
+						'div',
+						{ className: 'dcp-home-grid' },
+						h(
+							'div',
+							{ className: 'dcp-home-panel dcp-home-panel--prose' },
+							h('h2', { className: 'dcp-home-panel-title' }, hero.get('programTitle') || ''),
+							h('div', {
+								className: 'dcp-home-program',
+								dangerouslySetInnerHTML: { __html: progHtml ? '<p>' + progHtml + '</p>' : '' },
+							}),
+						),
+						h(
+							'div',
+							{ className: 'dcp-home-panel dcp-home-panel--infos' },
+							h('h2', { className: 'dcp-home-panel-title' }, hero.get('infosTitle') || ''),
+							h('dl', { className: 'dcp-home-dl' }, rowEls),
+						),
+					),
+					h('p', {
+						className: 'dcp-home-legal',
+						dangerouslySetInnerHTML: { __html: legalHtml },
+					}),
+					h('p', {
+						className: 'dcp-home-org',
+						dangerouslySetInnerHTML: { __html: orgHtml },
+					}),
+					h(
+						'div',
+						{ className: 'dcp-home-cta' },
+						h(
+							'a',
+							{
+								className: 'dcp-home-btn dcp-home-btn--primary',
+								href: hero.get('ctaPrimaryHref') || '#',
+							},
+							hero.get('ctaPrimaryLabel') || '',
+						),
+						h(
+							'a',
+							{
+								className: 'dcp-home-btn dcp-home-btn--ghost',
+								href: hero.get('ctaSecondaryHref') || '#',
+							},
+							hero.get('ctaSecondaryLabel') || '',
+						),
+					),
+				),
+			);
+		},
+	});
+
 	var ArticlePreview = createClass({
 		render: function () {
 			var entry = this.props.entry;
@@ -187,7 +365,8 @@
 		},
 	});
 
-	/* Fichier unique « contact » dans la collection files : le nom du fichier est la clé Decap. */
+	/* Fichiers de la collection « site » : le name du fichier YAML (hero, contact, …). */
+	CMS.registerPreviewTemplate('hero', HomePreview);
 	CMS.registerPreviewTemplate('contact', ContactPreview);
 	CMS.registerPreviewTemplate('manifeste', ManifestePreview);
 	CMS.registerPreviewTemplate('presse', PressePreview);

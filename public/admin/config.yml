@@ -22,10 +22,157 @@ media_folder: public/uploads
 public_folder: /uploads
 
 collections:
-  - name: contact
-    label: Page contact
+  # En premier : écran d’arrivée Decap = liste des articles (évite d’atterrir sur « home »).
+  - name: articles
+    label: Articles
+    label_singular: Article
+    folder: src/content/articles
+    preview_path: "/articles/{{slug}}/"
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    fields:
+      - label: "Slug (fichier URL)"
+        name: slug
+        widget: string
+        pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Minuscules et tirets uniquement"]
+      - label: Titre
+        name: title
+        widget: string
+      - label: Date
+        name: date
+        widget: datetime
+      - label: Catégorie
+        name: category
+        widget: select
+        default: "Non classé"
+        options:
+          - label: Affiches
+            value: Affiches
+          - label: "Communiqués de presse"
+            value: "Communiqués de presse"
+          - label: "Non classé"
+            value: "Non classé"
+          - label: Vignerons
+            value: Vignerons
+      - label: Résumé
+        name: excerpt
+        widget: text
+        required: false
+      - label: Corps
+        name: body
+        widget: markdown
+
+  - name: site
+    label: Pages du site
+    editor:
+      preview: true
     files:
-      - label: Contact
+      - label: Page d'accueil (héros & encadrés)
+        name: hero
+        summary: "Badge, dates, titres, programme, infos pratiques, liens d’appel"
+        file: src/content/home.json
+        format: json
+        fields:
+          - label: Contenu
+            name: hero
+            widget: object
+            collapsed: false
+            fields:
+              - label: Titre (onglet du navigateur)
+                name: metaTitle
+                widget: string
+                default: Bouffons Bios
+              - label: Description (résumé pour Google)
+                name: metaDescription
+                widget: text
+              - label: Badge (pastille au-dessus de la date)
+                name: badge
+                widget: string
+                default: 21ᵉ édition
+              - label: Date (attribut machine)
+                hint: "Format AAAA-MM-JJ pour le calendrier / SEO"
+                name: dateDatetime
+                widget: string
+              - label: Date affichée
+                name: dateLabel
+                widget: string
+              - label: Horaires
+                name: hours
+                widget: string
+              - label: Titre principal — ligne 1
+                name: titleLine1
+                widget: string
+              - label: Titre principal — ligne 2 (sous-titre)
+                name: titleLine2
+                widget: string
+              - label: Slogan sous le titre
+                hint: "Markdown léger — *italique* avec une étoile"
+                name: taglineMarkdown
+                widget: text
+              - label: Lien liste participants — URL
+                name: participantsHref
+                widget: string
+              - label: Lien participants — titre
+                name: participantsTitle
+                widget: string
+              - label: Lien participants — sous-texte
+                name: participantsHint
+                widget: string
+              - label: Lien participants — caractère icône
+                hint: "Un seul caractère, ex. ◇"
+                name: participantsIcon
+                widget: string
+                default: ◇
+              - label: Encadré « programme » — titre
+                name: programTitle
+                widget: string
+              - label: Encadré « programme » — texte
+                hint: "**gras** avec double étoile"
+                name: programMarkdown
+                widget: text
+              - label: Encadré infos pratiques — titre
+                name: infosTitle
+                widget: string
+              - label: Lignes infos pratiques
+                name: infoRows
+                widget: list
+                summary: "{{fields.term}}"
+                fields:
+                  - label: Libellé (ex. Lieu)
+                    name: term
+                    widget: string
+                  - label: Ligne principale
+                    name: line1
+                    widget: string
+                  - label: Ligne secondaire (style discret)
+                    hint: "Si la ligne commence par — ou –, elle reste sur la même ligne que la principale (ex. prix + précision)."
+                    name: line2
+                    widget: string
+                    required: false
+              - label: Mention légale (bas de bloc héros)
+                hint: "*italique* avec une étoile de chaque côté"
+                name: legalMarkdown
+                widget: text
+              - label: Ligne organisateur / contact
+                hint: "Markdown — [libellé](/chemin/) et [téléphone](tel:+33…)"
+                name: orgMarkdown
+                widget: text
+              - label: Bouton principal — libellé
+                name: ctaPrimaryLabel
+                widget: string
+              - label: Bouton principal — lien
+                name: ctaPrimaryHref
+                widget: string
+              - label: Bouton secondaire — libellé
+                name: ctaSecondaryLabel
+                widget: string
+              - label: Bouton secondaire — lien
+                name: ctaSecondaryHref
+                widget: string
+
+      - label: Page contact
         name: contact
         summary: "Cartes e-mail / téléphone, liens utiles, texte d’intro"
         file: src/content/contact.json
@@ -104,10 +251,7 @@ collections:
                 widget: text
                 required: false
 
-  - name: manifeste
-    label: Page manifeste
-    files:
-      - label: Manifeste
+      - label: Page manifeste
         name: manifeste
         summary: "Chapô, texte du manifeste (markdown), signature"
         file: src/content/manifeste.json
@@ -143,10 +287,7 @@ collections:
                 name: signature
                 widget: text
 
-  - name: presse
-    label: Accueil — Ils parlent de nous
-    files:
-      - label: Bloc presse
+      - label: Presse (ils parlent de nous)
         name: presse
         summary: "Titre, intro et liste des liens presse"
         file: src/content/presse.json
@@ -179,45 +320,3 @@ collections:
                     hint: "Lien complet https://…"
                     name: href
                     widget: string
-
-  - name: articles
-    label: Articles
-    label_singular: Article
-    folder: src/content/articles
-    summary: "{{title}} · {{category}} · {{date | date('DD/MM/YYYY')}} — {{excerpt | default('') | truncate(96, '…')}}"
-    preview_path: "/articles/{{slug}}/"
-    create: true
-    slug: "{{slug}}"
-    extension: md
-    format: frontmatter
-    fields:
-      - label: "Slug (fichier URL)"
-        name: slug
-        widget: string
-        pattern: ["^[a-z0-9]+(?:-[a-z0-9]+)*$", "Minuscules et tirets uniquement"]
-      - label: Titre
-        name: title
-        widget: string
-      - label: Date
-        name: date
-        widget: datetime
-      - label: Catégorie
-        name: category
-        widget: select
-        default: "Non classé"
-        options:
-          - label: Affiches
-            value: Affiches
-          - label: "Communiqués de presse"
-            value: "Communiqués de presse"
-          - label: "Non classé"
-            value: "Non classé"
-          - label: Vignerons
-            value: Vignerons
-      - label: Résumé
-        name: excerpt
-        widget: text
-        required: false
-      - label: Corps
-        name: body
-        widget: markdown
