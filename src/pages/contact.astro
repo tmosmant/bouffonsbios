@@ -13,7 +13,7 @@ const leadHtml = marked(c.leadMarkdown, { async: false, breaks: true }) as strin
 const telHref = `tel:${c.phoneTel.replace(/\s/g, '')}`;
 ---
 
-<Layout title={c.metaTitle} description={c.metaDescription} current="contact" mainClass="site-main--contact">
+<Layout title={c.metaTitle} description={c.metaDescription} current="contact">
 	<article class="contact-page prose">
 		<header class="contact-hero">
 			<p class="contact-eyebrow" aria-hidden="true">{c.eyebrow}</p>
@@ -92,11 +92,6 @@ const telHref = `tel:${c.phoneTel.replace(/\s/g, '')}`;
 </Layout>
 
 <style>
-	/* Colonne un peu plus aérée que l’article type blog */
-	:global(.site-main--contact) {
-		max-width: 40rem;
-	}
-
 	.contact-page {
 		--contact-radius: 0.9rem;
 	}

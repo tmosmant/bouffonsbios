@@ -304,32 +304,21 @@ const nav = [
 		color: var(--accent-soft);
 	}
 
+	/* Même largeur de colonne que l’accueil sur tout le site */
 	.site-main {
 		flex: 1;
 		width: 100%;
-		max-width: 46rem;
+		max-width: min(70rem, 100%);
 		margin: 0 auto;
 		padding: 2rem 1.5rem 3rem;
 	}
 
-	/* Accueil : colonne principale + encart presse */
+	/* Accueil : bandeau flash pleine largeur au-dessus, puis grille dans `.home-columns` (index) */
 	.site-main--home {
-		max-width: min(70rem, 100%);
-		display: grid;
-		gap: 1.75rem;
-		align-items: start;
-	}
-
-	@media (min-width: 56rem) {
-		.site-main--home {
-			grid-template-columns: minmax(0, 1fr) minmax(15.25rem, 18rem);
-			column-gap: 2rem;
-		}
-	}
-
-	/* Fiches article : colonne un peu plus étroite pour le confort de lecture */
-	.site-main--article {
-		max-width: 38rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		align-items: stretch;
 	}
 
 	.site-footer {

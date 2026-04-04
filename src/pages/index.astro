@@ -72,9 +72,9 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 		type: 'website',
 	}}
 >
-	<div class="home-main">
-		{
-			showFlashHomeOnly && (
+	{
+		showFlashHomeOnly && (
+			<div class="home-flash-banner">
 				<SiteFlash
 					title={flash.title}
 					bodyMarkdown={flash.bodyMarkdown}
@@ -82,8 +82,11 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 					linkHref={flash.linkHref}
 					placement="home"
 				/>
-			)
-		}
+			</div>
+		)
+	}
+	<div class="home-columns">
+		<div class="home-main">
 		<section class="hero" aria-labelledby="accueil-hero-title">
 		<div class="hero-surface">
 			<div class="hero-top">
@@ -160,9 +163,9 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 			</div>
 		</div>
 	</section>
-	</div>
+		</div>
 
-	<div class="home-sidebar">
+		<div class="home-sidebar">
 		<NewsletterSignup source="accueil" />
 		<aside class="presse presse-aside" aria-labelledby="presse-title">
 			<h2 id="presse-title">{presse.heading}</h2>
@@ -182,10 +185,31 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 				)
 			}
 		</aside>
+		</div>
 	</div>
 </Layout>
 
 <style>
+	.home-flash-banner {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.home-columns {
+		display: grid;
+		gap: 1.75rem;
+		align-items: start;
+		min-width: 0;
+		width: 100%;
+	}
+
+	@media (min-width: 56rem) {
+		.home-columns {
+			grid-template-columns: minmax(0, 1fr) minmax(15.25rem, 18rem);
+			column-gap: 2rem;
+		}
+	}
+
 	.home-main {
 		min-width: 0;
 	}
@@ -472,7 +496,6 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 		line-height: 1.4;
 		color: var(--muted, #5c5850);
 		margin: 0 0 1rem;
-		max-width: 40ch;
 	}
 
 	.hero-org {

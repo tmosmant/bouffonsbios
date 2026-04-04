@@ -69,7 +69,7 @@ collections:
     editor:
       preview: true
     files:
-      - label: Page d'accueil (héros & encadrés)
+      - label: Page d'accueil
         name: hero
         summary: "Badge, dates, titres, programme, infos pratiques, liens d’appel"
         file: src/content/home.json
