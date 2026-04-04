@@ -72,6 +72,7 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 		type: 'website',
 	}}
 >
+	<link rel="preload" as="image" href="/uploads/bandeau_gemini.png" slot="head" />
 	{
 		showFlashHomeOnly && (
 			<div class="home-flash-banner">
@@ -88,7 +89,19 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 	<div class="home-columns">
 		<div class="home-main">
 		<section class="hero" aria-labelledby="accueil-hero-title">
-		<div class="hero-surface">
+		<div class="hero-stack">
+			<figure class="hero-banner">
+				<img
+					class="hero-banner-img"
+					src="/uploads/bandeau_gemini.png"
+					alt="Bannière illustrée — ambiance marché de vins bio Bouffons Bios"
+					width="1696"
+					height="624"
+					loading="eager"
+					decoding="async"
+				/>
+			</figure>
+			<div class="hero-surface">
 			<div class="hero-top">
 				<span class="hero-badge">{h.badge}</span>
 				<span class="hero-date" aria-hidden="true">·</span>
@@ -160,6 +173,7 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 			<div class="hero-cta">
 				<a class="btn btn-primary" href={h.ctaPrimaryHref}>{h.ctaPrimaryLabel}</a>
 				<a class="btn btn-ghost" href={h.ctaSecondaryHref}>{h.ctaSecondaryLabel}</a>
+			</div>
 			</div>
 		</div>
 	</section>
@@ -236,20 +250,60 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 		padding-bottom: 0.5rem;
 	}
 
-	.hero-surface {
+	/* Bannière héritée + carte héros = un seul bloc visuel */
+	.hero-stack {
 		position: relative;
-		padding: clamp(1.35rem, 4vw, 2rem) clamp(1.1rem, 3vw, 1.75rem);
 		border-radius: 1.35rem;
-		background:
-			radial-gradient(120% 85% at 100% -5%, color-mix(in srgb, var(--joy) 22%, transparent) 0%, transparent 50%),
-			radial-gradient(100% 70% at 0% 100%, color-mix(in srgb, var(--accent-nature) 18%, transparent) 0%, transparent 52%),
-			radial-gradient(80% 60% at 85% 90%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 45%),
-			var(--bg, #f6f1e8);
+		overflow: hidden;
 		border: 1px solid color-mix(in srgb, var(--border) 70%, var(--accent-nature));
 		box-shadow:
 			0 1px 2px color-mix(in srgb, var(--fg) 5%, transparent),
 			0 14px 44px -16px color-mix(in srgb, var(--accent) 28%, transparent),
 			0 0 0 1px color-mix(in srgb, var(--joy) 12%, transparent) inset;
+	}
+
+	.hero-banner {
+		position: relative;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		line-height: 0;
+	}
+
+	.hero-banner-img {
+		display: block;
+		width: 100%;
+		height: clamp(7.25rem, 28vw, 12.75rem);
+		object-fit: cover;
+		object-position: 50% 42%;
+	}
+
+	.hero-banner::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: linear-gradient(
+			180deg,
+			transparent 40%,
+			color-mix(in srgb, var(--bg) 22%, transparent) 88%,
+			color-mix(in srgb, var(--bg) 55%, transparent) 100%
+		);
+	}
+
+	.hero-surface {
+		position: relative;
+		padding: clamp(1.35rem, 4vw, 2rem) clamp(1.1rem, 3vw, 1.75rem);
+		border-radius: 0;
+		border: none;
+		border-top: 1px solid color-mix(in srgb, var(--border) 65%, var(--joy));
+		background:
+			radial-gradient(ellipse 100% 72% at 108% -12%, color-mix(in srgb, var(--joy) 26%, transparent) 0%, transparent 54%),
+			radial-gradient(ellipse 88% 58% at -8% 108%, color-mix(in srgb, var(--accent-nature) 22%, transparent) 0%, transparent 52%),
+			radial-gradient(ellipse 42% 32% at 94% 90%, color-mix(in srgb, var(--accent) 18%, transparent) 0%, transparent 50%),
+			radial-gradient(ellipse 36% 28% at 6% 6%, color-mix(in srgb, var(--accent) 14%, transparent) 0%, transparent 48%),
+			radial-gradient(ellipse 48% 34% at 55% 0%, color-mix(in srgb, var(--joy-soft) 14%, transparent) 0%, transparent 44%),
+			var(--bg, #f6f1e8);
 		overflow: hidden;
 	}
 
@@ -261,6 +315,24 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 		opacity: 0.7;
 		pointer-events: none;
 		border-radius: inherit;
+	}
+
+	/* Taches vin + formes feuille (ellipses) — au-dessus du fond, sous le grain */
+	.hero-surface::after {
+		content: '';
+		position: absolute;
+		inset: -25% -12%;
+		pointer-events: none;
+		border-radius: inherit;
+		background:
+			radial-gradient(ellipse 34% 24% at 76% 18%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 68%),
+			radial-gradient(ellipse 28% 18% at 14% 62%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 62%),
+			radial-gradient(ellipse 40% 26% at 92% 86%, color-mix(in srgb, var(--accent-soft) 22%, transparent), transparent 65%),
+			radial-gradient(ellipse 24% 38% at 88% 28%, color-mix(in srgb, var(--accent-nature) 12%, transparent), transparent 58%),
+			radial-gradient(ellipse 30% 46% at 12% 22%, color-mix(in srgb, var(--accent-nature) 10%, transparent), transparent 55%),
+			radial-gradient(ellipse 18% 14% at 48% 48%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 52%);
+		opacity: 1;
+		z-index: 0;
 	}
 
 	.hero-top,
@@ -319,10 +391,11 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 		font-weight: 800;
 		font-size: clamp(1.875rem, 6vw, 2.625rem);
 		line-height: 1.08;
-		letter-spacing: -0.018em;
+		letter-spacing: -0.015em;
 		margin: 0 0 0.65rem;
 		color: var(--fg, #1a1814);
 		text-rendering: optimizeLegibility;
+		text-shadow: 0 1px 0 color-mix(in srgb, var(--bg) 65%, transparent);
 	}
 
 	.hero-display-line {
@@ -359,7 +432,7 @@ function infoLine2SameRow(line2: string | undefined): boolean {
 		gap: 0.75rem;
 		padding: 0.85rem 1rem;
 		margin-bottom: 1.5rem;
-		border-radius: 0.75rem;
+		border-radius: 0.95rem;
 		text-decoration: none;
 		color: inherit;
 		background: color-mix(in srgb, var(--fg) 4%, transparent);

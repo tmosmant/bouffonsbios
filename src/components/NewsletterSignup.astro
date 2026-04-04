@@ -9,38 +9,40 @@ const formId = `newsletter-form-${source.replace(/[^a-z0-9]/gi, '-')}`;
 
 <aside class="newsletter" aria-labelledby={`${formId}-title`}>
 	<div class="newsletter__inner">
-		<div class="newsletter__head">
-			<span class="newsletter__icon" aria-hidden="true">✉</span>
-			<div>
-				<h2 id={`${formId}-title`} class="newsletter__title">Restez informé·e</h2>
-				<p class="newsletter__desc">Lancement du marché, nouveaux vignerons, actu de l'association — un e-mail de temps en temps, sans publicité.</p>
-			</div>
-		</div>
-		<form
-			id={formId}
-			class="newsletter__form"
-			data-source={source}
-			novalidate
-		>
+		<p class="newsletter__kicker">Newsletter</p>
+		<h2 id={`${formId}-title`} class="newsletter__title">Restez informé·e</h2>
+		<p class="newsletter__desc">
+			Lancement du marché, nouveaux vignerons, actu de l'association — un e-mail de temps en temps, sans pub.
+		</p>
+		<form id={formId} class="newsletter__form" data-source={source} novalidate>
 			<div class="newsletter__row">
-				<label for={`${formId}-email`} class="newsletter__label">Votre adresse e-mail</label>
-				<div class="newsletter__field">
-					<input
-						id={`${formId}-email`}
-						class="newsletter__input"
-						type="email"
-						name="email"
-						placeholder="vous@exemple.fr"
-						autocomplete="email"
-						required
-						aria-describedby={`${formId}-status`}
-					/>
-					<button class="newsletter__btn" type="submit">
-						<span class="newsletter__btn-label">S'inscrire</span>
-						<span class="newsletter__btn-arrow" aria-hidden="true">→</span>
-					</button>
-				</div>
+				<label for={`${formId}-name`} class="newsletter__label">Prénom et nom</label>
+				<input
+					id={`${formId}-name`}
+					class="newsletter__input"
+					type="text"
+					name="name"
+					placeholder="Camille Dupont"
+					autocomplete="name"
+					maxlength="120"
+					required
+					aria-describedby={`${formId}-status`}
+				/>
 			</div>
+			<div class="newsletter__row">
+				<label for={`${formId}-email`} class="newsletter__label">Adresse e-mail</label>
+				<input
+					id={`${formId}-email`}
+					class="newsletter__input"
+					type="email"
+					name="email"
+					placeholder="vous@exemple.fr"
+					autocomplete="email"
+					required
+					aria-describedby={`${formId}-status`}
+				/>
+			</div>
+			<button class="newsletter__btn" type="submit">S'inscrire</button>
 			<p id={`${formId}-status`} class="newsletter__status" role="status" aria-live="polite"></p>
 		</form>
 	</div>
@@ -49,6 +51,7 @@ const formId = `newsletter-form-${source.replace(/[^a-z0-9]/gi, '-')}`;
 <script>
 	document.querySelectorAll<HTMLFormElement>('form[data-source]').forEach((form) => {
 		const statusEl = document.getElementById(`${form.id}-status`);
+		const nameInput = form.querySelector<HTMLInputElement>('input[name="name"]');
 		const input = form.querySelector<HTMLInputElement>('input[type="email"]');
 		const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
 
@@ -66,6 +69,12 @@ const formId = `newsletter-form-${source.replace(/[^a-z0-9]/gi, '-')}`;
 
 		form.addEventListener('submit', async (e) => {
 			e.preventDefault();
+			const name = nameInput?.value.trim().replace(/\s+/g, ' ') ?? '';
+			if (!name) {
+				setStatus('Veuillez indiquer votre prénom et nom.', 'error');
+				nameInput?.focus();
+				return;
+			}
 			const email = input?.value.trim() ?? '';
 			if (!email) {
 				setStatus('Veuillez saisir votre adresse e-mail.', 'error');
@@ -81,7 +90,7 @@ const formId = `newsletter-form-${source.replace(/[^a-z0-9]/gi, '-')}`;
 				const res = await fetch(`/api/newsletter?source=${encodeURIComponent(source)}`, {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ email }),
+					body: JSON.stringify({ email, name }),
 				});
 				const data = await res.json();
 
@@ -106,136 +115,131 @@ const formId = `newsletter-form-${source.replace(/[^a-z0-9]/gi, '-')}`;
 </script>
 
 <style>
+	/* Même langage que l’encart presse : crème, vigne, pas d’icône décorative */
 	.newsletter {
 		font-family: var(--font-body, system-ui, sans-serif);
-		padding: 1.15rem 1.25rem 1.2rem;
+		margin: 0;
+		padding: 1.1rem 1rem 1.15rem;
 		border-radius: 1.05rem;
-		border: 1px solid color-mix(in srgb, var(--border) 75%, var(--accent));
+		border: 1px solid color-mix(in srgb, var(--border) 72%, var(--accent-nature));
 		background: linear-gradient(
-			150deg,
-			color-mix(in srgb, var(--accent) 7%, var(--bg)),
-			color-mix(in srgb, var(--joy) 10%, var(--bg)) 55%,
+			165deg,
+			color-mix(in srgb, var(--joy) 10%, var(--bg)),
+			color-mix(in srgb, var(--accent-nature) 7%, var(--bg)) 55%,
 			var(--bg)
 		);
 		box-shadow:
-			0 1px 0 color-mix(in srgb, var(--joy) 16%, transparent) inset,
-			0 6px 22px -12px color-mix(in srgb, var(--accent) 20%, transparent);
+			0 1px 0 color-mix(in srgb, var(--joy) 12%, transparent) inset,
+			0 8px 28px -14px color-mix(in srgb, var(--accent) 22%, transparent);
 	}
 
 	.newsletter__inner {
 		display: flex;
 		flex-direction: column;
-		gap: 0.9rem;
-	}
-
-	.newsletter__head {
-		display: flex;
-		align-items: flex-start;
 		gap: 0.75rem;
 	}
 
-	.newsletter__icon {
-		font-size: 1.25rem;
-		line-height: 1;
-		flex-shrink: 0;
-		margin-top: 0.1rem;
-		filter: drop-shadow(0 1px 0 color-mix(in srgb, var(--accent) 20%, transparent));
+	.newsletter__kicker {
+		margin: 0;
+		font-size: 0.65rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--accent, #8f2d4a);
 	}
 
 	.newsletter__title {
-		margin: 0 0 0.22rem;
+		margin: 0;
 		font-family: var(--font-display, Georgia, serif);
-		font-size: 1rem;
+		font-size: 1.05rem;
 		font-weight: 800;
 		line-height: 1.2;
-		letter-spacing: -0.015em;
-		color: var(--accent);
+		letter-spacing: -0.01em;
+		color: var(--accent-nature, #35624a);
 		text-rendering: optimizeLegibility;
 	}
 
 	.newsletter__desc {
 		margin: 0;
-		font-size: 0.84rem;
+		font-size: 0.82rem;
 		line-height: 1.45;
-		color: var(--muted);
+		color: var(--muted, #5c5850);
 	}
 
 	.newsletter__form {
 		display: flex;
 		flex-direction: column;
-		gap: 0.45rem;
+		gap: 0.55rem;
+		margin-top: 0.15rem;
 	}
 
 	.newsletter__row {
 		display: flex;
 		flex-direction: column;
-		gap: 0.35rem;
+		gap: 0.3rem;
 	}
 
 	.newsletter__label {
-		font-size: 0.75rem;
+		font-size: 0.72rem;
 		font-weight: 600;
-		letter-spacing: 0.04em;
+		letter-spacing: 0.05em;
 		text-transform: uppercase;
-		color: var(--muted);
-	}
-
-	.newsletter__field {
-		display: flex;
-		gap: 0;
-		border-radius: 0.65rem;
-		border: 1.5px solid color-mix(in srgb, var(--border) 90%, var(--accent));
-		overflow: hidden;
-		background: color-mix(in srgb, var(--bg) 70%, transparent);
-		transition: border-color 0.18s ease, box-shadow 0.18s ease;
-	}
-
-	.newsletter__field:focus-within {
-		border-color: var(--accent);
-		box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+		color: var(--muted, #5c5850);
 	}
 
 	.newsletter__input {
-		flex: 1;
-		min-width: 0;
-		padding: 0.6rem 0.75rem;
-		border: none;
-		background: transparent;
+		width: 100%;
+		padding: 0.58rem 0.72rem;
+		border-radius: 0.65rem;
+		border: 1px solid color-mix(in srgb, var(--border) 88%, var(--accent-nature));
+		background: color-mix(in srgb, var(--bg) 65%, transparent);
 		color: var(--fg);
 		font-family: inherit;
 		font-size: 0.9rem;
 		outline: none;
+		transition:
+			border-color 0.18s ease,
+			box-shadow 0.18s ease;
 	}
 
 	.newsletter__input::placeholder {
-		color: color-mix(in srgb, var(--muted) 65%, transparent);
+		color: color-mix(in srgb, var(--muted) 62%, transparent);
+	}
+
+	.newsletter__input:focus {
+		border-color: color-mix(in srgb, var(--accent-nature) 45%, var(--border));
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-nature) 12%, transparent);
 	}
 
 	.newsletter__btn {
-		flex-shrink: 0;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.3rem;
-		padding: 0.6rem 0.9rem;
-		border: none;
-		border-left: 1.5px solid color-mix(in srgb, var(--border) 90%, var(--accent));
+		width: 100%;
+		padding: 0.58rem 1rem;
+		border-radius: 0.65rem;
+		border: 1px solid color-mix(in srgb, var(--accent-nature) 35%, var(--border));
 		background: linear-gradient(
-			145deg,
-			color-mix(in srgb, var(--accent) 92%, #fff),
-			var(--accent)
+			180deg,
+			color-mix(in srgb, var(--accent-nature) 12%, var(--bg)),
+			color-mix(in srgb, var(--accent-nature) 6%, var(--bg))
 		);
-		color: #fff;
+		color: var(--accent-nature, #35624a);
 		font-family: inherit;
 		font-size: 0.88rem;
-		font-weight: 600;
+		font-weight: 700;
 		cursor: pointer;
 		transition:
-			filter 0.15s ease,
-			background 0.15s ease;
+			background 0.18s ease,
+			border-color 0.18s ease,
+			color 0.18s ease;
 	}
 
 	.newsletter__btn:hover:not(:disabled) {
-		filter: brightness(1.08);
+		background: linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--accent-nature) 22%, var(--bg)),
+			color-mix(in srgb, var(--accent-nature) 14%, var(--bg))
+		);
+		border-color: var(--accent-nature, #35624a);
+		color: var(--fg, #1c221c);
 	}
 
 	.newsletter__btn:disabled {
@@ -243,29 +247,19 @@ const formId = `newsletter-form-${source.replace(/[^a-z0-9]/gi, '-')}`;
 		cursor: default;
 	}
 
-	.newsletter__btn--loading .newsletter__btn-label::after {
+	.newsletter__btn--loading {
+		pointer-events: none;
+	}
+
+	.newsletter__btn--loading::after {
 		content: '…';
-	}
-
-	.newsletter__btn--loading .newsletter__btn-arrow {
-		display: none;
-	}
-
-	.newsletter__btn-arrow {
-		color: var(--joy-soft, #e4b86a);
-		font-size: 1rem;
-		transition: transform 0.15s ease;
-	}
-
-	.newsletter__btn:hover:not(:disabled) .newsletter__btn-arrow {
-		transform: translateX(2px);
 	}
 
 	.newsletter__status {
 		margin: 0;
-		font-size: 0.84rem;
+		font-size: 0.82rem;
 		line-height: 1.4;
-		min-height: 1.2em;
+		min-height: 1.25em;
 	}
 
 	.newsletter__status[data-type='success'] {
@@ -279,6 +273,7 @@ const formId = `newsletter-form-${source.replace(/[^a-z0-9]/gi, '-')}`;
 
 	.newsletter__status[data-type='info'] {
 		color: var(--joy, #c9892e);
+		font-weight: 600;
 	}
 
 </style>

@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import TransitBadges from '../components/TransitBadges.astro';
 import { getEnv } from 'astro/env/runtime';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -11,41 +12,90 @@ const mapboxToken = (getEnv('PUBLIC_MAPBOX_ACCESS_TOKEN') ?? '').trim();
 const hasMapboxToken = mapboxToken.length > 0;
 ---
 
-<Layout title="Plan d'accès — Bouffons Bios" description="Marché de la Croix de Chavaux, Montreuil" current="plan">
-	<article class="prose">
+<Layout
+	title="Plan d'accès — Bouffons Bios"
+	description="Marché de la Croix de Chavaux, Montreuil"
+	current="plan"
+	mainClass="site-main--narrow"
+>
+	<article class="plan-page">
 		<h1>Plan d’accès</h1>
-		<p>
-			<strong>Place du marché Croix de Chavaux</strong><br />
-			93100 Montreuil<br />
-			<strong>Métro&nbsp;:</strong> Croix de Chavaux (ligne 9)<br />
-			<strong>Bus&nbsp;:</strong> 102, 115, 122, 127, 202
-		</p>
 
-		<div class="map-live">
-			<div
-				id="map-acces"
-				class="map-acces-inner"
-				role="region"
-				aria-label="Carte Mapbox — Croix de Chavaux, métro, bus et accès marché"
-				data-style={MAPBOX_STYLE}
-				data-mapbox-token={mapboxToken}
-			>
-			</div>
-			{!hasMapboxToken && (
-				<p class="map-live-fallback map-live-fallback--token">
-					Carte interactive&nbsp;: ajoutez <code>PUBLIC_MAPBOX_ACCESS_TOKEN</code> au Worker Cloudflare
-					(variables) et dans un <code>.env</code> local pour le dev — voir README.
-				</p>
-			)}
-			<p class="map-live-fallback map-live-fallback--osm">
-				<a
-					href="https://www.openstreetmap.org/#map=17/48.8582/2.4360"
-					rel="noopener noreferrer"
-				>
-					Ouvrir la zone sur OpenStreetMap
-				</a>
+		<section class="plan-card plan-card--address" aria-labelledby="plan-adr-title">
+			<h2 id="plan-adr-title" class="plan-card__title">Lieu</h2>
+			<p class="plan-card__lead">
+				<strong>Halle du marché — place du marché Croix de Chavaux</strong><br />
+				93100 Montreuil
 			</p>
-		</div>
+		</section>
+
+		<section class="plan-card plan-card--transit" aria-labelledby="plan-transit-title">
+			<h2 id="plan-transit-title" class="plan-card__title">Transports en commun</h2>
+			<div class="plan-transit-wrap">
+				<TransitBadges />
+			</div>
+			<p class="plan-card__note">
+				<strong>Métro</strong> ligne 9, station <strong>Croix de Chavaux</strong>. Plusieurs sorties donnent sur la place,
+				les rues adjacentes ou le centre commercial — voir la carte ci-dessous.
+			</p>
+		</section>
+
+		<section class="plan-map-section" aria-labelledby="plan-map-title">
+			<h2 id="plan-map-title" class="plan-map-section__title">Carte</h2>
+			<p class="plan-map-section__intro">
+				Repères colorés : touchez un point pour le détail. Le <strong>trait vert pointillé</strong> indique un chemin
+				piéton court depuis la <strong>sortie métro n°5</strong> (place du marché) vers la halle.
+			</p>
+
+			<div class="plan-legend" aria-label="Légende de la carte">
+				<span class="plan-legend__item">
+					<span class="plan-legend__swatch plan-legend__swatch--venue"></span>
+					Halle du marché
+				</span>
+				<span class="plan-legend__item">
+					<span class="plan-legend__swatch plan-legend__swatch--station"></span>
+					Station métro (l. 9)
+				</span>
+				<span class="plan-legend__item">
+					<span class="plan-legend__swatch plan-legend__swatch--exit"></span>
+					Sortie du métro
+				</span>
+				<span class="plan-legend__item">
+					<span class="plan-legend__swatch plan-legend__swatch--bus"></span>
+					Arrêt de bus
+				</span>
+				<span class="plan-legend__item plan-legend__item--line">
+					<span class="plan-legend__line"></span>
+					Itinéraire piéton (sortie 5)
+				</span>
+			</div>
+
+			<div class="map-live">
+				<div
+					id="map-acces"
+					class="map-acces-inner"
+					role="region"
+					aria-label="Carte — Croix de Chavaux, métro, bus et halle du marché"
+					data-style={MAPBOX_STYLE}
+					data-mapbox-token={mapboxToken}
+				>
+				</div>
+				{!hasMapboxToken && (
+					<p class="map-live-fallback map-live-fallback--token">
+						Carte interactive&nbsp;: ajoutez <code>PUBLIC_MAPBOX_ACCESS_TOKEN</code> au Worker Cloudflare
+						(variables) et dans un <code>.env</code> local pour le dev — voir README.
+					</p>
+				)}
+				<p class="map-live-fallback map-live-fallback--osm">
+					<a
+						href="https://www.openstreetmap.org/#map=17/48.8582/2.4360"
+						rel="noopener noreferrer"
+					>
+						Ouvrir la zone sur OpenStreetMap
+					</a>
+				</p>
+			</div>
+		</section>
 	</article>
 </Layout>
 
@@ -54,73 +104,6 @@ const hasMapboxToken = mapboxToken.length > 0;
 	import transitFc from '../data/croix-chavaux-transit.json';
 
 	const INTERACTIVE_LAYERS = ['transit-bus', 'transit-exit', 'transit-station', 'transit-venue'];
-
-	const ICON_URLS: Record<string, string> = {
-		'bb-metro': '/map-icons/metro.svg',
-		'bb-bus': '/map-icons/bus.png',
-		'bb-exit': '/map-icons/exit.png',
-		'bb-venue': '/map-icons/venue.svg',
-	};
-
-	/** Taille d’affichage « logique » sur la carte (sources 500×500 / 800×800 redimensionnées). */
-	const ICON_LOGICAL_PX: Record<string, { w: number; h: number }> = {
-		'bb-metro': { w: 32, h: 32 },
-		'bb-bus': { w: 32, h: 32 },
-		'bb-exit': { w: 32, h: 32 },
-		'bb-venue': { w: 36, h: 40 },
-	};
-
-	const ICON_PIXEL_RATIO = 2;
-
-	/**
-	 * Raster commun : SVG (fetch text → blob) ou PNG (fetch blob) → canvas @2x → ImageData pour Mapbox.
-	 */
-	async function addRasterIcon(map: mapboxgl.Map, id: string, path: string): Promise<void> {
-		const logical = ICON_LOGICAL_PX[id];
-		if (!logical) throw new Error(`Icône inconnue : ${id}`);
-
-		const url = new URL(path, window.location.origin).href;
-		const res = await fetch(url);
-		if (!res.ok) throw new Error(`HTTP ${res.status} — ${path}`);
-
-		const isSvg = path.endsWith('.svg');
-		let objectUrl: string;
-		if (isSvg) {
-			const svgMarkup = await res.text();
-			objectUrl = URL.createObjectURL(
-				new Blob([svgMarkup], { type: 'image/svg+xml;charset=utf-8' }),
-			);
-		} else {
-			objectUrl = URL.createObjectURL(await res.blob());
-		}
-
-		const img = new Image();
-		try {
-			await new Promise<void>((resolve, reject) => {
-				img.onload = () => resolve();
-				img.onerror = () =>
-					reject(new Error(`Décode image impossible : ${path}`));
-				img.src = objectUrl;
-			});
-		} finally {
-			URL.revokeObjectURL(objectUrl);
-		}
-
-		const cw = logical.w * ICON_PIXEL_RATIO;
-		const ch = logical.h * ICON_PIXEL_RATIO;
-		const canvas = document.createElement('canvas');
-		canvas.width = cw;
-		canvas.height = ch;
-		const ctx = canvas.getContext('2d', { willReadFrequently: true });
-		if (!ctx) throw new Error('Canvas 2D indisponible');
-
-		ctx.clearRect(0, 0, cw, ch);
-		ctx.drawImage(img, 0, 0, cw, ch);
-
-		const data = ctx.getImageData(0, 0, cw, ch);
-		if (map.hasImage(id)) map.removeImage(id);
-		map.addImage(id, data, { pixelRatio: ICON_PIXEL_RATIO });
-	}
 
 	function escapeHtml(s: string) {
 		return s
@@ -140,9 +123,13 @@ const hasMapboxToken = mapboxToken.length > 0;
 	function boundsFromGeoJSON(fc: typeof transitFc): mapboxgl.LngLatBounds {
 		const b = new mapboxgl.LngLatBounds();
 		for (const f of fc.features) {
-			if (f.geometry?.type === 'Point') {
-				const c = f.geometry.coordinates as [number, number];
-				b.extend(c);
+			const g = f.geometry;
+			if (!g) continue;
+			if (g.type === 'Point') {
+				b.extend(g.coordinates as [number, number]);
+			}
+			if (g.type === 'LineString') {
+				for (const c of g.coordinates as [number, number][]) b.extend(c);
 			}
 		}
 		return b;
@@ -161,148 +148,89 @@ const hasMapboxToken = mapboxToken.length > 0;
 		const map = new mapboxgl.Map({
 			container: el,
 			style,
-			center: [2.4358, 48.8582],
-			zoom: 16,
-			scrollZoom: false,
+			center: [2.4354, 48.8581],
+			zoom: 16.2,
+			scrollZoom: true,
 			attributionControl: true,
 		});
 
 		map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-left');
 
-		map.on('load', async () => {
-			for (const [id, path] of Object.entries(ICON_URLS)) {
-				try {
-					await addRasterIcon(map, id, path);
-				} catch (e) {
-					console.warn(`[plan-dacces] Icône ${id} :`, e);
-				}
-			}
-
+		map.on('load', () => {
 			map.addSource('transit', {
 				type: 'geojson',
 				data: transitFc,
 			});
 
-			if (map.hasImage('bb-bus')) {
-				map.addLayer({
-					id: 'transit-bus',
-					type: 'symbol',
-					source: 'transit',
-					filter: ['==', ['get', 'kind'], 'bus'],
-					layout: {
-						'icon-image': 'bb-bus',
-						'icon-size': 0.88,
-						'icon-anchor': 'center',
-						'icon-allow-overlap': true,
-						'icon-ignore-placement': true,
-					},
-				});
-			} else {
-				map.addLayer({
-					id: 'transit-bus',
-					type: 'circle',
-					source: 'transit',
-					filter: ['==', ['get', 'kind'], 'bus'],
-					paint: {
-						'circle-radius': 5,
-						'circle-color': '#0d8050',
-						'circle-stroke-width': 2,
-						'circle-stroke-color': '#ffffff',
-					},
-				});
-			}
+			/* Couleurs alignées RATP / page d’accueil — cercles + ligne piétonne, sans images PNG. */
+			map.addLayer({
+				id: 'transit-walk',
+				type: 'line',
+				source: 'transit',
+				filter: ['==', ['get', 'kind'], 'walk'],
+				paint: {
+					'line-color': '#35624a',
+					'line-width': ['interpolate', ['linear'], ['zoom'], 14, 3, 18, 6],
+					'line-dasharray': [1.6, 1.1],
+					'line-opacity': 0.92,
+				},
+			});
 
-			if (map.hasImage('bb-exit')) {
-				map.addLayer({
-					id: 'transit-exit',
-					type: 'symbol',
-					source: 'transit',
-					filter: ['==', ['get', 'kind'], 'exit'],
-					layout: {
-						'icon-image': 'bb-exit',
-						'icon-size': 0.92,
-						'icon-anchor': 'center',
-						'icon-allow-overlap': true,
-						'icon-ignore-placement': true,
-					},
-				});
-			} else {
-				map.addLayer({
-					id: 'transit-exit',
-					type: 'circle',
-					source: 'transit',
-					filter: ['==', ['get', 'kind'], 'exit'],
-					paint: {
-						'circle-radius': 7,
-						'circle-color': '#e6c200',
-						'circle-stroke-width': 2,
-						'circle-stroke-color': '#1a1a1a',
-					},
-				});
-			}
+			map.addLayer({
+				id: 'transit-bus',
+				type: 'circle',
+				source: 'transit',
+				filter: ['==', ['get', 'kind'], 'bus'],
+				paint: {
+					'circle-radius': ['interpolate', ['linear'], ['zoom'], 14, 5, 18, 8],
+					'circle-color': '#00814f',
+					'circle-stroke-width': 2,
+					'circle-stroke-color': '#ffffff',
+				},
+			});
 
-			if (map.hasImage('bb-metro')) {
-				map.addLayer({
-					id: 'transit-station',
-					type: 'symbol',
-					source: 'transit',
-					filter: ['==', ['get', 'kind'], 'station'],
-					layout: {
-						'icon-image': 'bb-metro',
-						'icon-size': 1,
-						'icon-anchor': 'center',
-						'icon-allow-overlap': true,
-						'icon-ignore-placement': true,
-					},
-				});
-			} else {
-				map.addLayer({
-					id: 'transit-station',
-					type: 'circle',
-					source: 'transit',
-					filter: ['==', ['get', 'kind'], 'station'],
-					paint: {
-						'circle-radius': 9,
-						'circle-color': '#003d82',
-						'circle-stroke-width': 2,
-						'circle-stroke-color': '#ffffff',
-					},
-				});
-			}
+			map.addLayer({
+				id: 'transit-exit',
+				type: 'circle',
+				source: 'transit',
+				filter: ['==', ['get', 'kind'], 'exit'],
+				paint: {
+					'circle-radius': ['interpolate', ['linear'], ['zoom'], 14, 6, 18, 9],
+					'circle-color': '#003189',
+					'circle-stroke-width': 2,
+					'circle-stroke-color': '#ffffff',
+				},
+			});
 
-			if (map.hasImage('bb-venue')) {
-				map.addLayer({
-					id: 'transit-venue',
-					type: 'symbol',
-					source: 'transit',
-					filter: ['==', ['get', 'kind'], 'venue'],
-					layout: {
-						'icon-image': 'bb-venue',
-						'icon-size': 0.95,
-						'icon-anchor': 'bottom',
-						'icon-offset': [0, -4],
-						'icon-allow-overlap': true,
-						'icon-ignore-placement': true,
-					},
-				});
-			} else {
-				map.addLayer({
-					id: 'transit-venue',
-					type: 'circle',
-					source: 'transit',
-					filter: ['==', ['get', 'kind'], 'venue'],
-					paint: {
-						'circle-radius': 11,
-						'circle-color': '#9a3412',
-						'circle-stroke-width': 2,
-						'circle-stroke-color': '#fff7ed',
-					},
-				});
-			}
+			map.addLayer({
+				id: 'transit-station',
+				type: 'circle',
+				source: 'transit',
+				filter: ['==', ['get', 'kind'], 'station'],
+				paint: {
+					'circle-radius': ['interpolate', ['linear'], ['zoom'], 14, 8, 18, 12],
+					'circle-color': '#cec92a',
+					'circle-stroke-width': 2.5,
+					'circle-stroke-color': '#25303b',
+				},
+			});
+
+			map.addLayer({
+				id: 'transit-venue',
+				type: 'circle',
+				source: 'transit',
+				filter: ['==', ['get', 'kind'], 'venue'],
+				paint: {
+					'circle-radius': ['interpolate', ['linear'], ['zoom'], 14, 9, 18, 14],
+					'circle-color': '#c9892e',
+					'circle-stroke-width': 3,
+					'circle-stroke-color': '#fff7ed',
+				},
+			});
 
 			map.fitBounds(boundsFromGeoJSON(transitFc), {
-				padding: { top: 48, bottom: 52, left: 48, right: 48 },
-				maxZoom: 17,
+				padding: { top: 56, bottom: 64, left: 52, right: 52 },
+				maxZoom: 17.4,
 				duration: 0,
 			});
 
@@ -316,7 +244,7 @@ const hasMapboxToken = mapboxToken.length > 0;
 				const f = feats[0];
 				if (!f?.properties) return;
 				const p = f.properties as Record<string, string>;
-				new mapboxgl.Popup({ maxWidth: '280px' })
+				new mapboxgl.Popup({ maxWidth: 'min(300px, 92vw)', className: 'plan-map-popup' })
 					.setLngLat(e.lngLat)
 					.setHTML(popupHtml(p))
 					.addTo(map);
@@ -333,22 +261,158 @@ const hasMapboxToken = mapboxToken.length > 0;
 </script>
 
 <style>
-	h1 {
+	.plan-page h1 {
 		margin-top: 0;
+		margin-bottom: 1rem;
+		font-family: var(--font-display, Georgia, serif);
+		font-weight: 800;
+		letter-spacing: -0.02em;
 	}
+
+	.plan-card {
+		margin: 0 0 1.25rem;
+		padding: 1rem 1.05rem 1.1rem;
+		border-radius: 0.9rem;
+		border: 1px solid color-mix(in srgb, var(--border) 75%, var(--accent-nature));
+		background: linear-gradient(
+			165deg,
+			color-mix(in srgb, var(--joy) 8%, var(--bg)),
+			color-mix(in srgb, var(--accent-nature) 5%, var(--bg)) 100%
+		);
+		box-shadow: 0 1px 0 color-mix(in srgb, var(--joy) 10%, transparent) inset;
+	}
+
+	.plan-card__title {
+		margin: 0 0 0.5rem;
+		font-family: var(--font-body, system-ui, sans-serif);
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--accent-nature, #35624a);
+	}
+
+	.plan-card__lead {
+		margin: 0;
+		font-size: 0.95rem;
+		line-height: 1.55;
+		color: var(--fg);
+	}
+
+	.plan-card__hint {
+		margin: 0 0 0.65rem;
+		font-size: 0.8rem;
+		color: var(--muted);
+		line-height: 1.45;
+	}
+
+	.plan-transit-wrap {
+		padding: 0.65rem 0.75rem;
+		border-radius: 0.65rem;
+		background: color-mix(in srgb, var(--bg) 72%, transparent);
+		border: 1px solid color-mix(in srgb, var(--border) 88%, var(--accent-nature));
+		margin-bottom: 0.75rem;
+	}
+
+	.plan-card__note {
+		margin: 0;
+		font-size: 0.86rem;
+		line-height: 1.5;
+		color: var(--muted);
+	}
+
+	.plan-map-section__title {
+		margin: 0 0 0.4rem;
+		font-family: var(--font-body, system-ui, sans-serif);
+		font-size: 0.72rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--accent-nature, #35624a);
+	}
+
+	.plan-map-section__intro {
+		margin: 0 0 0.85rem;
+		font-size: 0.88rem;
+		line-height: 1.5;
+		color: var(--muted);
+	}
+
+	.plan-legend {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.45rem 1rem;
+		align-items: center;
+		margin-bottom: 0.75rem;
+		padding: 0.55rem 0.7rem;
+		border-radius: 0.65rem;
+		background: color-mix(in srgb, var(--bg) 80%, transparent);
+		border: 1px solid color-mix(in srgb, var(--border) 85%, var(--joy));
+		font-size: 0.78rem;
+		color: var(--fg);
+		line-height: 1.35;
+	}
+
+	.plan-legend__item {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+	}
+
+	.plan-legend__item--line {
+		flex-basis: 100%;
+	}
+
+	.plan-legend__swatch {
+		width: 0.75rem;
+		height: 0.75rem;
+		border-radius: 999px;
+		flex-shrink: 0;
+		border: 2px solid #fff;
+		box-shadow: 0 0 0 1px color-mix(in srgb, var(--fg) 12%, transparent);
+	}
+
+	.plan-legend__swatch--venue {
+		background: #c9892e;
+	}
+
+	.plan-legend__swatch--station {
+		background: #cec92a;
+		border-color: #25303b;
+	}
+
+	.plan-legend__swatch--exit {
+		background: #003189;
+	}
+
+	.plan-legend__swatch--bus {
+		background: #00814f;
+	}
+
+	.plan-legend__line {
+		width: 1.5rem;
+		height: 0;
+		border-top: 3px dashed #35624a;
+		flex-shrink: 0;
+		opacity: 0.95;
+	}
+
 	.map-live {
 		position: relative;
 		width: 100%;
-		height: min(42vh, 420px);
-		min-height: 280px;
-		margin: 1.25rem 0 1.5rem;
-		border-radius: 0.85rem;
+		height: min(58vh, 520px);
+		min-height: 320px;
+		margin: 0 0 0.5rem;
+		border-radius: 0.9rem;
 		overflow: hidden;
-		border: 1px solid color-mix(in srgb, var(--border) 70%, #c4bfb4);
-		box-shadow: 0 2px 14px color-mix(in srgb, var(--fg) 5%, transparent);
+		border: 1px solid color-mix(in srgb, var(--border) 65%, var(--accent-nature));
+		box-shadow:
+			0 2px 16px color-mix(in srgb, var(--fg) 6%, transparent),
+			0 0 0 1px color-mix(in srgb, var(--joy) 10%, transparent) inset;
 		z-index: 0;
-		background: #f2eee4;
+		background: #e8e4dc;
 	}
+
 	.map-acces-inner {
 		position: absolute;
 		inset: 0;
@@ -356,19 +420,24 @@ const hasMapboxToken = mapboxToken.length > 0;
 		height: 100%;
 		z-index: 2;
 	}
+
 	.map-live :global(.mapboxgl-ctrl-bottom-right) {
 		display: flex;
 		align-items: flex-end;
 		gap: 0.25rem;
 	}
+
 	.map-live :global(.mapboxgl-ctrl-attrib) {
-		font-size: 0.65rem;
-		background: color-mix(in srgb, #f2eee4 92%, transparent) !important;
+		font-size: 0.62rem;
+		background: color-mix(in srgb, #f6f1e8 94%, transparent) !important;
+		border-radius: 0.25rem;
 	}
+
 	.map-live :global(.mapboxgl-ctrl-group button) {
 		background: #fff;
 		color: #1a1a1a;
 	}
+
 	.map-live-fallback {
 		position: absolute;
 		inset: 0;
@@ -377,35 +446,60 @@ const hasMapboxToken = mapboxToken.length > 0;
 		align-items: center;
 		justify-content: center;
 		padding: 1rem;
-		background: #f2eee4;
+		background: #e8e4dc;
 		font-size: 0.95rem;
 		z-index: 3;
 		pointer-events: none;
 		text-align: center;
 	}
+
 	.map-live-fallback--osm {
 		pointer-events: none;
 	}
+
 	.map-live-fallback a {
 		pointer-events: auto;
 		font-weight: 600;
+		color: var(--accent);
 	}
+
 	.map-live-fallback--token {
 		font-size: 0.88rem;
 		color: var(--muted, #5a5c52);
 		padding: 1.25rem;
 	}
+
+	.map-live :global(.mapbox-popup-content) {
+		border-radius: 0.5rem;
+		padding: 0.65rem 0.75rem;
+	}
+
+	.map-live :global(.plan-map-popup .mapboxgl-popup-content) {
+		box-shadow: 0 8px 28px color-mix(in srgb, var(--fg) 12%, transparent);
+	}
+
 	.map-live :global(.mapbox-popup-inner) {
-		font-size: 0.85rem;
-		line-height: 1.35;
+		font-size: 0.86rem;
+		line-height: 1.4;
+		color: var(--fg, #1c221c);
 	}
+
+	.map-live :global(.mapbox-popup-inner strong) {
+		font-size: 0.92rem;
+		display: block;
+		margin-bottom: 0.15rem;
+	}
+
 	.map-live :global(.mapbox-popup-inner p) {
-		margin: 0.35rem 0 0;
+		margin: 0.4rem 0 0;
+		color: var(--muted, #5a5c52);
+		font-size: 0.84rem;
 	}
+
 	.map-live :global(.mapbox-popup-ref) {
 		font-size: 0.8rem;
-		font-weight: 600;
-		color: #003d82;
-		margin-top: 0.15rem;
+		font-weight: 800;
+		color: #003189;
+		margin-top: 0.1rem;
 	}
 </style>

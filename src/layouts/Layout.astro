@@ -176,11 +176,20 @@ const nav = [
 		box-sizing: border-box;
 	}
 
+	/*
+	 * Fonds organiques : taches vin + « feuilles » (ellipses allongées en coins).
+	 * Valeurs volontairement visibles ; on reste sous les blocs de contenu.
+	 */
 	html {
 		background:
-			radial-gradient(ellipse 90% 55% at 100% -5%, color-mix(in srgb, var(--joy) 14%, transparent), transparent 52%),
-			radial-gradient(ellipse 75% 50% at -8% 25%, color-mix(in srgb, var(--accent-nature) 12%, transparent), transparent 48%),
-			radial-gradient(ellipse 65% 45% at 85% 95%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 55%),
+			radial-gradient(ellipse 58% 44% at 102% -2%, color-mix(in srgb, var(--joy) 24%, transparent), transparent 58%),
+			radial-gradient(ellipse 50% 36% at 92% 99%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 56%),
+			radial-gradient(ellipse 54% 42% at -8% 20%, color-mix(in srgb, var(--accent-nature) 22%, transparent), transparent 58%),
+			radial-gradient(ellipse 42% 32% at 40% 78%, color-mix(in srgb, var(--joy) 12%, transparent), transparent 54%),
+			radial-gradient(ellipse 34% 26% at 70% 40%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 50%),
+			radial-gradient(ellipse 28% 22% at 14% 52%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 48%),
+			url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 400%22%3E%3Cg fill=%22%232f5c44%22%3E%3Cellipse cx=%22310%22 cy=%2270%22 rx=%2255%22 ry=%2288%22 transform=%22rotate%28-35 310 70%29%22 opacity=%22.22%22/%3E%3Cellipse cx=%22340%22 cy=%22130%22 rx=%2232%22 ry=%2252%22 transform=%22rotate%2815 340 130%29%22 opacity=%22.18%22/%3E%3C/g%3E%3Cg fill=%22%237a2840%22%3E%3Cellipse cx=%22330%22 cy=%22320%22 rx=%2272%22 ry=%2238%22 transform=%22rotate%2818 330 320%29%22 opacity=%22.2%22/%3E%3Cellipse cx=%2270%22 cy=%22100%22 rx=%2230%22 ry=%2222%22 transform=%22rotate%28-25 70 100%29%22 opacity=%22.16%22/%3E%3C/g%3E%3Cg fill=%22%2335624a%22%3E%3Cellipse cx=%2290%22 cy=%22300%22 rx=%2248%22 ry=%2272%22 transform=%22rotate%2840 90 300%29%22 opacity=%22.2%22/%3E%3Cellipse cx=%22220%22 cy=%22240%22 rx=%2236%22 ry=%2258%22 transform=%22rotate%28-55 220 240%29%22 opacity=%22.14%22/%3E%3C/g%3E%3C/svg%3E")
+				center / min(110vmin, 78rem) no-repeat,
 			var(--bg);
 		background-attachment: fixed;
 		color: var(--fg);
@@ -304,13 +313,18 @@ const nav = [
 		color: var(--accent-soft);
 	}
 
-	/* Même largeur de colonne que l’accueil sur tout le site */
+	/* Accueil & pages « larges » (manifeste, etc.) */
 	.site-main {
 		flex: 1;
 		width: 100%;
 		max-width: min(70rem, 100%);
 		margin: 0 auto;
 		padding: 2rem 1.5rem 3rem;
+	}
+
+	/* Articles, contact, plan : colonne de lecture plus étroite */
+	.site-main--narrow {
+		max-width: min(44rem, 100%);
 	}
 
 	/* Accueil : bandeau flash pleine largeur au-dessus, puis grille dans `.home-columns` (index) */
@@ -324,11 +338,13 @@ const nav = [
 	.site-footer {
 		padding: 1.35rem 1.5rem;
 		border-top: 1px solid color-mix(in srgb, var(--border) 85%, var(--accent-nature));
-		background: linear-gradient(
-			180deg,
-			color-mix(in srgb, var(--joy) 6%, transparent),
-			color-mix(in srgb, var(--accent-nature) 5%, transparent)
-		);
+		background:
+			radial-gradient(ellipse 70% 90% at 50% 130%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 52%),
+			linear-gradient(
+				180deg,
+				color-mix(in srgb, var(--joy) 6%, transparent),
+				color-mix(in srgb, var(--accent-nature) 5%, transparent)
+			);
 		text-align: center;
 		color: var(--muted);
 		font-size: 0.88rem;

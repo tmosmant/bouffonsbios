@@ -4,6 +4,22 @@
 		{
 			"type": "Feature",
 			"properties": {
+				"kind": "walk",
+				"name": "Accès piéton conseillé",
+				"detail": "Depuis la sortie métro « Place du marché » (n°5) jusqu’à la halle — environ 2 minutes."
+			},
+			"geometry": {
+				"type": "LineString",
+				"coordinates": [
+					[2.4334952, 48.8576598],
+					[2.43358, 48.85778],
+					[2.433726661062991, 48.85795979796663]
+				]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
 				"kind": "venue",
 				"name": "C’est ici — halle du marché",
 				"detail": "Place du marché Croix de Chavaux (repère sur le plan du site)."

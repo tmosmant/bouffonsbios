@@ -13,7 +13,7 @@ const leadHtml = marked(c.leadMarkdown, { async: false, breaks: true }) as strin
 const telHref = `tel:${c.phoneTel.replace(/\s/g, '')}`;
 ---
 
-<Layout title={c.metaTitle} description={c.metaDescription} current="contact">
+<Layout title={c.metaTitle} description={c.metaDescription} current="contact" mainClass="site-main--narrow">
 	<article class="contact-page prose">
 		<header class="contact-hero">
 			<p class="contact-eyebrow" aria-hidden="true">{c.eyebrow}</p>
