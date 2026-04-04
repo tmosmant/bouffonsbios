@@ -1,4 +1,6 @@
 ---
+import { getEntry } from 'astro:content';
+import SiteFlash from '../components/SiteFlash.astro';
 import { NAV_HIGHLIGHT } from '../site-config';
 
 interface OpenGraphProps {
@@ -26,6 +28,16 @@ interface Props {
 
 const { title, description = 'Bouffons Bios — association', current, mainClass, openGraph } = Astro.props;
 
+const flashEntry = await getEntry('flash', 'flash');
+if (!flashEntry) {
+	throw new Error('Fichier src/content/flash.json introuvable ou clé « flash » manquante.');
+}
+const flashData = flashEntry.data;
+const showFlashGlobal =
+	flashData.enabled &&
+	flashData.showOnAllPages &&
+	flashData.bodyMarkdown.trim().length > 0;
+
 const site = Astro.site ?? new URL('https://bouffonsbios.org');
 const canonicalURL = new URL(Astro.url.pathname || '/', site);
 const ogTitle = openGraph?.title ?? title;
@@ -51,6 +63,7 @@ const nav = [
 <html lang="fr">
 	<head>
 		<meta charset="UTF-8" />
+		<meta name="color-scheme" content="light only" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
@@ -111,6 +124,17 @@ const nav = [
 			</nav>
 		</header>
 		<main id="contenu" class:list={['site-main', mainClass]}>
+			{
+				showFlashGlobal && (
+					<SiteFlash
+						title={flashData.title}
+						bodyMarkdown={flashData.bodyMarkdown}
+						linkLabel={flashData.linkLabel}
+						linkHref={flashData.linkHref}
+						placement="global"
+					/>
+				)
+			}
 			<slot />
 		</main>
 		<footer class="site-footer">
@@ -128,7 +152,8 @@ const nav = [
 
 <style is:global>
 	:root {
-		color-scheme: light dark;
+		/* Pas de thème sombre : uniquement clair (UI navigateur + page). */
+		color-scheme: light only;
 		--font-body: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 		--font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
 		/* chaud : crème, vin, vigne, un peu de miel (fête) */
@@ -145,22 +170,6 @@ const nav = [
 		--nav-bg: color-mix(in srgb, #e8efe8 65%, var(--bg));
 		font-family: var(--font-body);
 		line-height: 1.62;
-	}
-
-	@media (prefers-color-scheme: dark) {
-		:root {
-			--bg: #151a16;
-			--fg: #f2eee6;
-			--accent: #e8a0b3;
-			--accent-soft: #f0b8c8;
-			--accent-nature: #8fbc9f;
-			--accent-nature-soft: #a8d4b8;
-			--joy: #e8c15a;
-			--joy-soft: #f0d080;
-			--muted: #a8a99e;
-			--border: #2d332e;
-			--nav-bg: color-mix(in srgb, #1c261f 80%, var(--bg));
-		}
 	}
 
 	* {
@@ -201,13 +210,6 @@ const nav = [
 		border-bottom: 1px solid color-mix(in srgb, var(--border) 88%, var(--accent-nature));
 		background: color-mix(in srgb, var(--bg) 92%, white);
 		box-shadow: 0 1px 0 color-mix(in srgb, var(--joy) 8%, transparent);
-	}
-
-	@media (prefers-color-scheme: dark) {
-		.site-head {
-			background: color-mix(in srgb, var(--bg) 85%, transparent);
-			box-shadow: 0 1px 0 color-mix(in srgb, var(--accent-nature) 12%, transparent);
-		}
 	}
 
 	.site-brand {
