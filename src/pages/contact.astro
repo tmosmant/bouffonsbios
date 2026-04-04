@@ -177,19 +177,6 @@ const telHref = `tel:${c.phoneTel.replace(/\s/g, '')}`;
 			box-shadow 0.2s ease;
 	}
 
-	@media (prefers-color-scheme: dark) {
-		.contact-card {
-			background: linear-gradient(
-				145deg,
-				color-mix(in srgb, var(--bg) 96%, var(--accent-nature)),
-				color-mix(in srgb, var(--bg) 94%, var(--joy))
-			);
-			box-shadow:
-				0 1px 0 color-mix(in srgb, white 6%, transparent) inset,
-				0 8px 28px color-mix(in srgb, black 25%, transparent);
-		}
-	}
-
 	.contact-card:hover {
 		transform: translateY(-3px);
 		border-color: color-mix(in srgb, var(--accent) 42%, var(--border));

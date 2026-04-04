@@ -82,20 +82,6 @@ const bodyHtml = marked(m.bodyMarkdown, { async: false, breaks: true }) as strin
 			0 14px 40px color-mix(in srgb, var(--fg) 6%, transparent);
 	}
 
-	@media (prefers-color-scheme: dark) {
-		.manifeste-frame {
-			background: linear-gradient(
-				165deg,
-				color-mix(in srgb, var(--bg) 92%, var(--accent-nature)) 0%,
-				color-mix(in srgb, var(--bg) 94%, var(--joy)) 45%,
-				color-mix(in srgb, var(--bg) 96%, transparent) 100%
-			);
-			box-shadow:
-				0 1px 0 color-mix(in srgb, white 5%, transparent) inset,
-				0 16px 48px color-mix(in srgb, black 35%, transparent);
-		}
-	}
-
 	.manifeste-deco {
 		position: absolute;
 		top: 0.35rem;
@@ -252,12 +238,6 @@ const bodyHtml = marked(m.bodyMarkdown, { async: false, breaks: true }) as strin
 			color-mix(in srgb, var(--accent-nature) 7%, transparent)
 		);
 		box-shadow: 0 1px 0 color-mix(in srgb, white 50%, transparent) inset;
-	}
-
-	@media (prefers-color-scheme: dark) {
-		.manifeste-sign-inner {
-			box-shadow: 0 1px 0 color-mix(in srgb, white 6%, transparent) inset;
-		}
 	}
 
 	.manifeste-sign-inner p {

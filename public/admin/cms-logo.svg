@@ -11,14 +11,6 @@
 			.sub {
 				fill: #35624a;
 			}
-			@media (prefers-color-scheme: dark) {
-				.wordmark {
-					fill: #f2eee6;
-				}
-				.sub {
-					fill: #8fbc9f;
-				}
-			}
 		</style>
 	</defs>
 	<path

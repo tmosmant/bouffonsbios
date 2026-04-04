@@ -20,21 +20,6 @@
 			fill: #ffffff;
 			opacity: 0.28;
 		}
-		@media (prefers-color-scheme: dark) {
-			.pied,
-			.tige {
-				fill: #8fbc9f;
-			}
-			.vin {
-				fill: #e8a0b3;
-			}
-			.contour {
-				stroke: #a8d4b8;
-			}
-			.reflet {
-				opacity: 0.2;
-			}
-		}
 	</style>
 	<!-- Pied -->
 	<ellipse class="pied" cx="16" cy="26.2" rx="5.8" ry="1.85" />
