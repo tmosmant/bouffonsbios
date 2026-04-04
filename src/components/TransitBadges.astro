@@ -1,0 +1,137 @@
+---
+/**
+ * Badges officiels RATP pour la page d'accueil.
+ * Couleurs du nuancier officiel RATP / IDFM (source : Wikimedia templates Bus RATP/couleur fond).
+ */
+
+const METRO = [
+	{ num: '9', bg: '#cec92a', fg: '#25303b', station: 'Croix de Chavaux' },
+] as const;
+
+const BUSES = [
+	{ num: '102', bg: '#FFCE00', fg: '#25303b' }, // Bouton d'or
+	{ num: '115', bg: '#00814F', fg: '#ffffff' }, // Sapin
+	{ num: '122', bg: '#CEADD2', fg: '#25303b' }, // Lilas
+	{ num: '127', bg: '#F28E42', fg: '#25303b' }, // Orange
+	{ num: '202', bg: '#662483', fg: '#ffffff' }, // Iris
+] as const;
+---
+
+<div class="transit">
+	<div class="transit-row" role="group" aria-label="Métro">
+		{
+			METRO.map((m) => (
+				<>
+					<span
+						class="transit-badge transit-badge--metro"
+						style={`--tbg:${m.bg};--tfg:${m.fg}`}
+						title={`Métro ligne ${m.num}`}
+					>
+						<span class="transit-m" aria-hidden="true">M</span>
+						<span class="transit-num">{m.num}</span>
+					</span>
+					<span class="transit-station">{m.station}</span>
+				</>
+			))
+		}
+	</div>
+
+	<div class="transit-row transit-row--bus" role="group" aria-label="Bus">
+		<span class="transit-mode-label" aria-hidden="true">Bus</span>
+		{
+			BUSES.map((b) => (
+				<span
+					class="transit-badge transit-badge--bus"
+					style={`--tbg:${b.bg};--tfg:${b.fg}`}
+					title={`Bus ligne ${b.num}`}
+				>
+					{b.num}
+				</span>
+			))
+		}
+	</div>
+</div>
+
+<style>
+	.transit {
+		display: flex;
+		flex-direction: column;
+		gap: 0.45rem;
+	}
+
+	.transit-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.35rem;
+	}
+
+	/* ── Métro ── */
+	.transit-badge--metro {
+		display: inline-flex;
+		align-items: stretch;
+		border-radius: 999px;
+		overflow: hidden;
+		font-size: 0.78rem;
+		font-weight: 800;
+		line-height: 1;
+		white-space: nowrap;
+		box-shadow: 0 1px 3px color-mix(in srgb, var(--tbg) 50%, transparent);
+	}
+
+	.transit-m {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.28rem 0.42rem 0.28rem 0.48rem;
+		background: #003189; /* bleu RATP officiel */
+		color: #fff;
+		font-size: 0.78rem;
+		font-weight: 900;
+		font-style: italic;
+		letter-spacing: -0.02em;
+	}
+
+	.transit-num {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.28rem 0.48rem 0.28rem 0.42rem;
+		background: var(--tbg);
+		color: var(--tfg);
+		min-width: 1.5em;
+	}
+
+	/* Station name next to metro badge */
+	.transit-station {
+		font-size: 0.88rem;
+		color: var(--fg, #1a1814);
+		font-weight: 500;
+	}
+
+	/* ── Bus ── */
+	.transit-mode-label {
+		font-size: 0.68rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: var(--muted, #5c5850);
+		margin-right: 0.1rem;
+	}
+
+	.transit-badge--bus {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.22rem 0.44rem;
+		border-radius: 0.32rem;
+		background: var(--tbg);
+		color: var(--tfg);
+		font-size: 0.75rem;
+		font-weight: 800;
+		letter-spacing: 0.01em;
+		line-height: 1;
+		white-space: nowrap;
+		box-shadow: 0 1px 3px color-mix(in srgb, var(--tbg) 50%, transparent);
+	}
+</style>
