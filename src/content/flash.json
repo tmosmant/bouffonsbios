@@ -1,10 +1,10 @@
 {
   "flash": {
-    "enabled": true,
-    "showOnAllPages": true,
+    "enabled": false,
+    "showOnAllPages": false,
     "title": "Infos & nouveautés",
     "bodyMarkdown": "Activez ce bloc dans l’admin pour annoncer l’ouverture des portes, une nouveauté ou un rappel utile.",
-    "linkLabel": "super bouton",
-    "linkHref": "https://avec.lien"
+    "linkLabel": "",
+    "linkHref": ""
   }
 }
