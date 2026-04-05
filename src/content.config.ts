@@ -103,6 +103,24 @@ const flash = defineCollection({
 	}),
 });
 
+const navigation = defineCollection({
+	loader: file('src/content/navigation.json'),
+	schema: z.object({
+		items: z
+			.array(
+				z.object({
+					/** Correspond au prop Layout `current` pour l’état actif */
+					id: z.string().min(1),
+					/** Libellé menu (pas « label » : réservé par Decap sur les listes) */
+					title: z.string().min(1),
+					href: z.string().min(1),
+					emphasized: z.boolean().default(false),
+				}),
+			)
+			.min(1),
+	}),
+});
+
 const contact = defineCollection({
 	loader: file('src/content/contact.json'),
 	schema: z.object({
@@ -132,4 +150,4 @@ const contact = defineCollection({
 	}),
 });
 
-export const collections = { articles, contact, flash, home, manifeste, presse };
+export const collections = { articles, contact, flash, home, manifeste, navigation, presse };

@@ -1,7 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
 import SiteFlash from '../components/SiteFlash.astro';
-import { NAV_HIGHLIGHT } from '../site-config';
 
 interface OpenGraphProps {
 	/** Titre pour le partage (sinon = title de la page) */
@@ -18,8 +17,8 @@ interface OpenGraphProps {
 interface Props {
 	title: string;
 	description?: string;
-	/** Lien actif dans la barre principale */
-	current?: 'highlight' | 'articles' | 'manifeste' | 'contact' | 'plan';
+	/** Lien actif dans la barre principale (identifiant `id` du lien dans navigation.json) */
+	current?: string;
 	/** Classes additionnelles sur `<main>` (ex. `site-main--home` pour la grille d’accueil) */
 	mainClass?: string;
 	/** Open Graph / Twitter / réseaux sociaux */
@@ -50,13 +49,15 @@ const ogImageAbsolute =
 const ogImageAlt = openGraph?.imageAlt?.trim() || ogTitle;
 const twitterCard = ogImageAbsolute ? 'summary_large_image' : 'summary';
 
-const nav = [
-	{ id: 'highlight' as const, href: NAV_HIGHLIGHT.href, label: NAV_HIGHLIGHT.label },
-	{ id: 'articles' as const, href: '/articles/', label: 'Articles' },
-	{ id: 'manifeste' as const, href: '/manifeste/', label: 'Manifeste' },
-	{ id: 'contact' as const, href: '/contact/', label: 'Contact' },
-	{ id: 'plan' as const, href: '/plan-dacces/', label: "Plan d'accès" },
-];
+const navEntry = await getEntry('navigation', 'nav');
+if (!navEntry) {
+	throw new Error('Fichier src/content/navigation.json introuvable ou clé « nav » manquante.');
+}
+const nav = navEntry.data.items;
+
+function navHrefIsExternal(href: string): boolean {
+	return /^https?:\/\//i.test(href.trim());
+}
 ---
 
 <!doctype html>
@@ -104,22 +105,34 @@ const nav = [
 				<nav class="site-nav" aria-label="Navigation principale">
 					<ul>
 						{
-							nav.map((item) => (
-								<li>
-									{item.id === 'highlight' ? (
-										<a
-											href={item.href}
-											class:list={['nav-link--highlight', { active: current === item.id }]}
-										>
-											{item.label}
-										</a>
-									) : (
-										<a href={item.href} class:list={[{ active: current === item.id }]}>
-											{item.label}
-										</a>
-									)}
-								</li>
-							))
+							nav.map((item) => {
+								const external = navHrefIsExternal(item.href);
+								return (
+									<li>
+										{item.emphasized ? (
+											<a
+												href={item.href}
+												class:list={['nav-link--highlight', { active: current === item.id }]}
+												{...(external
+													? { target: '_blank', rel: 'noopener noreferrer' }
+													: {})}
+											>
+												{item.title}
+											</a>
+										) : (
+											<a
+												href={item.href}
+												class:list={[{ active: current === item.id }]}
+												{...(external
+													? { target: '_blank', rel: 'noopener noreferrer' }
+													: {})}
+											>
+												{item.title}
+											</a>
+										)}
+									</li>
+								);
+							})
 						}
 					</ul>
 				</nav>

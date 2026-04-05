@@ -16,6 +16,9 @@ backend:
   base_url: https://bouffonsbios-oauth.thomas-mosmant.workers.dev
   auth_endpoint: auth
 
+# Si le proxy (port 8081) répond → fichiers lus sur le disque (idéal en `npm run dev`). Sinon → GitHub : tout fichier absent du dépôt distant provoque du JSON vide / parse error.
+# En local : lancer `npm run cms:local` dans un 2ᵉ terminal. En prod, le test localhost:8081 échoue côté navigateur → backend GitHub inchangé.
+# Pousser `src/content/navigation.json` sur `main` pour que l’admin fonctionne sans proxy (404 GitHub actuellement).
 local_backend: true
 
 media_folder: public/uploads
@@ -232,6 +235,44 @@ collections:
                 name: linkHref
                 widget: string
                 required: false
+
+      # Ne pas nommer un champ de liste « label » : Decap ne charge pas les entrées (conflit interne).
+      - label: Menu principal (navigation)
+        name: navigation
+        summary: "Liens du bandeau — ordre, textes, URLs"
+        file: src/content/navigation.json
+        format: json
+        fields:
+          - label: Navigation
+            name: nav
+            widget: object
+            collapsed: false
+            fields:
+              - label: Liens du menu
+                label_singular: lien
+                hint: "Ordre = ordre dans la barre. Identifiants : highlight, articles, manifeste, contact, plan (pour la page active)."
+                name: items
+                widget: list
+                min: 1
+                max: 15
+                # Obligatoire : préfixe fields. (sinon le widget liste peut ne rien afficher / planter)
+                summary: "{{fields.title}} → {{fields.href}}"
+                fields:
+                  - label: Identifiant technique
+                    hint: "highlight, articles, manifeste, contact, plan — aligné avec le code des pages."
+                    name: id
+                    widget: string
+                  - label: Texte affiché dans le menu
+                    name: title
+                    widget: string
+                  - label: URL
+                    hint: "/articles/ ou https://…"
+                    name: href
+                    widget: string
+                  - label: Mise en avant (typo Fraunces)
+                    name: emphasized
+                    widget: boolean
+                    default: false
 
       - label: Page contact
         name: contact

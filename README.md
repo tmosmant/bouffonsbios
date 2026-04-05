@@ -1,8 +1,12 @@
 # Bouffons Bios
 
-Site [Astro](https://astro.build) + [Decap CMS](https://decapcms.org), déployé sur **Cloudflare Workers** (assets statiques + worker Astro).
+Site [Astro](https://astro.build) + [Decap CMS](https://decapcms.org), déployé sur **Cloudflare Workers** (Worker Astro + assets statiques).
 
 **Domaine de prod** : [bouffonsbios.org](https://bouffonsbios.org) (**Bios** avec un **s** — pas `bouffonsbio.org`).
+
+## Prérequis
+
+- **Node** ≥ 22.12 (voir `package.json` → `engines`)
 
 ## URLs
 
@@ -11,6 +15,7 @@ Site [Astro](https://astro.build) + [Decap CMS](https://decapcms.org), déployé
 | Site (prod) | <https://bouffonsbios.org> · <https://www.bouffonsbios.org> |
 | Alias Workers | <https://bouffonsbios.thomas-mosmant.workers.dev> |
 | Admin Decap | <https://bouffonsbios.org/admin/> |
+| Déploiement (page dédiée) | <https://bouffonsbios.org/admin/deploy.html> |
 | OAuth GitHub (proxy) | <https://bouffonsbios-oauth.thomas-mosmant.workers.dev> |
 
 ## Développement
@@ -21,27 +26,69 @@ npm run dev
 ```
 
 - Site : <http://localhost:4321>
-- Admin : <http://localhost:4321/admin/> (`local_backend: true` → en local, prévoir [Decap server](https://decapcms.org/docs/working-with-a-local-git-repository/) si besoin)
+- Admin : <http://localhost:4321/admin/> — avec `local_backend: true` dans `public/admin/config.yml`, prévoir le [mode local Decap](https://decapcms.org/docs/working-with-a-local-git-repository/) si tu édites le dépôt Git depuis ta machine.
 
 ### Carte Mapbox (plan d’accès)
 
-La page `/plan-dacces/` charge [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) avec un style hébergé sur ton compte.
+La page `/plan-dacces/` utilise [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/) (style hébergé sur ton compte Mapbox).
 
-- **En local** : copier `.env.example` vers `.env` et renseigner `PUBLIC_MAPBOX_ACCESS_TOKEN=pk.…` (Astro charge ce fichier au dev / au build).
-- **Sur Cloudflare Workers** (déploiement `wrangler deploy`) : ajouter la variable **`PUBLIC_MAPBOX_ACCESS_TOKEN`** dans le tableau de bord du worker **bouffonsbios** (*Settings* → *Variables and Secrets*), pas seulement au « build » Git. La page est rendue côté serveur et lit le jeton à chaque requête via l’env Worker ; un jeton défini uniquement au build CI ne suffit pas.
+- **En local** : copier `.env.example` vers `.env` et renseigner `PUBLIC_MAPBOX_ACCESS_TOKEN=pk.…`
+- **Sur le Worker `bouffonsbios`** : ajouter la même variable dans Cloudflare (*Workers* → *bouffonsbios* → *Settings* → *Variables and Secrets*). La page est rendue côté serveur : le jeton doit être présent **sur le Worker**, pas seulement au build CI.
 - Restreindre le jeton par URL dans [Mapbox Account](https://account.mapbox.com/).
 
 ## Déploiement
 
+Le workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) ne tourne **plus** au push : il est lancé **à la demande** (page `/admin/deploy.html`, *Run workflow* sur GitHub, ou `npm run deploy` en local).
+
+### Bouton dans l’admin
+
+1. Ouvre <https://bouffonsbios.org/admin/deploy.html> (page dédiée, pas dans l’interface Decap).
+2. Saisis la **clé de déploiement** (la même valeur que le secret Worker `DEPLOY_TRIGGER_SECRET`).
+3. Le site appelle `POST /api/deploy`, qui déclenche **`workflow_dispatch`** sur GitHub Actions (branche `main`).
+
+**Secrets sur le Worker `bouffonsbios`** (Cloudflare → *Workers* → *bouffonsbios* → *Settings* → *Variables and Secrets* → *Encrypt* pour les secrets) :
+
+| Nom | Type | Rôle |
+|-----|------|------|
+| `DEPLOY_TRIGGER_SECRET` | Secret | Chaîne longue et aléatoire ; connue de l’équipe, saisie sur la page deploy |
+| `GITHUB_DISPATCH_TOKEN` | Secret | [PAT GitHub](https://github.com/settings/personal-access-tokens) **fine-grained** sur le dépôt `bouffonsbios`, permission **Actions : Read and write** (pour l’API `workflow_dispatch`) |
+
+Exemple en CLI :
+
 ```sh
-npm run deploy
+npx wrangler secret put DEPLOY_TRIGGER_SECRET
+npx wrangler secret put GITHUB_DISPATCH_TOKEN
 ```
 
-Worker OAuth (séparé) :
+En local (`wrangler dev`), copier [`.dev.vars.example`](.dev.vars.example) vers `.dev.vars` (fichier ignoré par Git) et y renseigner les mêmes noms.
+
+### GitHub Actions (secrets du dépôt)
+
+Quand le workflow s’exécute, il a besoin des secrets **du dépôt GitHub** (*Settings* → *Secrets and variables* → *Actions*) :
+
+| Nom | Obligatoire | Rôle |
+|-----|-------------|------|
+| `CLOUDFLARE_API_TOKEN` | oui | [API Token](https://dash.cloudflare.com/profile/api-tokens) Cloudflare — déploiement Workers |
+| `PUBLIC_MAPBOX_ACCESS_TOKEN` | non | Build CI si nécessaire ; la carte en prod lit surtout la variable du Worker |
+
+Tu peux aussi lancer le workflow à la main : *Actions* → *Deploy* → *Run workflow*.
+
+Les identifiants **OAuth Decap** (`GITHUB_OAUTH_ID` / `GITHUB_OAUTH_SECRET`) restent sur le worker **`bouffonsbios-oauth`** uniquement — pas sur le worker site, pas dans ce PAT de dispatch.
+
+### En local (sans passer par GitHub Actions)
 
 ```sh
-npm run deploy:oauth
+npm run deploy              # site (build + wrangler racine)
+npm run deploy:oauth        # worker OAuth seul
 ```
+
+## Infra Cloudflare
+
+| Élément | Fichier / nom |
+|---------|----------------|
+| Site + API Astro | `wrangler.jsonc` → worker **bouffonsbios** (incl. `POST /api/deploy`) |
+| OAuth Decap | `workers/decap-oauth/wrangler.jsonc` → **bouffonsbios-oauth** |
+| Newsletter (D1) | Binding `NEWSLETTER_DB` dans `wrangler.jsonc` ; schéma SQL dans `schema/` |
 
 ## Decap + GitHub en production
 
@@ -49,47 +96,65 @@ npm run deploy:oauth
    - **Homepage URL** : `https://bouffonsbios.org`  
    - **Authorization callback URL** :  
      `https://bouffonsbios-oauth.thomas-mosmant.workers.dev/callback?provider=github`  
-   - L’app demande les scopes `public_repo`, `user` et `user:email` : le dernier permet de lire les adresses **vérifiées** sur GitHub pour calculer l’avatar **Gravatar** (MD5 de l’e-mail en minuscules, comme chez Gravatar). Sans e-mail vérifié, l’avatar GitHub classique reste affiché. Après un changement de scopes, chaque éditeur doit se **reconnecter** une fois à l’admin.
+   - Scopes : `public_repo`, `user`, `user:email` (e-mails vérifiés → avatar Gravatar côté admin). Après changement de scopes, chaque éditeur doit se **reconnecter** une fois.
 
-2. **Cloudflare** — sur le worker `bouffonsbios-oauth` :
+2. **Cloudflare** — worker **`bouffonsbios-oauth`** :
 
    ```sh
    npx wrangler secret put GITHUB_OAUTH_SECRET -c workers/decap-oauth/wrangler.jsonc
    npx wrangler vars put GITHUB_OAUTH_ID -c workers/decap-oauth/wrangler.jsonc
    ```
 
-   Colle le **Client ID** pour la variable, le **Client secret** pour le secret.
+   Client ID → variable, client secret → secret. **Ne pas** commiter ces valeurs dans `wrangler.jsonc` : les gérer via `wrangler` ou le dashboard.
 
-   Ne mets **pas** `GITHUB_OAUTH_ID` dans `workers/decap-oauth/wrangler.jsonc` : un déploiement écraserait sinon les variables du dashboard. Configure-les uniquement via les commandes ci-dessus ou l’UI Cloudflare.
+3. **Code du worker OAuth** : après changement sous `workers/decap-oauth/`, lancer un déploiement (*Run workflow*, page `/admin/deploy.html`, ou `npm run deploy:oauth`).
 
-3. Déploie le worker OAuth après modification de son code : `npm run deploy:oauth`.
+4. **Site + contenu** : après merge sur `main`, lancer un déploiement (*Run workflow*, page `/admin/deploy.html`, ou `npm run deploy`). La page deploy rebuild depuis la branche `main` distante, pas depuis des fichiers non poussés.
 
-4. Redéploie le site après modification de `public/admin/config.yml` : `npm run deploy`.
+Si l’URL du worker OAuth change, mettre à jour `ALLOWED_ORIGINS` dans `public/admin/decap-gravatar.js`.
 
-Si l’URL du worker OAuth change, mets à jour `ALLOWED_ORIGINS` dans `public/admin/decap-gravatar.js` pour que le `postMessage` soit accepté.
+Sans l’étape 2, `/auth` sur le worker OAuth répond **503** avec un message explicite.
 
-Tant que l’étape 2 n’est pas faite, `/auth` sur le worker OAuth répond **503** avec un message explicite.
+## Contenu & CMS
 
-## Contenu
+Fichiers éditables via **Decap** (`/admin/`) ou à la main ; schéma Zod : `src/content.config.ts`. Après gros changements de schéma : `npx astro sync`.
 
-- Articles : `src/content/articles/` (Markdown + front matter)
-- Médias Decap : `public/uploads/`
+| Zone | Emplacement |
+|------|-------------|
+| Articles | `src/content/articles/*.md` |
+| Accueil (héros, CTA, etc.) | `src/content/home.json` |
+| Menu principal | `src/content/navigation.json` (`nav.items` : `id`, `title`, `href`, `emphasized`) |
+| Bandeau flash | `src/content/flash.json` |
+| Contact | `src/content/contact.json` |
+| Manifeste | `src/content/manifeste.json` |
+| Bloc presse (accueil) | `src/content/presse.json` |
+| Médias | `public/uploads/` |
 
-Schéma Astro : `src/content.config.ts` — après gros changements : `npx astro sync`.
+Les **`id`** des liens de navigation doivent rester alignés avec le prop `current` des pages dans `src/pages/` (ex. `highlight`, `articles`, `manifeste`, `contact`, `plan`) pour l’état actif du menu.
+
+### Scripts npm
+
+| Commande | Rôle |
+|----------|------|
+| `npm run dev` | Serveur de dev Astro |
+| `npm run build` | Build production → `dist/` |
+| `npm run deploy` | Build + `wrangler deploy` (site) |
+| `npm run deploy:oauth` | Déploie uniquement le worker OAuth |
+| `npm run import:wp` | Import WordPress (WXR) → articles Markdown |
+| `npm run assign:categories` | Recalcule les catégories depuis les slugs de fichiers |
+| `npm run generate-types` | `wrangler types` (bindings Worker) |
 
 ### Import WordPress (WXR)
 
-L’export **Outils → Exporter** (fichier `.xml`) est compatible : champs `title`, `wp:post_date_gmt` / `wp:post_date`, catégories WordPress, `excerpt:encoded`, `content:encoded` → front matter + corps Markdown.
+Export **Outils → Exporter** (`.xml`) : titre, dates, catégories, extrait, contenu → front matter + Markdown.
 
 ```sh
 npm run import:wp -- /chemin/vers/export.xml
 ```
 
-Sans argument, le script cherche par défaut `~/Downloads/bouffonsbios.WordPress.YYYY-MM-DD.xml`. Il **remplace** tous les `.md` du dossier `articles` (billets `post` publiés uniquement ; pas les pages type Accueil / Contact, ni les commentaires). Les blocs Gutenberg (`<!-- wp:… -->`) sont retirés ; les liens `bouffonsbios.wordpress.com` pointent vers `https://bouffonsbios.org`. Les images hébergées chez WordPress restent en **hotlink** `*.files.wordpress.com` tant qu’elles y sont servies.
+Sans argument : recherche par défaut `~/Downloads/bouffonsbios.WordPress.YYYY-MM-DD.xml`. **Remplace** les `.md` du dossier articles (billets publiés uniquement). Liens `bouffonsbios.wordpress.com` → `https://bouffonsbios.org`. Images WordPress en hotlink `*.files.wordpress.com` tant qu’elles y sont servies.
 
 ### Catégories (sans réimporter le WXR)
-
-Les catégories sont dans le front matter (`category:`). Pour recalculer à partir des slugs de fichiers :
 
 ```sh
 npm run assign:categories

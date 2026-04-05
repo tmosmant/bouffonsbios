@@ -1,0 +1,36 @@
+{
+	"nav": {
+		"items": [
+			{
+				"id": "highlight",
+				"title": "21ᵉ marché des vins bio 2026",
+				"href": "/",
+				"emphasized": true
+			},
+			{
+				"id": "articles",
+				"title": "Articles",
+				"href": "/articles/",
+				"emphasized": false
+			},
+			{
+				"id": "manifeste",
+				"title": "Manifeste",
+				"href": "/manifeste/",
+				"emphasized": false
+			},
+			{
+				"id": "contact",
+				"title": "Contact",
+				"href": "/contact/",
+				"emphasized": false
+			},
+			{
+				"id": "plan",
+				"title": "Plan d'accès",
+				"href": "/plan-dacces/",
+				"emphasized": false
+			}
+		]
+	}
+}
