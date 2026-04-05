@@ -12,7 +12,7 @@ const m = entry.data;
 const bodyHtml = marked(m.bodyMarkdown, { async: false, breaks: true }) as string;
 ---
 
-<Layout title={m.metaTitle} description={m.metaDescription} current="manifeste" mainClass="site-main--manifeste">
+<Layout title={m.metaTitle} description={m.metaDescription} current="manifeste" mainClass="site-main--narrow">
 	<article class="manifeste-page" lang="fr">
 		<div class="manifeste-frame">
 			<div class="manifeste-deco" aria-hidden="true">
@@ -55,10 +55,6 @@ const bodyHtml = marked(m.bodyMarkdown, { async: false, breaks: true }) as strin
 </Layout>
 
 <style>
-	:global(.site-main--manifeste) {
-		padding-top: 2.25rem;
-	}
-
 	.manifeste-page {
 		position: relative;
 	}
