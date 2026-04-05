@@ -97,31 +97,47 @@ const nav = [
 	<body>
 		<a href="#contenu" class="skip">Aller au contenu</a>
 		<header class="site-head">
-			<div class="site-brand">
-				<a class="logo" href="/">Bouffons Bios</a>
+			<div class="site-head-inner">
+				<div class="site-brand">
+					<a class="logo" href="/">Bouffons Bios</a>
+				</div>
+				<nav class="site-nav" aria-label="Navigation principale">
+					<ul>
+						{
+							nav.map((item) => (
+								<li>
+									{item.id === 'highlight' ? (
+										<a
+											href={item.href}
+											class:list={['nav-link--highlight', { active: current === item.id }]}
+										>
+											{item.label}
+										</a>
+									) : (
+										<a href={item.href} class:list={[{ active: current === item.id }]}>
+											{item.label}
+										</a>
+									)}
+								</li>
+							))
+						}
+					</ul>
+				</nav>
+				<div class="site-head-deco" aria-hidden="true">
+					<svg class="site-head-deco-svg" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="M60 8c-12 8-22 22-24 38-2 14 6 28 18 34M44 52c-8 6-12 16-10 26 2 12 12 20 24 22M76 48c10-4 18-14 20-26 2-14-4-28-16-36"
+							stroke="currentColor"
+							stroke-width="2.2"
+							stroke-linecap="round"
+							opacity="0.35"
+						/>
+						<ellipse cx="58" cy="72" rx="10" ry="14" transform="rotate(-28 58 72)" fill="currentColor" opacity="0.2" />
+						<ellipse cx="78" cy="64" rx="8" ry="11" transform="rotate(12 78 64)" fill="currentColor" opacity="0.16" />
+						<ellipse cx="42" cy="68" rx="7" ry="10" transform="rotate(-8 42 68)" fill="currentColor" opacity="0.18" />
+					</svg>
+				</div>
 			</div>
-			<nav class="site-nav" aria-label="Navigation principale">
-				<ul>
-					{
-						nav.map((item) => (
-							<li>
-								{item.id === 'highlight' ? (
-									<a
-										href={item.href}
-										class:list={['nav-link--highlight', { active: current === item.id }]}
-									>
-										{item.label}
-									</a>
-								) : (
-									<a href={item.href} class:list={[{ active: current === item.id }]}>
-										{item.label}
-									</a>
-								)}
-							</li>
-						))
-					}
-				</ul>
-			</nav>
 		</header>
 		<main id="contenu" class:list={['site-main', mainClass]}>
 			{
@@ -221,6 +237,64 @@ const nav = [
 		box-shadow: 0 1px 0 color-mix(in srgb, var(--joy) 8%, transparent);
 	}
 
+	.site-head-inner {
+		max-width: min(70rem, 100%);
+		margin: 0 auto;
+	}
+
+	.site-head-deco {
+		display: none;
+	}
+
+	@media (min-width: 56rem) {
+		.site-head-inner {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+			align-items: center;
+			gap: 0.75rem 1.25rem;
+			padding: 0 1.25rem;
+		}
+
+		.site-brand {
+			justify-self: start;
+			padding: 0.95rem 0;
+		}
+
+		.site-nav {
+			justify-self: center;
+			grid-column: 2;
+			max-width: 100%;
+			border-top: none;
+			border-radius: 999px;
+			border: 1px solid color-mix(in srgb, var(--border) 78%, var(--accent-nature));
+			box-shadow:
+				0 1px 0 color-mix(in srgb, white 55%, transparent) inset,
+				0 6px 22px -14px color-mix(in srgb, var(--accent) 18%, transparent);
+			background: linear-gradient(
+				165deg,
+				color-mix(in srgb, var(--bg) 88%, white) 0%,
+				color-mix(in srgb, var(--joy) 6%, var(--nav-bg)) 100%
+			);
+			display: flex;
+			align-items: stretch;
+			min-height: 2.85rem;
+			padding: 0;
+		}
+
+		.site-head-deco {
+			justify-self: end;
+			display: flex;
+			align-items: center;
+			color: var(--accent-nature-soft);
+			opacity: 0.85;
+		}
+
+		.site-head-deco-svg {
+			width: clamp(3.25rem, 5vw, 4.25rem);
+			height: auto;
+		}
+	}
+
 	.site-brand {
 		padding: 1rem 1.25rem 0.6rem;
 	}
@@ -311,6 +385,42 @@ const nav = [
 
 	.site-nav a.nav-link--highlight:hover {
 		color: var(--accent-soft);
+	}
+
+	/* Pilule desktop : liens hauteur pleine, premier / dernier jusqu’au bord arrondi (après les styles de base). */
+	@media (min-width: 56rem) {
+		.site-nav ul {
+			padding: 0;
+			min-height: 100%;
+			flex: 1 1 auto;
+			align-items: stretch;
+			flex-wrap: nowrap;
+			justify-content: center;
+		}
+
+		.site-nav li {
+			align-items: stretch;
+		}
+
+		.site-nav a {
+			padding: 0 0.85rem;
+			min-height: 2.85rem;
+			align-self: stretch;
+			border-radius: 0;
+			box-sizing: border-box;
+		}
+
+		.site-nav li:first-child a {
+			padding-left: 1.15rem;
+			border-top-left-radius: 999px;
+			border-bottom-left-radius: 999px;
+		}
+
+		.site-nav li:last-child a {
+			padding-right: 1.15rem;
+			border-top-right-radius: 999px;
+			border-bottom-right-radius: 999px;
+		}
 	}
 
 	/* Accueil & pages pleine largeur de contenu (70rem) */
