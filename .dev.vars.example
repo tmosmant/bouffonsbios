@@ -2,7 +2,3 @@
 # Production : définir les mêmes clés comme *Secrets* sur le worker bouffonsbios (dashboard Cloudflare).
 
 PUBLIC_MAPBOX_ACCESS_TOKEN=
-
-# Déploiement à la demande (/api/deploy + /admin/deploy.html)
-# DEPLOY_TRIGGER_SECRET=
-# GITHUB_DISPATCH_TOKEN=

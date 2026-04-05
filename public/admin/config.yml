@@ -25,9 +25,9 @@ media_folder: public/uploads
 public_folder: /uploads
 
 collections:
-  # En premier : écran d’arrivée Decap = liste des articles (évite d’atterrir sur « home »).
+  # Billets Markdown (actualités, communiqués, vignerons, affiches…). Première entrée du menu admin.
   - name: articles
-    label: Articles
+    label: Articles et archives
     label_singular: Article
     folder: src/content/articles
     preview_path: "/articles/{{slug}}/"
@@ -68,13 +68,92 @@ collections:
         widget: markdown
 
   - name: site
-    label: Pages du site
+    label: "Site web : menu, accueil et pages"
     editor:
       preview: true
     files:
-      - label: Page d'accueil
+      # Ne pas nommer un champ de liste « label » : Decap ne charge pas les entrées (conflit interne).
+      - label: Menu du haut (navigation)
+        name: navigation
+        summary: "Liens du bandeau — ordre, libellés, URL"
+        file: src/content/navigation.json
+        format: json
+        fields:
+          - label: Navigation
+            name: nav
+            widget: object
+            collapsed: false
+            fields:
+              - label: Liens du menu
+                label_singular: lien
+                hint: "Ordre = ordre dans la barre. Identifiants : highlight, articles, manifeste, contact, plan (pour la page active)."
+                name: items
+                widget: list
+                min: 1
+                max: 15
+                # Obligatoire : préfixe fields. (sinon le widget liste peut ne rien afficher / planter)
+                summary: "{{fields.title}} → {{fields.href}}"
+                fields:
+                  - label: Identifiant technique
+                    hint: "highlight, articles, manifeste, contact, plan — aligné avec le code des pages."
+                    name: id
+                    widget: string
+                  - label: Texte affiché dans le menu
+                    name: title
+                    widget: string
+                  - label: URL
+                    hint: "/articles/ ou https://…"
+                    name: href
+                    widget: string
+                  - label: Mise en avant (typo Fraunces)
+                    name: emphasized
+                    widget: boolean
+                    default: false
+
+      - label: Bandeau d’annonces
+        name: flash
+        summary: "Texte court, lien optionnel — accueil seul ou toutes les pages"
+        file: src/content/flash.json
+        format: json
+        fields:
+          - label: Contenu
+            name: flash
+            widget: object
+            collapsed: false
+            fields:
+              - label: Afficher le bandeau
+                hint: "Désactivé = invisible partout (même si du texte est saisi)."
+                name: enabled
+                widget: boolean
+                default: false
+              - label: Visible sur tout le site
+                hint: "Sous la navigation sur chaque page. Sinon, uniquement en haut de l’accueil."
+                name: showOnAllPages
+                widget: boolean
+                default: false
+              - label: Titre du bloc
+                hint: "Optionnel — laissez vide pour un bandeau sans titre."
+                name: title
+                widget: string
+                required: false
+              - label: Texte
+                hint: "Markdown — **gras**, [lien](url), paragraphes séparés par une ligne vide."
+                name: bodyMarkdown
+                widget: markdown
+              - label: Bouton / lien — libellé
+                hint: "Optionnel — avec l’URL ci-dessous."
+                name: linkLabel
+                widget: string
+                required: false
+              - label: Bouton / lien — URL
+                hint: "Ex. /articles/… ou https://…"
+                name: linkHref
+                widget: string
+                required: false
+
+      - label: Accueil (héros du marché)
         name: hero
-        summary: "Badge, dates, titres, programme, infos pratiques, liens d’appel"
+        summary: "Badge, dates, titres, programme, infos, partage réseaux, boutons"
         file: src/content/home.json
         format: json
         fields:
@@ -195,88 +274,9 @@ collections:
                 name: ctaSecondaryHref
                 widget: string
 
-      - label: Bandeau infos (marché, nouveautés…)
-        name: flash
-        summary: "Activer, texte markdown, lien optionnel, accueil seul ou tout le site"
-        file: src/content/flash.json
-        format: json
-        fields:
-          - label: Contenu
-            name: flash
-            widget: object
-            collapsed: false
-            fields:
-              - label: Afficher le bandeau
-                hint: "Désactivé = invisible partout (même si du texte est saisi)."
-                name: enabled
-                widget: boolean
-                default: false
-              - label: Visible sur tout le site
-                hint: "Sous la navigation sur chaque page. Sinon, uniquement en haut de l’accueil."
-                name: showOnAllPages
-                widget: boolean
-                default: false
-              - label: Titre du bloc
-                hint: "Optionnel — laissez vide pour un bandeau sans titre."
-                name: title
-                widget: string
-                required: false
-              - label: Texte
-                hint: "Markdown — **gras**, [lien](url), paragraphes séparés par une ligne vide."
-                name: bodyMarkdown
-                widget: markdown
-              - label: Bouton / lien — libellé
-                hint: "Optionnel — avec l’URL ci-dessous."
-                name: linkLabel
-                widget: string
-                required: false
-              - label: Bouton / lien — URL
-                hint: "Ex. /articles/… ou https://…"
-                name: linkHref
-                widget: string
-                required: false
-
-      # Ne pas nommer un champ de liste « label » : Decap ne charge pas les entrées (conflit interne).
-      - label: Menu principal (navigation)
-        name: navigation
-        summary: "Liens du bandeau — ordre, textes, URLs"
-        file: src/content/navigation.json
-        format: json
-        fields:
-          - label: Navigation
-            name: nav
-            widget: object
-            collapsed: false
-            fields:
-              - label: Liens du menu
-                label_singular: lien
-                hint: "Ordre = ordre dans la barre. Identifiants : highlight, articles, manifeste, contact, plan (pour la page active)."
-                name: items
-                widget: list
-                min: 1
-                max: 15
-                # Obligatoire : préfixe fields. (sinon le widget liste peut ne rien afficher / planter)
-                summary: "{{fields.title}} → {{fields.href}}"
-                fields:
-                  - label: Identifiant technique
-                    hint: "highlight, articles, manifeste, contact, plan — aligné avec le code des pages."
-                    name: id
-                    widget: string
-                  - label: Texte affiché dans le menu
-                    name: title
-                    widget: string
-                  - label: URL
-                    hint: "/articles/ ou https://…"
-                    name: href
-                    widget: string
-                  - label: Mise en avant (typo Fraunces)
-                    name: emphasized
-                    widget: boolean
-                    default: false
-
-      - label: Page contact
+      - label: Contact
         name: contact
-        summary: "Cartes e-mail / téléphone, liens utiles, texte d’intro"
+        summary: "Intro, cartes e-mail / téléphone, liens utiles"
         file: src/content/contact.json
         format: json
         fields:
@@ -353,9 +353,9 @@ collections:
                 widget: text
                 required: false
 
-      - label: Page manifeste
+      - label: Manifeste
         name: manifeste
-        summary: "Chapô, texte du manifeste (markdown), signature"
+        summary: "Chapô, texte (markdown), signature"
         file: src/content/manifeste.json
         format: json
         fields:
@@ -389,9 +389,9 @@ collections:
                 name: signature
                 widget: text
 
-      - label: Presse (ils parlent de nous)
+      - label: Presse — ils parlent de nous
         name: presse
-        summary: "Titre, intro et liste des liens presse"
+        summary: "Titre, introduction, liste des liens médias"
         file: src/content/presse.json
         format: json
         fields:

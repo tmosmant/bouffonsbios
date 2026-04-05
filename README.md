@@ -15,8 +15,8 @@ Site [Astro](https://astro.build) + [Decap CMS](https://decapcms.org), déployé
 | Site (prod) | <https://bouffonsbios.org> · <https://www.bouffonsbios.org> |
 | Alias Workers | <https://bouffonsbios.thomas-mosmant.workers.dev> |
 | Admin Decap | <https://bouffonsbios.org/admin/> |
-| Déploiement (page dédiée) | <https://bouffonsbios.org/admin/deploy.html> |
 | OAuth GitHub (proxy) | <https://bouffonsbios-oauth.thomas-mosmant.workers.dev> |
+| Déploiements (historique / retry) | [Workers & Pages](https://dash.cloudflare.com/) → worker concerné → *Deployments* |
 
 ## Développement
 
@@ -38,55 +38,49 @@ La page `/plan-dacces/` utilise [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl
 
 ## Déploiement
 
-Le workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) ne tourne **plus** au push : il est lancé **à la demande** (page `/admin/deploy.html`, *Run workflow* sur GitHub, ou `npm run deploy` en local).
+En production, le déploiement est déclenché **sur Cloudflare** à chaque push sur **`main`** : [Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/git-integration/) clone le dépôt, exécute les commandes configurées dans le dashboard, puis lance Wrangler. **Aucun GitHub Actions** n’est utilisé pour ça.
 
-### Bouton dans l’admin
+### Worker site (`bouffonsbios`)
 
-1. Ouvre <https://bouffonsbios.org/admin/deploy.html> (page dédiée, pas dans l’interface Decap).
-2. Saisis la **clé de déploiement** (la même valeur que le secret Worker `DEPLOY_TRIGGER_SECRET`).
-3. Le site appelle `POST /api/deploy`, qui déclenche **`workflow_dispatch`** sur GitHub Actions (branche `main`).
+À configurer une fois dans le dashboard Cloudflare (*Workers & Pages* → **bouffonsbios** → *Settings* → *Builds* / *Connect to Git*, libellés selon l’interface) :
 
-**Secrets sur le Worker `bouffonsbios`** (Cloudflare → *Workers* → *bouffonsbios* → *Settings* → *Variables and Secrets* → *Encrypt* pour les secrets) :
+| Réglage | Valeur |
+|--------|--------|
+| Dépôt | `tmosmant/bouffonsbios` |
+| Branche prod | `main` |
+| Build command | `npm ci && npm run build` |
+| Deploy command | `npx wrangler deploy` |
+| Racine du projet | `.` (racine du dépôt) |
 
-| Nom | Type | Rôle |
-|-----|------|------|
-| `DEPLOY_TRIGGER_SECRET` | Secret | Chaîne longue et aléatoire ; connue de l’équipe, saisie sur la page deploy |
-| `GITHUB_DISPATCH_TOKEN` | Secret | [PAT GitHub](https://github.com/settings/personal-access-tokens) **fine-grained** sur le dépôt `bouffonsbios`, permission **Actions : Read and write** (pour l’API `workflow_dispatch`) |
+**Variables de build** (même écran, *Build variables* / secrets de build) : ajouter `PUBLIC_MAPBOX_ACCESS_TOKEN` si le build en a besoin. En runtime, la carte utilise surtout la variable **sur le Worker** (voir section Mapbox ci-dessus).
 
-Exemple en CLI :
+Cloudflare fournit en général un **API token** dédié aux builds ; tu n’as pas besoin de `CLOUDFLARE_API_TOKEN` côté GitHub.
 
-```sh
-npx wrangler secret put DEPLOY_TRIGGER_SECRET
-npx wrangler secret put GITHUB_DISPATCH_TOKEN
-```
+### Worker OAuth Decap (`bouffonsbios-oauth`)
 
-En local (`wrangler dev`), copier [`.dev.vars.example`](.dev.vars.example) vers `.dev.vars` (fichier ignoré par Git) et y renseigner les mêmes noms.
+Créer un **second** Worker lié au **même** dépôt et à **`main`**, avec par exemple :
 
-### GitHub Actions (secrets du dépôt)
+| Réglage | Valeur |
+|--------|--------|
+| Build command | `npm ci` |
+| Deploy command | `npx wrangler deploy -c workers/decap-oauth/wrangler.jsonc` |
 
-Quand le workflow s’exécute, il a besoin des secrets **du dépôt GitHub** (*Settings* → *Secrets and variables* → *Actions*) :
+Ainsi un push sur `main` met à jour les deux workers. Si tu préfères ne déployer l’OAuth qu’à la main, omettre la connexion Git sur ce worker et utiliser uniquement `npm run deploy:oauth` après changement sous `workers/decap-oauth/`.
 
-| Nom | Obligatoire | Rôle |
-|-----|-------------|------|
-| `CLOUDFLARE_API_TOKEN` | oui | [API Token](https://dash.cloudflare.com/profile/api-tokens) Cloudflare — déploiement Workers |
-| `PUBLIC_MAPBOX_ACCESS_TOKEN` | non | Build CI si nécessaire ; la carte en prod lit surtout la variable du Worker |
-
-Tu peux aussi lancer le workflow à la main : *Actions* → *Deploy* → *Run workflow*.
-
-Les identifiants **OAuth Decap** (`GITHUB_OAUTH_ID` / `GITHUB_OAUTH_SECRET`) restent sur le worker **`bouffonsbios-oauth`** uniquement — pas sur le worker site, pas dans ce PAT de dispatch.
-
-### En local (sans passer par GitHub Actions)
+### En local
 
 ```sh
-npm run deploy              # site (build + wrangler racine)
+npm run deploy              # site (build + wrangler à la racine)
 npm run deploy:oauth        # worker OAuth seul
 ```
+
+En local (`wrangler dev`), copier [`.dev.vars.example`](.dev.vars.example) vers `.dev.vars` (ignoré par Git) pour `PUBLIC_MAPBOX_ACCESS_TOKEN`.
 
 ## Infra Cloudflare
 
 | Élément | Fichier / nom |
 |---------|----------------|
-| Site + API Astro | `wrangler.jsonc` → worker **bouffonsbios** (incl. `POST /api/deploy`) |
+| Site + API Astro | `wrangler.jsonc` → worker **bouffonsbios** |
 | OAuth Decap | `workers/decap-oauth/wrangler.jsonc` → **bouffonsbios-oauth** |
 | Newsletter (D1) | Binding `NEWSLETTER_DB` dans `wrangler.jsonc` ; schéma SQL dans `schema/` |
 
@@ -107,9 +101,9 @@ npm run deploy:oauth        # worker OAuth seul
 
    Client ID → variable, client secret → secret. **Ne pas** commiter ces valeurs dans `wrangler.jsonc` : les gérer via `wrangler` ou le dashboard.
 
-3. **Code du worker OAuth** : après changement sous `workers/decap-oauth/`, lancer un déploiement (*Run workflow*, page `/admin/deploy.html`, ou `npm run deploy:oauth`).
+3. **Code du worker OAuth** : après changement sous `workers/decap-oauth/`, pousser sur `main` (si ce worker est branché aux *Workers Builds*) ou lancer `npm run deploy:oauth`.
 
-4. **Site + contenu** : après merge sur `main`, lancer un déploiement (*Run workflow*, page `/admin/deploy.html`, ou `npm run deploy`). La page deploy rebuild depuis la branche `main` distante, pas depuis des fichiers non poussés.
+4. **Site + contenu** : après push sur `main`, Cloudflare rebuild depuis le dépôt distant — les changements non poussés ne partent pas en prod.
 
 Si l’URL du worker OAuth change, mettre à jour `ALLOWED_ORIGINS` dans `public/admin/decap-gravatar.js`.
 
