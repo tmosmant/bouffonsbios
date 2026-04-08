@@ -48,9 +48,13 @@ En production, le déploiement est déclenché **sur Cloudflare** à chaque push
 |--------|--------|
 | Dépôt | `tmosmant/bouffonsbios` |
 | Branche prod | `main` |
-| Build command | `npm ci && npm run build` |
+| Build command | `npm install && npm run build` |
 | Deploy command | `npx wrangler deploy` |
 | Racine du projet | `.` (racine du dépôt) |
+
+**Build command** : `npm install` suffit en général pour un dépôt solo (souvent un peu plus rapide que `npm ci`, qui supprime toujours `node_modules` avant de réinstaller). Pour une CI très stricte sur le lockfile, tu peux utiliser `npm ci && npm run build` à la place. Il faut **au moins** une install avant `npm run build` : sans `node_modules`, le build échoue.
+
+Active aussi **Build cache** (*Settings* → *Build* → *Build cache*) pour réutiliser le cache npm (`.npm`) et le cache Astro (`.astro`).
 
 **Variables de build** (même écran, *Build variables* / secrets de build) : ajouter `PUBLIC_MAPBOX_ACCESS_TOKEN` si le build en a besoin. En runtime, la carte utilise surtout la variable **sur le Worker** (voir section Mapbox ci-dessus).
 
@@ -62,7 +66,7 @@ Créer un **second** Worker lié au **même** dépôt et à **`main`**, avec par
 
 | Réglage | Valeur |
 |--------|--------|
-| Build command | `npm ci` |
+| Build command | `npm install` |
 | Deploy command | `npx wrangler deploy -c workers/decap-oauth/wrangler.jsonc` |
 
 Ainsi un push sur `main` met à jour les deux workers. Si tu préfères ne déployer l’OAuth qu’à la main, omettre la connexion Git sur ce worker et utiliser uniquement `npm run deploy:oauth` après changement sous `workers/decap-oauth/`.
