@@ -46,7 +46,9 @@ Participeront à l'édition 2026 du marché des vins bio de Montreuil (liste en 
   * Vignoble Véronique Fleurent – Véronique FLEURENT – 33500 Arveyres – verofleu4@gmail.com
   * Domaine Le Clos de Caveau – Janet et Henri BUNGENER – Chemin de Caveau, 84190 Vacqueyras – damien@closdecaveau.com
   * Domaines Uetiketo (Kakhétie) et Persvi (Imérethie), Marine et Nika ENDELADZE, Géorgie, nikaend@gmail.com
-  * Domaine Caillabère – Jean-Marc LARROUDE et Guillaume LE DUFF – 479, route de Madiran, 64330 Taron, caillabere@gmail.com
-  * Domaine La Paonnerie – Marie CARROGET – 320, La Paonnerie, 44150 Anetz
+  * Domaine Caillabère – Jean-Marc LARROUDE et Guillaume LE DUFF – 479, route de Madiran, 64330 Taron 
+    – caillabere@gmail.com
+  * Domaine La Paonnerie – Marie CARROGET – 320, La Paonnerie, 44150 Anetz 
+    – marie@domainelapaonnerie.com
 
   ***A suivre…***
