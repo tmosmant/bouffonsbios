@@ -1,7 +1,7 @@
 ---
 slug: communiques-de-presse-2025-1
-title: Communiqués de presse 2025 - 1
-date: 2025-03-30
+title: On n'y croyait plus — 20ᵉ marché aux vins bio (10 mai, Croix de Chavaux)
+date: 2025-03-28
 category: Communiqués de presse
 ---
 
@@ -11,16 +11,13 @@ On n'y croyait plus. Il faut dire que malgré l'attente des visiteurs et des exp
 
 Comme d'habitude, après s'être acquitté de 5 euros à l'entrée du Marché, chaque visiteur se verra offrir un verre à dégustation lui ouvrant la découverte des vins d'une soixantaine de vignerons venus de toutes les grandes régions viticoles de France et de Géorgie.
 
-**Le 20ème Marché des Vins Bio de Montreuil se tiendra sous la halle du**
+**Le 20ème Marché des Vins Bio de Montreuil se tiendra sous la halle du Marché de la Croix de Chavaux**, à 93100 Montreuil.
 
-****Marché de la Croix de Chavaux**, à  
-93100 Montreuil.  
-Métro : Ligne 9, Croix de Chavaux**  
+**Métro : Ligne 9, Croix de Chavaux**
 **Bus : Lignes 102, 115, 122, 127, 202**
-
 **Le 10 mai 2025 de 10h00 à 19h00**
 
-[https://bouffonsbios.org](https://bouffonsbios.org)  
+[https://bouffonsbios.org](https://bouffonsbios.org)
 
-Contact : Daniel Mosmant  
+Contact : Daniel Mosmant
 +33 6 76 69 25 98

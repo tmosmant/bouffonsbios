@@ -1,7 +1,7 @@
 ---
 slug: communique-de-presse-2004
-title: Communiqué de presse 2004
-date: 2018-02-08
+title: 2ᵉ marché vins bio — 4 avril 2004
+date: 2004-03-22
 category: Communiqués de presse
 ---
 

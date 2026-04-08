@@ -1,7 +1,7 @@
 ---
 slug: communique-de-presse-2006
-title: Communiqué de presse 2006
-date: 2018-02-08
+title: 4ᵉ marché vins bio — 25 mars 2006
+date: 2006-03-10
 category: Communiqués de presse
 ---
 

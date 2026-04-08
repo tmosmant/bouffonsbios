@@ -1,7 +1,7 @@
 ---
 slug: communique-de-presse-2003
-title: Communiqué de presse 2003
-date: 2018-02-08
+title: 1er marché vins bios — 15 mars 2003
+date: 2003-03-05
 category: Communiqués de presse
 ---
 
