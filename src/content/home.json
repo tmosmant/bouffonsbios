@@ -1,47 +1,47 @@
 {
-	"hero": {
-		"metaTitle": "Bouffons Bios",
-		"metaDescription": "Marché des vins bio à Montreuil — Croix de Chavaux. Dates, infos pratiques et actualités.",
-		"ogTitle": "Marché des vins bio — Samedi 9 mai 2026 · Montreuil · Croix de Chavaux",
-		"ogDescription": "Samedi 9 mai 2026, 10h–19h — sous la halle du marché, Croix de Chavaux (Montreuil). Plus de cinquante vignerons en agriculture biologique, biodynamie et vins nature, de la France à l’Italie et la Géorgie. Entrée 5 €, verre gravé offert. Le rendez-vous convivial du vin vivant à l’est de Paris — 21ᵉ édition, par l’association Bouffons Bios.",
-		"ogImage": "/uploads/affiche-site-2021.jpg",
-		"ogImageAlt": "Affiche — Marché des vins bio, Montreuil · Croix de Chavaux (Samedi 9 mai 2026)",
-		"badge": "21ᵉ édition",
-		"dateDatetime": "2026-05-09",
-		"dateLabel": "Samedi 9 mai 2026",
-		"hours": "10h–19h",
-		"titleLine1": "Marché des vins bio",
-		"titleLine2": "Montreuil · Croix de Chavaux",
-		"taglineMarkdown": "Le grand retour du *Développement buvable*",
-		"participantsHref": "/articles/vignerons-participants-en-2026/",
-		"participantsTitle": "Participants 2026",
-		"participantsHint": "Liste évolutive des vignerons",
-		"participantsIcon": "◇",
-		"programTitle": "Au programme",
-		"programMarkdown": "**50+ vignerons** venus de France, d’**Italie** et de **Géorgie** — bio, biodynamique, naturel et convivialité à chaque stand.",
-		"infosTitle": "Infos pratiques",
-		"infoRows": [
-			{
-				"term": "Lieu",
-				"line1": "Halle du marché, Croix de Chavaux",
-				"line2": "rue de Paris, 93100 Montreuil"
-			},
-			{
-				"term": "Accès",
-				"line1": "Métro ligne 9 · Croix de Chavaux",
-				"line2": "Bus 102, 115, 122, 127, 202"
-			},
-			{
-				"term": "Entrée",
-				"line1": "5 €",
-				"line2": "— verre gravé offert"
-			}
-		],
-		"legalMarkdown": "*Si l’abus d’alcool est dangereux pour la santé, le vin bio est une fête pour l’esprit.*",
-		"orgMarkdown": "Organisé par l’association Bouffons Bios · [Contact](/contact/) · Daniel Mosmant [06 76 69 25 98](tel:+33676692598)",
-		"ctaPrimaryLabel": "Tous les articles",
-		"ctaPrimaryHref": "/articles/",
-		"ctaSecondaryLabel": "Plan d’accès",
-		"ctaSecondaryHref": "/plan-dacces/"
-	}
+  "hero": {
+    "ogTitle": "Marché des vins bio — Samedi 9 mai 2026 · Montreuil · Croix de Chavaux",
+    "ctaPrimaryLabel": "Tous les articles",
+    "ogImage": "/uploads/affiche-site-2021.jpg",
+    "badge": "21ᵉ édition",
+    "ogDescription": "Samedi 9 mai 2026, 10h–19h — sous la halle du marché, Croix de Chavaux (Montreuil). Plus de cinquante vignerons en agriculture biologique, biodynamie et vins nature, de la France à l’Italie et la Géorgie. Entrée 5 €, verre gravé offert. Le rendez-vous convivial du vin vivant à l’est de Paris — 21ᵉ édition, par l’association Bouffons Bios.",
+    "titleLine1": "Marché des vins bio",
+    "ogImageAlt": "Affiche — Marché des vins bio, Montreuil · Croix de Chavaux (Samedi 9 mai 2026)",
+    "titleLine2": "Montreuil · Croix de Chavaux",
+    "dateLabel": "Samedi 9 mai 2026",
+    "participantsHint": "Liste évolutive des vignerons",
+    "infoRows": [
+      {
+        "term": "Lieu",
+        "line1": "Halle du marché, Croix de Chavaux",
+        "line2": "rue de Paris, 93100 Montreuil"
+      },
+      {
+        "term": "Accès",
+        "line1": "Métro ligne 9 · Croix de Chavaux",
+        "line2": "Bus 102, 115, 122, 127, 202"
+      },
+      {
+        "term": "Entrée",
+        "line1": "5 €",
+        "line2": "— verre gravé offert"
+      }
+    ],
+    "legalMarkdown": "*Si l’abus d’alcool est dangereux pour la santé, le vin bio est une fête pour l’esprit.*",
+    "dateDatetime": "2026-05-09",
+    "participantsHref": "/articles/vignerons-participants-en-2026/",
+    "ctaSecondaryHref": "/plan-dacces/",
+    "hours": "10h–19h",
+    "ctaSecondaryLabel": "Plan d’accès",
+    "metaTitle": "Bouffons Bios",
+    "programMarkdown": "**50+ vignerons** venus de **France** et de **Géorgie** — bio, biodynamique, naturel et convivialité à chaque stand.",
+    "infosTitle": "Infos pratiques",
+    "orgMarkdown": "Organisé par l’association Bouffons Bios · [Contact](/contact/) · Daniel Mosmant [06 76 69 25 98](tel:+33676692598)",
+    "programTitle": "Au programme",
+    "metaDescription": "Marché des vins bio à Montreuil — Croix de Chavaux. Dates, infos pratiques et actualités.",
+    "participantsTitle": "Participants 2026",
+    "participantsIcon": "◇",
+    "ctaPrimaryHref": "/articles/",
+    "taglineMarkdown": "Le grand retour du *Développement buvable*"
+  }
 }
