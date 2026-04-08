@@ -1,40 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-	<title>Verre de vin — Bouffons Bios</title>
-	<style>
-		.pied {
-			fill: #35624a;
-		}
-		.tige {
-			fill: #35624a;
-		}
-		.vin {
-			fill: #8f2d4a;
-		}
-		.contour {
-			stroke: #35624a;
-			stroke-width: 1.15;
-			stroke-linejoin: round;
-			fill: none;
-		}
-		.reflet {
-			fill: #ffffff;
-			opacity: 0.28;
-		}
-	</style>
-	<!-- Pied -->
-	<ellipse class="pied" cx="16" cy="26.2" rx="5.8" ry="1.85" />
-	<!-- Tige -->
-	<rect class="tige" x="14.4" y="16.8" width="3.2" height="8.8" rx="0.55" />
-	<!-- Liquide dans le bol -->
+	<!-- Verre de vin — favicon Bouffons Bios (nature + bordeaux + reflet) -->
+	<ellipse cx="16" cy="26.85" rx="5.35" ry="1.7" fill="#35624a" />
 	<path
-		class="vin"
-		d="M11.2 6.2h9.6l-2.85 7.8c-.55 1.5-1.35 2.35-2 2.35h-.1c-.65 0-1.45-.85-2-2.35l-2.85-7.8Z"
+		fill="#35624a"
+		d="M14.55 16.35a.45.45 0 0 1 .45-.4h1.8a.45.45 0 0 1 .45.4v9.05h-2.7v-9.05z"
 	/>
-	<!-- Contour du verre (bol) -->
 	<path
-		class="contour"
-		d="M10.2 5.5h11.6l-3.35 9.2c-.9 2.45-2.25 3.8-3.45 3.8h-.8c-1.2 0-2.55-1.35-3.45-3.8L10.2 5.5Z"
+		fill="#8f2d4a"
+		d="M10.65 5.65h10.7L18.2 14.4c-.78 2.05-1.92 3.05-2.78 3.05h-.84c-.86 0-2-1-2.78-3.05l-3.15-8.75z"
 	/>
-	<!-- Petit reflet -->
-	<path class="reflet" d="M12.1 7h2.4v4.2l-1.1 2.6z" />
+	<path
+		fill="none"
+		stroke="#35624a"
+		stroke-width="1.2"
+		stroke-linejoin="round"
+		stroke-linecap="round"
+		d="M9.55 5h12.9L19 14.85c-1 2.65-2.55 4.1-3.95 4.1h-.1c-1.4 0-2.95-1.45-3.95-4.1L9.55 5z"
+	/>
+	<path fill="#fff" fill-opacity="0.26" d="M12.35 7.1h2.15v4.35l-1.05 3.05-.85-.25.75-2.2V7.1z" />
 </svg>
