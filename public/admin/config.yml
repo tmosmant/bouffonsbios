@@ -49,16 +49,16 @@ collections:
       - label: Catégorie
         name: category
         widget: select
-        default: "Non classé"
+        default: "Le Bio"
         options:
           - label: Affiches
             value: Affiches
           - label: "Communiqués de presse"
             value: "Communiqués de presse"
-          - label: "Non classé"
-            value: "Non classé"
-          - label: Vignerons
-            value: Vignerons
+          - label: "Le Bio"
+            value: "Le Bio"
+          - label: Nos vignerons
+            value: "Nos vignerons"
       - label: Résumé
         name: excerpt
         widget: text

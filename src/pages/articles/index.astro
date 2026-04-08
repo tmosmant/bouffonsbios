@@ -11,8 +11,8 @@ function counts(): Record<ArticleCategory, number> {
 	const init: Record<ArticleCategory, number> = {
 		Affiches: 0,
 		'Communiqués de presse': 0,
-		'Non classé': 0,
-		Vignerons: 0,
+		'Le Bio': 0,
+		'Nos vignerons': 0,
 	};
 	for (const p of posts) {
 		init[p.data.category] += 1;
@@ -28,7 +28,6 @@ const byCat = counts();
 	<p class="intro">Communiqués, listes de vignerons, affiches et textes du site.</p>
 
 	<nav class="filters" aria-label="Filtrer par catégorie">
-		<a href="/articles/" class="chip chip-all" aria-current="page">Toutes</a>
 		{
 			ARTICLE_CATEGORIES.map((label) => (
 				<a href={`/articles/categorie/${CATEGORY_SLUGS[label]}/`} class="chip">
@@ -115,16 +114,6 @@ const byCat = counts();
 		);
 		transform: translateY(-1px);
 		box-shadow: 0 4px 14px color-mix(in srgb, var(--accent-nature) 12%, transparent);
-	}
-	.chip-all {
-		background: linear-gradient(
-			135deg,
-			color-mix(in srgb, var(--accent) 14%, transparent),
-			color-mix(in srgb, var(--joy) 10%, transparent)
-		);
-		color: var(--accent, #8f2d4a);
-		border-color: color-mix(in srgb, var(--joy) 35%, transparent);
-		font-weight: 600;
 	}
 	.count {
 		opacity: 0.75;

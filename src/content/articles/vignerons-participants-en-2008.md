@@ -2,7 +2,7 @@
 slug: vignerons-participants-en-2008
 title: Vignerons participants en 2008
 date: 2018-02-08
-category: Vignerons
+category: Nos vignerons
 ---
 
 Ont participé à l'édition 2008 du marché des vins bio de Montreuil :

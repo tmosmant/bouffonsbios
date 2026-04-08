@@ -2,7 +2,7 @@
 slug: vignerons-participants-en-2010
 title: Vignerons participants en 2010
 date: 2018-02-08
-category: Vignerons
+category: Nos vignerons
 ---
 
 Ont participé à l'édition 2010 du marché des vins bio de Montreuil :

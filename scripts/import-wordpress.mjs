@@ -36,8 +36,10 @@ const xmlPath = args[0] || DEFAULT_XML;
 const NICENAME_TO_CATEGORY = {
 	affiches: 'Affiches',
 	'communiques-de-presse': 'Communiqués de presse',
-	'non-classe': 'Non classé',
-	vignerons: 'Vignerons',
+	'non-classe': 'Le Bio',
+	'le-bio': 'Le Bio',
+	vignerons: 'Nos vignerons',
+	'nos-vignerons': 'Nos vignerons',
 };
 
 const turndown = new TurndownService({
@@ -164,7 +166,7 @@ function plainExcerpt(html) {
 /** @param {unknown} item */
 function categoryFromWpItem(item) {
 	const c = item?.category;
-	if (!c) return 'Non classé';
+	if (!c) return 'Le Bio';
 	const arr = Array.isArray(c) ? c : [c];
 	for (const el of arr) {
 		if (typeof el !== 'object' || el === null) continue;
@@ -173,7 +175,7 @@ function categoryFromWpItem(item) {
 		const nice = /** @type {Record<string, string>} */ (el)['@_nicename'];
 		if (nice && NICENAME_TO_CATEGORY[nice]) return NICENAME_TO_CATEGORY[nice];
 	}
-	return 'Non classé';
+	return 'Le Bio';
 }
 
 const WP_IMG_MD_RE =

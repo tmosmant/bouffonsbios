@@ -23,8 +23,8 @@ const posts = allPosts
 const byCat: Record<ArticleCategory, number> = {
 	Affiches: 0,
 	'Communiqués de presse': 0,
-	'Non classé': 0,
-	Vignerons: 0,
+	'Le Bio': 0,
+	'Nos vignerons': 0,
 };
 for (const p of allPosts) {
 	byCat[p.data.category] += 1;
@@ -39,11 +39,10 @@ for (const p of allPosts) {
 >
 	<h1>{label}</h1>
 	<p class="intro">
-		<a href="/articles/">← Toutes les catégories</a>
+		<a href="/articles/">← Tous les articles</a>
 	</p>
 
 	<nav class="filters" aria-label="Filtrer par catégorie">
-		<a href="/articles/" class="chip">Toutes</a>
 		{
 			ARTICLE_CATEGORIES.map((cat) => (
 				<a

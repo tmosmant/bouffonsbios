@@ -2,7 +2,7 @@
 slug: vignerons-participant-en-2020
 title: Vignerons participant en 2020
 date: 2020-01-27
-category: Vignerons
+category: Nos vignerons
 ---
 
 Ont participé à l'édition 2020 du marché des vins bio de Montreuil :

@@ -12,10 +12,11 @@ const DIR = join(__dirname, '../src/content/articles');
 /** @param {string} basename */
 function categoryForFile(basename) {
 	const s = basename.replace(/\.md$/, '');
+	if (s.startsWith('affiche-')) return 'Affiches';
 	if (s.startsWith('affiches')) return 'Affiches';
 	if (s.includes('communique')) return 'Communiqués de presse';
-	if (s.includes('vignerons')) return 'Vignerons';
-	return 'Non classé';
+	if (s.includes('vignerons')) return 'Nos vignerons';
+	return 'Le Bio';
 }
 
 for (const name of readdirSync(DIR)) {

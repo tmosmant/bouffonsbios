@@ -2,7 +2,7 @@
 slug: vignerons-participants-en-2019
 title: Vignerons participants en 2019
 date: 2019-02-10
-category: Vignerons
+category: Nos vignerons
 ---
 
 Ont participé à l'édition 2019 du marché des vins bio de Montreuil :

@@ -1,9 +1,9 @@
-/** Catégories (identiques au site WordPress). */
+/** Catégories affichées (Decap + site). */
 export const ARTICLE_CATEGORIES = [
 	'Affiches',
 	'Communiqués de presse',
-	'Non classé',
-	'Vignerons',
+	'Le Bio',
+	'Nos vignerons',
 ] as const;
 
 export type ArticleCategory = (typeof ARTICLE_CATEGORIES)[number];
@@ -12,8 +12,8 @@ export type ArticleCategory = (typeof ARTICLE_CATEGORIES)[number];
 export const CATEGORY_SLUGS: Record<ArticleCategory, string> = {
 	Affiches: 'affiches',
 	'Communiqués de presse': 'communiques',
-	'Non classé': 'non-classe',
-	Vignerons: 'vignerons',
+	'Le Bio': 'le-bio',
+	'Nos vignerons': 'nos-vignerons',
 };
 
 export function categoryFromSlug(slug: string): ArticleCategory | undefined {

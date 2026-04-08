@@ -5,8 +5,8 @@ import { z } from 'astro/zod';
 const categoryEnum = z.enum([
 	'Affiches',
 	'Communiqués de presse',
-	'Non classé',
-	'Vignerons',
+	'Le Bio',
+	'Nos vignerons',
 ]);
 
 const articles = defineCollection({
@@ -15,7 +15,7 @@ const articles = defineCollection({
 		slug: z.string().optional(),
 		title: z.string(),
 		date: z.coerce.date(),
-		category: categoryEnum.default('Non classé'),
+		category: categoryEnum.default('Le Bio'),
 		excerpt: z.string().optional(),
 	}),
 });
