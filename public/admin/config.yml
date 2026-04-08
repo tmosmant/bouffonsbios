@@ -27,9 +27,11 @@ public_folder: /uploads
 collections:
   # Billets Markdown (actualités, communiqués, vignerons, affiches…). Première entrée du menu admin.
   - name: articles
-    label: Articles et archives
+    label: Articles
     label_singular: Article
     folder: src/content/articles
+    # Liste admin : titre + date du front matter (même source que le YAML dans le fichier).
+    summary: "{{title}} — {{date | date('DD/MM/YYYY')}}"
     preview_path: "/articles/{{slug}}/"
     create: true
     slug: "{{slug}}"
@@ -68,12 +70,12 @@ collections:
         widget: markdown
 
   - name: site
-    label: "Site web : menu, accueil et pages"
+    label: "Pages"
     editor:
       preview: true
     files:
       # Ne pas nommer un champ de liste « label » : Decap ne charge pas les entrées (conflit interne).
-      - label: Menu du haut (navigation)
+      - label: Barre de navigation
         name: navigation
         summary: "Liens du bandeau — ordre, libellés, URL"
         file: src/content/navigation.json
@@ -151,7 +153,7 @@ collections:
                 widget: string
                 required: false
 
-      - label: Accueil (héros du marché)
+      - label: Page d'accueil
         name: hero
         summary: "Badge, dates, titres, programme, infos, partage réseaux, boutons"
         file: src/content/home.json
@@ -274,7 +276,7 @@ collections:
                 name: ctaSecondaryHref
                 widget: string
 
-      - label: Contact
+      - label: Page contact
         name: contact
         summary: "Intro, cartes e-mail / téléphone, liens utiles"
         file: src/content/contact.json
@@ -353,7 +355,7 @@ collections:
                 widget: text
                 required: false
 
-      - label: Manifeste
+      - label: Page manifeste
         name: manifeste
         summary: "Chapô, texte (markdown), signature"
         file: src/content/manifeste.json
