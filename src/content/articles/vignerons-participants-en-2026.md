@@ -6,8 +6,7 @@ category: Nos vignerons
 ---
 Participeront à l'édition 2026 du marché des vins bio de Montreuil (liste en devenir) :
 
-* 
-  * Domaine Jolly Ferriol – Isabelle JOLLY et Jean-Luc CHOSSART – Mas Ferriol, 66600 Espira de l’Agly – jollyferriol@gmail.com
+* * Domaine Jolly Ferriol – Isabelle JOLLY et Jean-Luc CHOSSART – Mas Ferriol, 66600 Espira de l’Agly – jollyferriol@gmail.com
   * Château Tour Blanc – Sandra et Philip KELTON – 40310 PARLEBOSCQ – tourblanc@gmail.com
   * Ikalto – Salome Giorgobiani – 7B, rue de la Gorge, 13007 Marseille – salome@lilesia.com
   * Domaine de Babio – Cécile WEISSENBACH et Salvy DELEGUE – 34210 La Caunette – cecilegabw@yahoo.fr
@@ -28,10 +27,8 @@ Participeront à l'édition 2026 du marché des vins bio de Montreuil (liste en 
   * Côme Isambert – Côme ISAMBERT – 23 avenue Georges Thoreau, 49400 Saumur – comeisambert@yahoo.fr
   * Domaine de Mingraut – Véronique ROBIN CUCULIERE, Rémi LANGLET – 11700 Fontcouverte – info@domaine-mingraut.fr
   * Laurent Herlin – Laurent HERLIN – 1, le Plessis, 37140 Chouzé sur Loire – laurent.herlin@yahoo.fr
-  * La Chochotte du Boulon – Doris MOSSÉ – Impasse de la Juiverie, 84440 Robion – dorismosse@hotmail.fr
   * Château Larchère – Muriel et Thierry BAUDRY – EARL Gerthy, Larchère, 24240 Pomport – contact@chateaularchere.fr
   * Château La Grave – Domaine Paul Barre – Edith BARRE – La Grave, 33126 Fronsac – domaine@paulbarre.com
-  * Domaine Rouge Garance – Claudie et Bertrand CORTELLINI / Jean-Louis TRINTIGNANT – 30210 Saint-Hilaire d’Ozilhan – contact@rougegarance.com
   * Domaine Guillaume Noire – Guillaume NOIRE – 4, rue de Briançon, 49750 Rablay-sur-Layon – gnoire@hotmail.com
   * David Bautin – David BAUTIN – 26150 Barsac – david.bautin0046@orange.fr, contact@cavebautin.com
   * La Fontaine des Grives – Benoît PERISSE et Leila LARE – Fongrive Bas, 24240 Thenac – perisse.benoit@gmail.com
